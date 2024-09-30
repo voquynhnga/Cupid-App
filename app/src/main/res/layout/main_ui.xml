@@ -106,7 +106,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent">
 
-        <!--NútDislike-->
         <ImageView
             android:id="@+id/dislikeButton"
             android:layout_width="96dp"
@@ -116,7 +115,6 @@
             android:scaleType="fitCenter"
             android:src="@drawable/dislike" />
 
-        <!--NútLike-->
         <ImageView
             android:id="@+id/likeButton"
             android:layout_width="96dp"
@@ -125,7 +123,6 @@
             android:src="@drawable/like"
             android:scaleType="fitCenter"/>
 
-        <!--NútStar/Favorite-->
         <ImageView
             android:id="@+id/favoriteButton"
             android:layout_width="96dp"
