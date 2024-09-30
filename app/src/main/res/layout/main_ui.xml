@@ -8,16 +8,52 @@
     android:background="@drawable/gradient_bg">
 
 
-    <ImageView
-        android:id="@+id/appLogo"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/layout_top"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/cupid"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center_vertical"
+        android:layout_marginTop="4dp"
+        >
+
+        <ImageView
+            android:id="@+id/option"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/option"
+            android:layout_marginHorizontal="8dp"
+            >
+
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/appLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="48dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/cupid"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/filter"
+            android:layout_marginHorizontal="8dp"
+            >
+
+        </ImageView>
+
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/profileImage"
@@ -73,28 +109,29 @@
         <!--NútDislike-->
         <ImageView
             android:id="@+id/dislikeButton"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/button_background_circle"
-            android:src="@drawable/remove" />
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_marginHorizontal="16dp"
+
+            android:scaleType="fitCenter"
+            android:src="@drawable/dislike" />
 
         <!--NútLike-->
         <ImageView
             android:id="@+id/likeButton"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/button_background_circle"
-            android:src="@drawable/red_heart" />
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_marginHorizontal="16dp"
+            android:src="@drawable/like"
+            android:scaleType="fitCenter"/>
 
         <!--NútStar/Favorite-->
         <ImageView
             android:id="@+id/favoriteButton"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/button_background_circle"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_marginHorizontal="16dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/star" />
 
     </LinearLayout>
