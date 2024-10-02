@@ -19,3 +19,7 @@ gradle/libs.versions.toml
 config.properties
 *.log
 ./gradle/libs.versions.toml
+.idea/.name
+.idea/other.xml
+.idea/misc.xml
+.idea/vcs.xml
