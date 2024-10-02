@@ -1,44 +1,46 @@
 package com.midterm.destined;
 
-
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+
+import com.midterm.destined.databinding.FragmentHomepageBinding;
+
 
 public class HomepageFragment extends Fragment {
 
-    public HomepageFragment() {
-    }
+    private FragmentHomepageBinding binding;
+
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(
+            @NonNull LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState
+    ) {
 
+        binding = FragmentHomepageBinding.inflate(inflater, container, false);
+        return binding.getRoot();
 
-        if (getArguments() != null) {
-
-        }
     }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_homepage, container, false);
-    }
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
-
-        view.findViewById(R.id.nav_message).setOnClickListener(v -> {
-            navController.navigate(R.id.ChatFragment);
-        });
-
+//        binding.nav_message.setOnClickListener(v ->
+//                NavHostFragment.findNavController(HomepageFragment.this)
+//                        .navigate(R.id.action_FirstFragment_to_SecondFragment)
+//        );
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
 }

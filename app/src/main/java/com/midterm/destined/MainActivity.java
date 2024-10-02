@@ -1,83 +1,119 @@
 package com.midterm.destined;
-//
-//import android.content.Intent;
-//import android.os.Bundle;
-//import android.os.Handler;
-//import android.os.Looper;
-//import android.view.Menu;
-//
-//import androidx.appcompat.app.AppCompatActivity;
-//import androidx.navigation.NavController;
-//import androidx.navigation.Navigation;
-//import androidx.navigation.ui.AppBarConfiguration;
-//import androidx.navigation.ui.NavigationUI;
-//
-//import com.google.android.material.bottomnavigation.BottomNavigationView;
-//
-//public class MainActivity extends AppCompatActivity {
-//
-//    private AppBarConfiguration appBarConfiguration;
-//
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//
-//
-//
-//
-//
-//    }
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onSupportNavigateUp() {
-//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-//        return NavigationUI.navigateUp(navController, appBarConfiguration)
-//                || super.onSupportNavigateUp();
-//    }
-//}
-
-
-
-
 import android.os.Bundle;
+import android.util.Log;
 
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
+import com.midterm.destined.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
+
+    private AppBarConfiguration appBarConfiguration;
+    private ActivityMainBinding binding;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-//        binding.setLifecycleOwner(this);
-        EdgeToEdge.enable(this);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
 
+
+
+
+//        if (binding.toolbar.findViewById(R.id.nav_home) != null) {
+//            binding.toolbar.findViewById(R.id.nav_home).setOnClickListener(view -> {
+//
+////
+//                if (navController.getCurrentDestination() != null &&
+//                        navController.getCurrentDestination().getId() == R.id.fragment_chat) {
+//                    navController.navigate(R.id.action_ChatFragment_to_HomepageFragment);
+//                }
+//                else {
+//                    Log.d("Navigation", "Already on HomepageFragment");
+//                    // Quay lại Fragment trước đó nếu đã ở HomepageFragment
+////                    navController.popBackStack();
+//                    }
+//            });
+//        }
+//
+//
+//        if (binding.toolbar.findViewById(R.id.nav_message) != null) {
+//            binding.toolbar.findViewById(R.id.nav_message).setOnClickListener(view -> {
+//
+//                //navController.navigate(R.id.action_HomepageFragment_to_ChatFragment);
+//                if (navController.getCurrentDestination() != null &&
+//                        navController.getCurrentDestination().getId() != R.id.fragment_chat) {
+//                    navController.navigate(R.id.action_HomepageFragment_to_ChatFragment);
+//                }
+//                else {
+//                    Log.d("Navigation", "Already on ChatFragment");
+//                    // Quay lại Fragment trước đó nếu đã ở HomepageFragment
+////                    navController.popBackStack();
+//                }
+//            });
+//        }
+
+        if (binding.toolbar.findViewById(R.id.nav_home) != null) {
+            binding.toolbar.findViewById(R.id.nav_home).setOnClickListener(view -> {
+                if (navController.getCurrentDestination() != null) {
+                    if (navController.getCurrentDestination().getId() == R.id.fragment_chat) {
+                        navController.navigate(R.id.action_ChatFragment_to_HomepageFragment);
+                    } else if (navController.getCurrentDestination().getId() != R.id.fragment_homepage) {
+                        navController.navigate(R.id.action_global_HomepageFragment);
+                    } else {
+                        Log.d("Navigation", "Already on HomepageFragment");
+                    }
+                }
+            });
+        }
+
+        if (binding.toolbar.findViewById(R.id.nav_message) != null) {
+            binding.toolbar.findViewById(R.id.nav_message).setOnClickListener(view -> {
+                if (navController.getCurrentDestination() != null) {
+                    if (navController.getCurrentDestination().getId() == R.id.fragment_homepage) {
+                        navController.navigate(R.id.action_HomepageFragment_to_ChatFragment);
+                    } else if (navController.getCurrentDestination().getId() != R.id.fragment_chat) {
+                        navController.navigate(R.id.action_global_ChatFragment); // Đảm bảo bạn đã định nghĩa action này trong nav_graph.xml
+                    } else {
+                        Log.d("Navigation", "Already on ChatFragment");
+                    }
+                }
+            });
+        }
+
+
+
+        if (binding.toolbar.findViewById(R.id.nav_heart) != null) {
+            binding.toolbar.findViewById(R.id.nav_heart).setOnClickListener(view -> {
+                // Xử lý sự kiện cho Heart
+            });
+        }
+
+        if (binding.toolbar.findViewById(R.id.nav_profile) != null) {
+            binding.toolbar.findViewById(R.id.nav_profile).setOnClickListener(view -> {
+                // Xử lý sự kiện cho Profile
+            });
+        }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+                || super.onSupportNavigateUp();
     }
 }
+
+

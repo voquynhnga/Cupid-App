@@ -13,6 +13,7 @@
         <action
             android:id="@+id/action_HomepageFragment_to_ChatFragment"
             app:destination="@id/ChatFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/ChatFragment"
@@ -23,4 +24,12 @@
             android:id="@+id/action_ChatFragment_to_HomepageFragment"
             app:destination="@id/HomepageFragment" />
     </fragment>
+
+    <action
+        android:id="@+id/action_global_HomepageFragment"
+        app:destination="@id/HomepageFragment" />
+    <action
+        android:id="@+id/action_global_ChatFragment"
+        app:destination="@id/ChatFragment" />
+
 </navigation>
