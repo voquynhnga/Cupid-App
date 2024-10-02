@@ -17,6 +17,12 @@
             android:exported="false"
             android:theme="@style/Theme.Destined" />
         <activity
+            android:name=".Favourite"
+            android:exported="false" />
+        <activity
+            android:name=".Setting"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>
