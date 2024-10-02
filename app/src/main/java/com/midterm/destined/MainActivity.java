@@ -30,41 +30,6 @@ public class MainActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
 
 
-
-
-//        if (binding.toolbar.findViewById(R.id.nav_home) != null) {
-//            binding.toolbar.findViewById(R.id.nav_home).setOnClickListener(view -> {
-//
-////
-//                if (navController.getCurrentDestination() != null &&
-//                        navController.getCurrentDestination().getId() == R.id.fragment_chat) {
-//                    navController.navigate(R.id.action_ChatFragment_to_HomepageFragment);
-//                }
-//                else {
-//                    Log.d("Navigation", "Already on HomepageFragment");
-//                    // Quay lại Fragment trước đó nếu đã ở HomepageFragment
-////                    navController.popBackStack();
-//                    }
-//            });
-//        }
-//
-//
-//        if (binding.toolbar.findViewById(R.id.nav_message) != null) {
-//            binding.toolbar.findViewById(R.id.nav_message).setOnClickListener(view -> {
-//
-//                //navController.navigate(R.id.action_HomepageFragment_to_ChatFragment);
-//                if (navController.getCurrentDestination() != null &&
-//                        navController.getCurrentDestination().getId() != R.id.fragment_chat) {
-//                    navController.navigate(R.id.action_HomepageFragment_to_ChatFragment);
-//                }
-//                else {
-//                    Log.d("Navigation", "Already on ChatFragment");
-//                    // Quay lại Fragment trước đó nếu đã ở HomepageFragment
-////                    navController.popBackStack();
-//                }
-//            });
-//        }
-
         if (binding.toolbar.findViewById(R.id.nav_home) != null) {
             binding.toolbar.findViewById(R.id.nav_home).setOnClickListener(view -> {
                 if (navController.getCurrentDestination() != null) {
