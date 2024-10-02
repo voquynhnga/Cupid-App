@@ -15,4 +15,4 @@
 local.properties
 config.properties
 *.log
-libs.versions.toml
+./gradle/libs.versions.toml
