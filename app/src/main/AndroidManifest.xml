@@ -22,10 +22,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".MainUI"
-            android:exported="true">
-        </activity>
+
     </application>
 
 </manifest>

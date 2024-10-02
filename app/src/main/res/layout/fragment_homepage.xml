@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg"
-    android:id="@+id/main_ui">
+    tools:context=".HomepageFragment">
+
 
 
     <LinearLayout
@@ -63,7 +64,6 @@
         android:layout_marginBottom="264dp"
         android:scaleType="centerCrop"
         android:src="@drawable/sample_person"
-        app:layout_constraintBottom_toBottomOf="@+id/include"
         app:layout_constraintDimensionRatio="h,3:4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -134,14 +134,6 @@
 
     </LinearLayout>
 
-    <include
-        android:id="@+id/include"
-        layout="@navigation/main_nav"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 
 
