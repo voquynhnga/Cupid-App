@@ -1,4 +1,5 @@
 package com.midterm.destined;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -69,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         if (binding.toolbar.findViewById(R.id.nav_profile) != null) {
             binding.toolbar.findViewById(R.id.nav_profile).setOnClickListener(view -> {
                 // Xử lý sự kiện cho Profile
+                Intent intent = new Intent(MainActivity.this, Setting.class);
+                startActivity(intent);
             });
         }
     }
