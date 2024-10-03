@@ -13,3 +13,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+config.properties
+*.log
+gradle/libs.versions.toml
+config.properties
+*.log
+./gradle/libs.versions.toml
