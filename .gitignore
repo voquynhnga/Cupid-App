@@ -15,9 +15,3 @@
 local.properties
 /.idea/misc.xml
 /gradle/libs.versions.toml
-config.properties
-*.log
-gradle/libs.versions.toml
-config.properties
-*.log
-./gradle/libs.versions.toml
