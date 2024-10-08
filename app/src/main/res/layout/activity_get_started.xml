@@ -1,0 +1,83 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pink_main">
+
+    <!-- Logo CupidArrow -->
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="144dp"
+        android:layout_height="48dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:padding="8px"
+        android:src="@drawable/cupid" />
+
+    <ImageView
+        android:id="@+id/profile_image_2"
+        android:layout_width="375dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/maskgr"
+        android:scaleType="centerCrop" />
+
+
+
+    <!-- Title text -->
+    <TextView
+        android:id="@+id/discover_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profile_image_2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/discover_lo"
+        android:textSize="22sp"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
+
+    <!-- Subtitle text -->
+    <TextView
+        android:id="@+id/discover_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/discover_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/join_us_to_"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:paddingHorizontal="20dp" />
+
+    <!-- Login button -->
+    <Button
+        android:id="@+id/login_with_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/discover_subtitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:padding="16dp"
+        android:text="@string/login_with_"
+        android:textColor="@color/white"
+        android:backgroundTint="#FAAFBE"
+        android:drawableStart="@drawable/img"
+        android:drawablePadding="8dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/signup_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_with_phone"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/don_t_have_"
+        android:textColor="	#E799A3"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+</RelativeLayout>
