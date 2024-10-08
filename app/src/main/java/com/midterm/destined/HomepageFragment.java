@@ -16,25 +16,30 @@ public class HomepageFragment extends Fragment {
 
     private FragmentHomepageBinding binding;
 
-
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-
         binding = FragmentHomepageBinding.inflate(inflater, container, false);
         return binding.getRoot();
-
     }
 
+    @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        binding.nav_message.setOnClickListener(v ->
-//                NavHostFragment.findNavController(HomepageFragment.this)
-//                        .navigate(R.id.action_FirstFragment_to_SecondFragment)
-//        );
+        // Sự kiện khi bấm vào nút filter để chuyển sang SearchFragment
+        binding.filter.setOnClickListener(v -> {
+            NavHostFragment.findNavController(HomepageFragment.this)
+                    .navigate(R.id.action_global_SearchFragment);
+        });
+
+        // Sự kiện khi bấm vào nút story để chuyển sang AddStoryFragment
+        binding.story.setOnClickListener(v -> {
+            NavHostFragment.findNavController(HomepageFragment.this)
+                    .navigate(R.id.action_global_AddStoryFragment);
+        });
     }
 
     @Override
@@ -42,5 +47,4 @@ public class HomepageFragment extends Fragment {
         super.onDestroyView();
         binding = null;
     }
-
 }

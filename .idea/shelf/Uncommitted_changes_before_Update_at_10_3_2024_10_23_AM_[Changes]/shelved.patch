@@ -1,0 +1,663 @@
+Index: app/src/main/res/layout/fragment_homepage.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<androidx.constraintlayout.widget.ConstraintLayout\r\n    xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:background=\"@drawable/gradient_bg\"\r\n    tools:context=\".HomepageFragment\"\r\n    android:id=\"@+id/fragment_homepage\">\r\n\r\n\r\n\r\n    <LinearLayout\r\n        android:id=\"@+id/layout_top\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:orientation=\"horizontal\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toTopOf=\"parent\"\r\n        android:gravity=\"center_vertical\"\r\n        android:layout_marginTop=\"4dp\"\r\n        >\r\n\r\n        <ImageView\r\n            android:id=\"@+id/option\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:src=\"@drawable/option\"\r\n            android:layout_marginHorizontal=\"8dp\"\r\n            >\r\n\r\n        </ImageView>\r\n\r\n        <ImageView\r\n            android:id=\"@+id/appLogo\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"48dp\"\r\n            android:layout_marginHorizontal=\"48dp\"\r\n            android:scaleType=\"fitCenter\"\r\n            android:src=\"@drawable/cupid\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintHorizontal_bias=\"0.497\"\r\n            app:layout_constraintStart_toStartOf=\"parent\"\r\n            app:layout_constraintTop_toTopOf=\"parent\" />\r\n\r\n        <ImageView\r\n            android:id=\"@+id/filter\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:src=\"@drawable/filter\"\r\n            android:layout_marginHorizontal=\"8dp\"\r\n            >\r\n\r\n        </ImageView>\r\n\r\n\r\n    </LinearLayout>\r\n\r\n    <ImageView\r\n        android:id=\"@+id/profileImage\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_marginTop=\"200dp\"\r\n        android:scaleType=\"centerCrop\"\r\n        android:src=\"@drawable/sample_person\"\r\n        app:layout_constraintDimensionRatio=\"h,3:4\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintHorizontal_bias=\"0.662\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toTopOf=\"parent\" />\r\n\r\n    <TextView\r\n        android:id=\"@+id/userName\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_marginStart=\"20dp\"\r\n        android:layout_marginBottom=\"40dp\"\r\n        android:text=\"Kalvin, 23\"\r\n        android:textColor=\"@android:color/white\"\r\n        android:textSize=\"22sp\"\r\n        android:textStyle=\"bold\"\r\n        app:layout_constraintBottom_toBottomOf=\"@id/profileImage\"\r\n        app:layout_constraintStart_toStartOf=\"@id/profileImage\" />\r\n\r\n    <TextView\r\n        android:id=\"@+id/location\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:text=\"Malibu - 20 KMS AWAY\"\r\n        android:textSize=\"16sp\"\r\n        android:textColor=\"@android:color/white\"\r\n        app:layout_constraintTop_toBottomOf=\"@id/userName\"\r\n        app:layout_constraintStart_toStartOf=\"@id/userName\"\r\n        android:layout_marginTop=\"4dp\"/>\r\n\r\n\r\n    <LinearLayout\r\n        android:id=\"@+id/actionButtons\"\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_marginBottom=\"72dp\"\r\n        android:gravity=\"center\"\r\n        android:orientation=\"horizontal\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintHorizontal_bias=\"0.0\"\r\n        app:layout_constraintStart_toStartOf=\"parent\">\r\n\r\n        <ImageView\r\n            android:id=\"@+id/dislikeButton\"\r\n            android:layout_width=\"96dp\"\r\n            android:layout_height=\"96dp\"\r\n            android:layout_marginHorizontal=\"16dp\"\r\n\r\n            android:scaleType=\"fitCenter\"\r\n            android:src=\"@drawable/dislike\" />\r\n\r\n        <ImageView\r\n            android:id=\"@+id/likeButton\"\r\n            android:layout_width=\"96dp\"\r\n            android:layout_height=\"96dp\"\r\n            android:layout_marginHorizontal=\"16dp\"\r\n            android:src=\"@drawable/like\"\r\n            android:scaleType=\"fitCenter\"/>\r\n\r\n        <ImageView\r\n            android:id=\"@+id/favoriteButton\"\r\n            android:layout_width=\"96dp\"\r\n            android:layout_height=\"96dp\"\r\n            android:layout_marginHorizontal=\"16dp\"\r\n            android:scaleType=\"fitCenter\"\r\n            android:src=\"@drawable/star\" />\r\n\r\n    </LinearLayout>\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n</androidx.constraintlayout.widget.ConstraintLayout>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/fragment_homepage.xml b/app/src/main/res/layout/fragment_homepage.xml
+--- a/app/src/main/res/layout/fragment_homepage.xml	(revision d1faf7a517bd8c55cb09c77d5068c4f27e0c612b)
++++ b/app/src/main/res/layout/fragment_homepage.xml	(date 1727925799127)
+@@ -49,7 +49,7 @@
+             android:id="@+id/filter"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+-            android:src="@drawable/filter"
++            android:src="@drawable/search"
+             android:layout_marginHorizontal="8dp"
+             >
+ 
+@@ -138,6 +138,35 @@
+ 
+ 
+ 
++    <ImageView
++        android:id="@+id/story"
++        android:layout_width="wrap_content"
++        android:layout_height="100dp"
++        android:src="@drawable/add_story"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.0"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/layout_top"
++        tools:ignore="MissingConstraints">
++
++    </ImageView>
++
++    <androidx.recyclerview.widget.RecyclerView
++        android:id="@+id/recyclerView"
++        android:layout_width="0dp"
++        android:layout_height="wrap_content"
++        android:layout_marginStart="8dp"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="1.0"
++        app:layout_constraintStart_toEndOf="@id/story"
++        app:layout_constraintTop_toTopOf="parent"
++        app:layout_constraintVertical_bias="0.128" />
++
++
++
++
++
+ 
+ 
+ 
+Index: app/src/main/java/com/midterm/destined/MainUIActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.midterm.destined;\r\n\r\nimport android.content.Intent;\r\nimport android.os.Bundle;\r\nimport android.view.View;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\npublic class MainUIActivity extends AppCompatActivity {\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.main_ui);\r\n\r\n\r\n        findViewById(R.id.search).setOnClickListener(v -> {\r\n            Intent intent = new Intent(MainUIActivity.this, SearchActivity.class);\r\n            startActivity(intent);\r\n            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);\r\n        });\r\n\r\n        findViewById(R.id.story).setOnClickListener(v -> {\r\n            Intent intent = new Intent(MainUIActivity.this, AddStoryActivity.class);\r\n            startActivity(intent);\r\n            });\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/midterm/destined/MainUIActivity.java b/app/src/main/java/com/midterm/destined/MainUIActivity.java
+--- a/app/src/main/java/com/midterm/destined/MainUIActivity.java	(revision d1faf7a517bd8c55cb09c77d5068c4f27e0c612b)
++++ b/app/src/main/java/com/midterm/destined/MainUIActivity.java	(date 1727925267509)
+@@ -1,26 +1,26 @@
+-package com.midterm.destined;
+-
+-import android.content.Intent;
+-import android.os.Bundle;
+-import android.view.View;
+-import androidx.appcompat.app.AppCompatActivity;
+-
+-public class MainUIActivity extends AppCompatActivity {
+-    @Override
+-    protected void onCreate(Bundle savedInstanceState) {
+-        super.onCreate(savedInstanceState);
+-        setContentView(R.layout.main_ui);
+-
+-
+-        findViewById(R.id.search).setOnClickListener(v -> {
+-            Intent intent = new Intent(MainUIActivity.this, SearchActivity.class);
+-            startActivity(intent);
+-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+-        });
+-
+-        findViewById(R.id.story).setOnClickListener(v -> {
+-            Intent intent = new Intent(MainUIActivity.this, AddStoryActivity.class);
+-            startActivity(intent);
+-            });
+-    }
+-}
++//package com.midterm.destined;
++//
++//import android.content.Intent;
++//import android.os.Bundle;
++//import android.view.View;
++//import androidx.appcompat.app.AppCompatActivity;
++//
++//public class MainUIActivity extends AppCompatActivity {
++//    @Override
++//    protected void onCreate(Bundle savedInstanceState) {
++//        super.onCreate(savedInstanceState);
++//        setContentView(R.layout.main_ui);
++//
++//
++//        findViewById(R.id.search).setOnClickListener(v -> {
++//            Intent intent = new Intent(MainUIActivity.this, SearchActivity.class);
++//            startActivity(intent);
++//            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
++//        });
++//
++//        findViewById(R.id.story).setOnClickListener(v -> {
++//            Intent intent = new Intent(MainUIActivity.this, AddStoryActivity.class);
++//            startActivity(intent);
++//            });
++//    }
++//}
+Index: app/src/main/java/com/midterm/destined/Favourite.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/midterm/destined/Favourite.java b/app/src/main/java/com/midterm/destined/Favourite.java
+new file mode 100644
+--- /dev/null	(date 1727924779315)
++++ b/app/src/main/java/com/midterm/destined/Favourite.java	(date 1727924779315)
+@@ -0,0 +1,24 @@
++package com.midterm.destined;
++
++import android.os.Bundle;
++
++import androidx.activity.EdgeToEdge;
++import androidx.appcompat.app.AppCompatActivity;
++import androidx.core.graphics.Insets;
++import androidx.core.view.ViewCompat;
++import androidx.core.view.WindowInsetsCompat;
++
++public class Favourite extends AppCompatActivity {
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        EdgeToEdge.enable(this);
++        setContentView(R.layout.activity_favourite);
++        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
++            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
++            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
++            return insets;
++        });
++    }
++}
+\ No newline at end of file
+Index: app/src/main/res/drawable/baseline_check_circle_outline_24.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/drawable/baseline_check_circle_outline_24.xml b/app/src/main/res/drawable/baseline_check_circle_outline_24.xml
+new file mode 100644
+--- /dev/null	(date 1727924779326)
++++ b/app/src/main/res/drawable/baseline_check_circle_outline_24.xml	(date 1727924779326)
+@@ -0,0 +1,5 @@
++<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:tint="#E81183" android:viewportHeight="24" android:viewportWidth="24" android:width="24dp">
++      
++    <path android:fillColor="@android:color/white" android:pathData="M16.59,7.58L10,14.17l-3.59,-3.58L5,12l5,5 8,-8zM12,2C6.48,2 2,6.48 2,12s4.48,10 10,10 10,-4.48 10,-10S17.52,2 12,2zM12,20c-4.42,0 -8,-3.58 -8,-8s3.58,-8 8,-8 8,3.58 8,8 -3.58,8 -8,8z"/>
++    
++</vector>
+Index: app/src/main/res/drawable/baseline_clear_24.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/drawable/baseline_clear_24.xml b/app/src/main/res/drawable/baseline_clear_24.xml
+new file mode 100644
+--- /dev/null	(date 1727924779346)
++++ b/app/src/main/res/drawable/baseline_clear_24.xml	(date 1727924779346)
+@@ -0,0 +1,5 @@
++<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:tint="#EF037D" android:viewportHeight="24" android:viewportWidth="24" android:width="24dp">
++      
++    <path android:fillColor="@android:color/white" android:pathData="M19,6.41L17.59,5 12,10.59 6.41,5 5,6.41 10.59,12 5,17.59 6.41,19 12,13.41 17.59,19 19,17.59 13.41,12z"/>
++    
++</vector>
+Index: .idea/.name
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.name b/.idea/.name
+new file mode 100644
+--- /dev/null	(date 1727924779357)
++++ b/.idea/.name	(date 1727924779357)
+@@ -0,0 +1,1 @@
++Destined
+\ No newline at end of file
+Index: app/src/main/res/layout/favourite_row_item.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/favourite_row_item.xml b/app/src/main/res/layout/favourite_row_item.xml
+new file mode 100644
+--- /dev/null	(date 1727924779366)
++++ b/app/src/main/res/layout/favourite_row_item.xml	(date 1727924779366)
+@@ -0,0 +1,53 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    android:layout_marginBottom="10dp"
++    android:elevation="8dp"
++    app:cardElevation="10dp"
++    app:cardCornerRadius="8dp"
++    >
++
++    <RelativeLayout
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content">
++
++        <!-- Floating Action Button -->
++        <LinearLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:orientation="horizontal">
++
++            <ImageView
++                android:id="@+id/im_Avatar"
++                android:layout_width="80dp"
++                android:layout_height="80dp"
++                android:src="@drawable/sample_person" />
++
++            <TextView
++                android:id="@+id/tv_Name"
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:layout_gravity="center"
++                android:layout_marginLeft="20dp"
++                android:text="Their name"
++                android:textSize="16sp" />
++        </LinearLayout>
++
++        <com.google.android.material.floatingactionbutton.FloatingActionButton
++            android:id="@+id/btn_Clear"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++            android:layout_alignParentEnd="true"
++            android:layout_alignParentRight="true"
++            android:layout_marginTop="8dp"
++            android:layout_marginEnd="16dp"
++            android:layout_marginRight="16dp"
++            android:layout_marginBottom="8dp"
++            android:contentDescription="Cross button"
++            android:src="@drawable/baseline_clear_24" />
++    </RelativeLayout>
++
++
++</androidx.cardview.widget.CardView>
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_favourite.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_favourite.xml b/app/src/main/res/layout/activity_favourite.xml
+new file mode 100644
+--- /dev/null	(date 1727925216723)
++++ b/app/src/main/res/layout/activity_favourite.xml	(date 1727925216723)
+@@ -0,0 +1,69 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/main"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    tools:context=".Favourite"
++    android:background="@drawable/gradient_bg"
++    >
++
++    <LinearLayout
++        android:id="@+id/layout_top"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:orientation="horizontal"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent"
++        android:gravity="center_vertical"
++        android:layout_marginTop="4dp"
++        >
++
++        <ImageView
++            android:id="@+id/option"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++            android:src="@drawable/option"
++            android:layout_marginHorizontal="8dp"
++            >
++
++        </ImageView>
++
++        <ImageView
++            android:id="@+id/appLogo"
++            android:layout_width="wrap_content"
++            android:layout_height="48dp"
++            android:layout_marginHorizontal="48dp"
++            android:scaleType="fitCenter"
++            android:src="@drawable/cupid"
++            app:layout_constraintEnd_toEndOf="parent"
++            app:layout_constraintHorizontal_bias="0.497"
++            app:layout_constraintStart_toStartOf="parent"
++            app:layout_constraintTop_toTopOf="parent" />
++
++        <ImageView
++            android:id="@+id/filter"
++            android:layout_width="wrap_content"
++            android:layout_height="wrap_content"
++            android:src="@drawable/filter"
++            android:visibility="visible"
++            android:layout_marginHorizontal="8dp"
++            >
++        </ImageView>
++
++    </LinearLayout>
++
++    <androidx.recyclerview.widget.RecyclerView
++        android:id="@+id/rvFavourites"
++        android:layout_width="match_parent"
++        android:layout_height="0dp"
++        android:layout_margin="16dp"
++        app:layout_constraintTop_toBottomOf="@id/layout_top"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintEnd_toEndOf="parent" />
++
++
++
++</androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_setting.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/activity_setting.xml b/app/src/main/res/layout/activity_setting.xml
+new file mode 100644
+--- /dev/null	(date 1727925216711)
++++ b/app/src/main/res/layout/activity_setting.xml	(date 1727925216711)
+@@ -0,0 +1,148 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.constraintlayout.widget.ConstraintLayout
++    xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/main"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    tools:context=".Setting"
++    android:background="@drawable/gradient_bg">
++
++    <LinearLayout
++        android:id="@+id/linearLayout2"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:gravity="center"
++        android:orientation="vertical"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.0"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent"
++        app:layout_constraintVertical_bias="0.0">
++
++        <ImageView
++            android:layout_width="150dp"
++            android:layout_height="100dp"
++            android:layout_marginTop="20dp"
++            android:src="@drawable/sample_person"></ImageView>
++
++        <Button
++            android:id="@+id/btn_Upload"
++            android:layout_width="140dp"
++            android:layout_height="50dp"
++            android:layout_marginTop="12dp"
++            android:text="Upload photo"
++            android:backgroundTint="#FA3181"
++            android:textColor="#FFFFFF"
++            android:layout_marginBottom="20dp"
++            android:textSize="12sp"></Button>
++
++    </LinearLayout>
++
++    <!-- Name section -->
++    <TextView
++        android:id="@+id/nameTextView"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:text="Your name"
++        android:textSize="16sp"
++        android:paddingLeft="12dp"
++        android:paddingRight="12dp"
++        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        android:layout_marginTop="12dp"/>
++
++    <EditText
++        android:id="@+id/ed_Name"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:hint="Enter your name"
++        android:textSize="14sp"
++        android:minHeight="48dp"
++        android:paddingLeft="12dp"
++        android:paddingRight="12dp"
++        android:textColor="#FA3181"
++        app:layout_constraintTop_toBottomOf="@+id/nameTextView"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        android:layout_marginTop="4dp"/>
++
++    <!-- Email section -->
++    <TextView
++        android:id="@+id/emailTextView"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:text="Your email"
++        android:textSize="16sp"
++        app:layout_constraintTop_toBottomOf="@+id/ed_Name"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        android:paddingLeft="12dp"
++        android:paddingRight="12dp"
++        android:layout_marginTop="12dp"/>
++
++    <EditText
++        android:id="@+id/ed_Email"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:hint="Enter your email"
++        android:textSize="14sp"
++        android:minHeight="48dp"
++        android:paddingLeft="12dp"
++        android:paddingRight="12dp"
++        android:textColor="#FA3181"
++        app:layout_constraintTop_toBottomOf="@+id/emailTextView"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        android:layout_marginTop="4dp"/>
++
++    <!-- Address section -->
++    <TextView
++        android:id="@+id/addressTextView"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:text="Your address"
++        android:textSize="16sp"
++        android:paddingLeft="12dp"
++        android:paddingRight="12dp"
++        app:layout_constraintTop_toBottomOf="@+id/ed_Email"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        android:layout_marginTop="12dp"/>
++
++    <EditText
++        android:id="@+id/ed_Address"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="8dp"
++        android:hint="Enter your address"
++        android:minHeight="48dp"
++        android:paddingLeft="12dp"
++        android:paddingRight="12dp"
++        android:textSize="14sp"
++        android:textColor="#FA3181"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/addressTextView" />
++
++
++    <!-- Include navigation bar -->
++
++
++    <Button
++        android:id="@+id/btn_Save"
++        android:layout_width="100dp"
++        android:layout_height="50dp"
++        android:backgroundTint="#000000"
++        android:text="Save"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.498"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent"
++        app:layout_constraintVertical_bias="0.881" />
++
++
++</androidx.constraintlayout.widget.ConstraintLayout>
+Index: app/src/main/java/com/midterm/destined/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.midterm.destined;\r\n\r\nimport android.os.Bundle;\r\n\r\nimport androidx.activity.EdgeToEdge;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.core.graphics.Insets;\r\nimport androidx.core.view.ViewCompat;\r\nimport androidx.core.view.WindowInsetsCompat;\r\nimport androidx.navigation.NavController;\r\nimport androidx.navigation.Navigation;\r\nimport androidx.navigation.fragment.NavHostFragment;\r\nimport androidx.navigation.ui.AppBarConfiguration;\r\nimport androidx.navigation.ui.NavigationUI;\r\n\r\nimport com.midterm.destined.databinding.ActivityMainBinding;\r\n\r\npublic class MainActivity extends AppCompatActivity {\r\n    private AppBarConfiguration appBarConfiguration;\r\n    private ActivityMainBinding binding;\r\n    private NavController navController;\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n\r\n        binding = ActivityMainBinding.inflate(getLayoutInflater());\r\n        setContentView(binding.getRoot());\r\n\r\n        setSupportActionBar(binding.toolbar);\r\n\r\n        navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);\r\n        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();\r\n\r\n\r\n        if (binding.toolbar.findViewById(R.id.nav_home) != null) {\r\n            binding.toolbar.findViewById(R.id.nav_home).setOnClickListener(view -> {\r\n                if (navController.getCurrentDestination() != null) {\r\n                    if (navController.getCurrentDestination().getId() == R.id.fragment_chat) {\r\n                        navController.navigate(R.id.action_ChatFragment_to_HomepageFragment);\r\n                    } else if (navController.getCurrentDestination().getId() != R.id.fragment_homepage) {\r\n                        navController.navigate(R.id.action_global_HomepageFragment);\r\n                    } else {\r\n                        Log.d(\"Navigation\", \"Already on HomepageFragment\");\r\n                    }\r\n                }\r\n            });\r\n        }\r\n\r\n        if (binding.toolbar.findViewById(R.id.nav_message) != null) {\r\n            binding.toolbar.findViewById(R.id.nav_message).setOnClickListener(view -> {\r\n                if (navController.getCurrentDestination() != null) {\r\n                    if (navController.getCurrentDestination().getId() == R.id.fragment_homepage) {\r\n                        navController.navigate(R.id.action_HomepageFragment_to_ChatFragment);\r\n                    } else if (navController.getCurrentDestination().getId() != R.id.fragment_chat) {\r\n                        navController.navigate(R.id.action_global_ChatFragment); // Đảm bảo bạn đã định nghĩa action này trong nav_graph.xml\r\n                    } else {\r\n                        Log.d(\"Navigation\", \"Already on ChatFragment\");\r\n                    }\r\n                }\r\n            });\r\n        }\r\n\r\n\r\n\r\n        if (binding.toolbar.findViewById(R.id.nav_heart) != null) {\r\n            binding.toolbar.findViewById(R.id.nav_heart).setOnClickListener(view -> {\r\n                // Xử lý sự kiện cho Heart\r\n            });\r\n        }\r\n\r\n        if (binding.toolbar.findViewById(R.id.nav_profile) != null) {\r\n            binding.toolbar.findViewById(R.id.nav_profile).setOnClickListener(view -> {\r\n                // Xử lý sự kiện cho Profile\r\n            });\r\n        }\r\n    }\r\n\r\n    @Override\r\n    public boolean onSupportNavigateUp() {\r\n        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);\r\n        return NavigationUI.navigateUp(navController, appBarConfiguration)\r\n                || super.onSupportNavigateUp();\r\n    }\r\n}\r\n@Override\r\nprotected void onCreate(Bundle savedInstanceState) {\r\n    super.onCreate(savedInstanceState);\r\n    EdgeToEdge.enable(this);\r\n    setContentView(R.layout.activity_main);\r\n\r\n    View mainView = findViewById(R.id.main);\r\n    ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {\r\n        Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());\r\n        v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);\r\n        return insets;\r\n    });\r\n\r\n    mainView.setOnClickListener(v -> {\r\n        Intent intent = new Intent(MainActivity.this, MainUIActivity.class);\r\n        startActivity(intent);\r\n        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);\r\n    });\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/midterm/destined/MainActivity.java b/app/src/main/java/com/midterm/destined/MainActivity.java
+--- a/app/src/main/java/com/midterm/destined/MainActivity.java	(revision d1faf7a517bd8c55cb09c77d5068c4f27e0c612b)
++++ b/app/src/main/java/com/midterm/destined/MainActivity.java	(date 1727925056829)
+@@ -1,6 +1,7 @@
+ package com.midterm.destined;
+ 
+ import android.os.Bundle;
++import android.util.Log;
+ 
+ import androidx.activity.EdgeToEdge;
+ import androidx.appcompat.app.AppCompatActivity;
+@@ -83,23 +84,23 @@
+                 || super.onSupportNavigateUp();
+     }
+ }
+-@Override
+-protected void onCreate(Bundle savedInstanceState) {
+-    super.onCreate(savedInstanceState);
+-    EdgeToEdge.enable(this);
+-    setContentView(R.layout.activity_main);
+-
+-    View mainView = findViewById(R.id.main);
+-    ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
+-        Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+-        v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+-        return insets;
+-    });
+-
+-    mainView.setOnClickListener(v -> {
+-        Intent intent = new Intent(MainActivity.this, MainUIActivity.class);
+-        startActivity(intent);
+-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+-    });
+-}
++//@Override
++//protected void onCreate(Bundle savedInstanceState) {
++//    super.onCreate(savedInstanceState);
++//    EdgeToEdge.enable(this);
++//    setContentView(R.layout.activity_main);
++//
++//    View mainView = findViewById(R.id.main);
++//    ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
++//        Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
++//        v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
++//        return insets;
++//    });
++//
++//    mainView.setOnClickListener(v -> {
++//        Intent intent = new Intent(MainActivity.this, MainUIActivity.class);
++//        startActivity(intent);
++//        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
++//    });
++//}
+ 
+Index: .gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>*.iml\r\n.gradle\r\n/local.properties\r\n/.idea/caches\r\n/.idea/libraries\r\n/.idea/modules.xml\r\n/.idea/workspace.xml\r\n/.idea/navEditor.xml\r\n/.idea/assetWizardSettings.xml\r\n.DS_Store\r\n/build\r\n/captures\r\n.externalNativeBuild\r\n.cxx\r\nlocal.properties\r\nconfig.properties\r\n*.log\r\ngradle/libs.versions.toml\r\nconfig.properties\r\n*.log\r\n./gradle/libs.versions.toml
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.gitignore b/.gitignore
+--- a/.gitignore	(revision d1faf7a517bd8c55cb09c77d5068c4f27e0c612b)
++++ b/.gitignore	(date 1727924779288)
+@@ -13,6 +13,8 @@
+ .externalNativeBuild
+ .cxx
+ local.properties
++/.idea/misc.xml
++/gradle/libs.versions.toml
+ config.properties
+ *.log
+ gradle/libs.versions.toml
+Index: app/src/main/java/com/midterm/destined/Setting.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/midterm/destined/Setting.java b/app/src/main/java/com/midterm/destined/Setting.java
+new file mode 100644
+--- /dev/null	(date 1727924779306)
++++ b/app/src/main/java/com/midterm/destined/Setting.java	(date 1727924779306)
+@@ -0,0 +1,26 @@
++package com.midterm.destined;
++
++import android.os.Bundle;
++
++import androidx.activity.EdgeToEdge;
++import androidx.appcompat.app.AppCompatActivity;
++import androidx.core.graphics.Insets;
++import androidx.core.view.ViewCompat;
++import androidx.core.view.WindowInsetsCompat;
++
++public class Setting extends AppCompatActivity {
++
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        EdgeToEdge.enable(this);
++        setContentView(R.layout.activity_setting);
++
++
++        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
++            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
++            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
++            return insets;
++        });
++    }
++}
+\ No newline at end of file
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n\r\n    <uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\"/>\r\n\r\n    <application\r\n        android:allowBackup=\"true\"\r\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\r\n        android:fullBackupContent=\"@xml/backup_rules\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/Theme.Destined\"\r\n        tools:targetApi=\"31\">\r\n        <activity\r\n            android:name=\".MainActivity\"\r\n            android:exported=\"true\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n\r\n        <activity android:name=\".MainUIActivity\" />\r\n        <activity android:name=\".SearchActivity\" />\r\n        <activity android:name=\".AddStoryActivity\" />\r\n    </application>\r\n\r\n</manifest>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision d1faf7a517bd8c55cb09c77d5068c4f27e0c612b)
++++ b/app/src/main/AndroidManifest.xml	(date 1727924779253)
+@@ -2,8 +2,6 @@
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:tools="http://schemas.android.com/tools">
+ 
+-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+-
+     <application
+         android:allowBackup="true"
+         android:dataExtractionRules="@xml/data_extraction_rules"
+@@ -14,11 +12,19 @@
+         android:supportsRtl="true"
+         android:theme="@style/Theme.Destined"
+         tools:targetApi="31">
++        <activity
++            android:name=".Favourite"
++            android:exported="false" />
++        <activity
++            android:name=".Setting"
++            android:exported="false" />
++
+         <activity
+             android:name=".MainActivity"
+             android:exported="true">
+             <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
++
+                 <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
+         </activity>
+@@ -28,4 +34,4 @@
+         <activity android:name=".AddStoryActivity" />
+     </application>
+ 
+-</manifest>
++</manifest>
+\ No newline at end of file
+diff --git a/app/src/main/res/layout/nav_graph.xml b/app/src/main/res/navigation/nav_graph.xml
+rename from app/src/main/res/layout/nav_graph.xml
+rename to app/src/main/res/navigation/nav_graph.xml

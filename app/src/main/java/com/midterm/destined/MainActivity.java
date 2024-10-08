@@ -1,13 +1,9 @@
 package com.midterm.destined;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -17,6 +13,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.midterm.destined.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
+
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
     private NavController navController;
@@ -73,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         if (binding.toolbar.findViewById(R.id.nav_profile) != null) {
             binding.toolbar.findViewById(R.id.nav_profile).setOnClickListener(view -> {
                 // Xử lý sự kiện cho Profile
+                Intent intent = new Intent(MainActivity.this, Setting.class);
+                startActivity(intent);
             });
         }
     }
@@ -84,23 +83,5 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 }
-//@Override
-//protected void onCreate(Bundle savedInstanceState) {
-//    super.onCreate(savedInstanceState);
-//    EdgeToEdge.enable(this);
-//    setContentView(R.layout.activity_main);
-//
-//    View mainView = findViewById(R.id.main);
-//    ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
-//        Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//        v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//        return insets;
-//    });
-//
-//    mainView.setOnClickListener(v -> {
-//        Intent intent = new Intent(MainActivity.this, MainUIActivity.class);
-//        startActivity(intent);
-//        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-//    });
-//}
+
 

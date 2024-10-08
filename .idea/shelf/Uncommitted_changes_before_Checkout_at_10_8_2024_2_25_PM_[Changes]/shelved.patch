@@ -1,0 +1,56 @@
+Index: app/src/main/res/layout/main_ui.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/main_ui.xml b/app/src/main/res/layout/fragment_homepage.xml
+rename from app/src/main/res/layout/main_ui.xml
+rename to app/src/main/res/layout/fragment_homepage.xml
+--- a/app/src/main/res/layout/main_ui.xml	
++++ b/app/src/main/res/layout/fragment_homepage.xml	
+@@ -5,7 +5,10 @@
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"
+-    android:background="@drawable/gradient_bg">
++    android:background="@drawable/gradient_bg"
++    tools:context=".HomepageFragment"
++    android:id="@+id/fragment_homepage">
++
+ 
+ 
+     <LinearLayout
+@@ -59,15 +62,14 @@
+         android:id="@+id/profileImage"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+-        android:layout_marginBottom="264dp"
++        android:layout_marginTop="200dp"
+         android:scaleType="centerCrop"
+         android:src="@drawable/sample_person"
+-        app:layout_constraintBottom_toBottomOf="@+id/include"
+         app:layout_constraintDimensionRatio="h,3:4"
+         app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="0.662"
+         app:layout_constraintStart_toStartOf="parent"
+-        app:layout_constraintTop_toTopOf="parent"
+-        app:layout_constraintVertical_bias="1.0" />
++        app:layout_constraintTop_toTopOf="parent" />
+ 
+     <TextView
+         android:id="@+id/userName"
+@@ -133,14 +135,6 @@
+ 
+     </LinearLayout>
+ 
+-    <include
+-        android:id="@+id/include"
+-        layout="@navigation/main_nav"
+-        android:layout_width="match_parent"
+-        android:layout_height="56dp"
+-        app:layout_constraintBottom_toBottomOf="parent"
+-        app:layout_constraintEnd_toEndOf="parent"
+-        app:layout_constraintStart_toStartOf="parent" />
+ 
+ 
+ 
