@@ -5,13 +5,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="10dp"
     android:elevation="8dp"
-    app:cardElevation="10dp"
-    app:cardCornerRadius="8dp"
+    app:cardElevation="8dp"
+    app:cardCornerRadius="3dp"
     >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
         <!-- Floating Action Button -->
         <LinearLayout
@@ -21,8 +18,9 @@
 
             <ImageView
                 android:id="@+id/im_Avatar"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:paddingLeft="15dp"
                 android:src="@drawable/sample_person" />
 
             <TextView
@@ -32,22 +30,14 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="20dp"
                 android:text="Their name"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
+
+
+
+
         </LinearLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btn_Clear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
-            android:contentDescription="Cross button"
-            android:src="@drawable/baseline_clear_24" />
-    </RelativeLayout>
+
 
 
 </androidx.cardview.widget.CardView>
