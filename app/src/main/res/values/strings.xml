@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Destined</string>
+    <string name="discover_lo">
+Discover Love where your story begins.
+</string>
+    <string name="don_t_have_">
+Do not have an account? Sign Up
+</string>
+    <string name="join_us_to_">
+Join us to discover your ideal partner and ignite the sparks of romance in your journey.
+</string>
+
+    <string name="login_with_">
+Login with Phone
+</string>
+
+
+
 </resources>

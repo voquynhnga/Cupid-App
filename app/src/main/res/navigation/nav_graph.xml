@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/HomepageFragment">
+
+    <fragment
+        android:id="@+id/HomepageFragment"
+        android:name="com.midterm.destined.HomepageFragment"
+        tools:layout="@layout/fragment_homepage">
+
+        <action
+            android:id="@+id/action_HomepageFragment_to_ChatFragment"
+            app:destination="@id/ChatFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/ChatFragment"
+        android:name="com.midterm.destined.ChatFragment"
+        tools:layout="@layout/fragment_chat">
+
+        <action
+            android:id="@+id/action_ChatFragment_to_HomepageFragment"
+            app:destination="@id/HomepageFragment" />
+    </fragment>
+
+    <action
+        android:id="@+id/action_global_HomepageFragment"
+        app:destination="@id/HomepageFragment" />
+    <action
+        android:id="@+id/action_global_ChatFragment"
+        app:destination="@id/ChatFragment" />
+
+</navigation>
