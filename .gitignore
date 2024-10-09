@@ -27,3 +27,6 @@ config.properties
 .idea/compiler.xml
 .idea/deploymentTargetSelector.xml
 .idea/migrations.xml
+.idea/shelf
+.idea/misc.xml
+.idea/deploymentTargetSelector.xml
