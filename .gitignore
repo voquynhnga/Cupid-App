@@ -29,3 +29,4 @@ config.properties
 .idea/migrations.xml
 .idea/shelf/
 .idea/misc.xml
+.idea/deploymentTargetSelector.xml
