@@ -5,49 +5,61 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/HomepageFragment">
 
+    <!-- HomepageFragment -->
     <fragment
         android:id="@+id/HomepageFragment"
         android:name="com.midterm.destined.HomepageFragment"
         tools:layout="@layout/fragment_homepage">
-
         <action
             android:id="@+id/action_HomepageFragment_to_ChatFragment"
             app:destination="@id/ChatFragment" />
-
         <action
-            android:id="@+id/action_global_SearchFragment"
-            app:destination="@id/SearchFragment" />
-
-        <action
-            android:id="@+id/action_global_AddStoryFragment"
-            app:destination="@id/AddStoryFragment" />
+            android:id="@+id/action_HomepageFragment_to_MyFavouriteFragment"
+            app:destination="@id/MyFavouriteFragment" />
     </fragment>
 
+    <!-- ChatFragment -->
     <fragment
         android:id="@+id/ChatFragment"
         android:name="com.midterm.destined.ChatFragment"
         tools:layout="@layout/fragment_chat">
-
         <action
             android:id="@+id/action_ChatFragment_to_HomepageFragment"
             app:destination="@id/HomepageFragment" />
     </fragment>
 
+    <!-- MyFavouriteFragment -->
     <fragment
-        android:id="@+id/SearchFragment"
-        android:name="com.midterm.destined.SearchFragment"
-        tools:layout="@layout/search" />
+        android:id="@+id/MyFavouriteFragment"
+        android:name="com.midterm.destined.MyFavouriteFragment"
+        tools:layout="@layout/fragment_my_favourite">
+        <action
+            android:id="@+id/action_MyFavouriteFragment_to_HomepageFragment"
+            app:destination="@id/HomepageFragment" />
+    </fragment>
 
     <fragment
-        android:id="@+id/AddStoryFragment"
-        android:name="com.midterm.destined.AddStoryFragment"
-        tools:layout="@layout/add_story" />
+        android:id="@+id/MySettingFragment"
+        android:name="com.midterm.destined.MySettingFragment"
+        tools:layout="@layout/fragment_my_setting" >
 
+    <action
+        android:id="@+id/action_MySettingFragment_to_HomepageFragment"
+        app:destination="@id/HomepageFragment" />
+    </fragment>
+
+    <!-- Global actions for navigation -->
     <action
         android:id="@+id/action_global_HomepageFragment"
         app:destination="@id/HomepageFragment" />
-
     <action
         android:id="@+id/action_global_ChatFragment"
         app:destination="@id/ChatFragment" />
+    <action
+        android:id="@+id/action_global_MyFavouriteFragment"
+        app:destination="@id/MyFavouriteFragment" />
+    <action
+        android:id="@+id/action_global_MySettingFragment"
+        app:destination="@id/MySettingFragment" />
+
 </navigation>

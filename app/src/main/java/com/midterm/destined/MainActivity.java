@@ -9,8 +9,11 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.midterm.destined.databinding.ActivityMainBinding;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,12 +21,17 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private NavController navController;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
+
 
         setSupportActionBar(binding.toolbar);
 
@@ -64,14 +72,30 @@ public class MainActivity extends AppCompatActivity {
         if (binding.toolbar.findViewById(R.id.nav_heart) != null) {
             binding.toolbar.findViewById(R.id.nav_heart).setOnClickListener(view -> {
                 // Xử lý sự kiện cho Heart
+                if (navController.getCurrentDestination() != null) {
+                    if (navController.getCurrentDestination().getId() == R.id.fragment_homepage) {
+                        navController.navigate(R.id.action_HomepageFragment_to_MyFavouriteFragment);
+                    } else if (navController.getCurrentDestination().getId() != R.id.fragment_my_favourite) {
+                        navController.navigate(R.id.action_global_MyFavouriteFragment); // Đảm bảo action này được định nghĩa trong nav_graph.xml
+                    } else {
+                        Log.d("Navigation", "Already on MyFavouriteFragment");
+                    }
+                }
             });
         }
 
         if (binding.toolbar.findViewById(R.id.nav_profile) != null) {
             binding.toolbar.findViewById(R.id.nav_profile).setOnClickListener(view -> {
                 // Xử lý sự kiện cho Profile
-                Intent intent = new Intent(MainActivity.this, Setting.class);
-                startActivity(intent);
+                if (navController.getCurrentDestination() != null) {
+                    if (navController.getCurrentDestination().getId() == R.id.fragment_homepage) {
+                        navController.navigate(R.id.action_MySettingFragment_to_HomepageFragment);
+                    } else if (navController.getCurrentDestination().getId() != R.id.fragment_my_setting) {
+                        navController.navigate(R.id.action_global_MySettingFragment); // Đảm bảo bạn đã định nghĩa action này trong nav_graph.xml
+                    } else {
+                        Log.d("Navigation", "Already on MySettingFragment");
+                    }
+                }
             });
         }
     }

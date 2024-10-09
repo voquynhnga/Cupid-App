@@ -24,3 +24,6 @@ config.properties
 .idea/misc.xml
 .idea/vcs.xml
 .idea/gradle.xml
+.idea/compiler.xml
+.idea/deploymentTargetSelector.xml
+.idea/migrations.xml
