@@ -14,7 +14,15 @@
             android:id="@+id/action_HomepageFragment_to_ChatFragment"
             app:destination="@id/ChatFragment" />
 
+        <action
+            android:id="@+id/action_global_SearchFragment"
+            app:destination="@id/SearchFragment" />
+
+        <action
+            android:id="@+id/action_global_AddStoryFragment"
+            app:destination="@id/AddStoryFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/ChatFragment"
         android:name="com.midterm.destined.ChatFragment"
@@ -25,11 +33,21 @@
             app:destination="@id/HomepageFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/SearchFragment"
+        android:name="com.midterm.destined.SearchFragment"
+        tools:layout="@layout/search" />
+
+    <fragment
+        android:id="@+id/AddStoryFragment"
+        android:name="com.midterm.destined.AddStoryFragment"
+        tools:layout="@layout/add_story" />
+
     <action
         android:id="@+id/action_global_HomepageFragment"
         app:destination="@id/HomepageFragment" />
+
     <action
         android:id="@+id/action_global_ChatFragment"
         app:destination="@id/ChatFragment" />
-
 </navigation>
