@@ -48,6 +48,16 @@
         app:destination="@id/HomepageFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/SearchFragment"
+        android:name="com.midterm.destined.SearchFragment"
+        tools:layout="@layout/search" />
+
+    <fragment
+        android:id="@+id/AddStoryFragment"
+        android:name="com.midterm.destined.AddStoryFragment"
+        tools:layout="@layout/add_story" />
+
     <!-- Global actions for navigation -->
     <action
         android:id="@+id/action_global_HomepageFragment"
@@ -63,9 +73,9 @@
         app:destination="@id/MySettingFragment" />
     <action
         android:id="@+id/action_global_SearchFragment"
-        app:destination="@id/MyFavouriteFragment" />
+        app:destination="@id/SearchFragment" />
     <action
         android:id="@+id/action_global_AddStoryFragment"
-        app:destination="@id/MySettingFragment" />
+        app:destination="@id/AddStoryFragment" />
 
 </navigation>
