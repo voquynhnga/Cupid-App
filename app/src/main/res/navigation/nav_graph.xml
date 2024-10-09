@@ -61,5 +61,11 @@
     <action
         android:id="@+id/action_global_MySettingFragment"
         app:destination="@id/MySettingFragment" />
+    <action
+        android:id="@+id/action_global_SearchFragment"
+        app:destination="@id/MyFavouriteFragment" />
+    <action
+        android:id="@+id/action_global_AddStoryFragment"
+        app:destination="@id/MySettingFragment" />
 
 </navigation>
