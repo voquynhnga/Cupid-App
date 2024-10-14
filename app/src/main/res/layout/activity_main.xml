@@ -27,7 +27,6 @@
             android:gravity="center"
             android:background="@color/white">
 
-            <!-- Các icon của thanh điều hướng -->
             <ImageView
                 android:id="@+id/nav_home"
                 android:layout_width="0dp"
