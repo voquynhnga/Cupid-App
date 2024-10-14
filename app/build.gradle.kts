@@ -65,4 +65,7 @@ dependencies {
     implementation ("androidx.navigation:navigation-ui-ktx:2.7.0")
     implementation(kotlin("script-runtime"))
 
+    implementation ("com.google.android.material:material:1.11.0") // Bo tròn hình ảnh
+
+
 }

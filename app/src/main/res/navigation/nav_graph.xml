@@ -49,6 +49,22 @@
     </fragment>
 
     <fragment
+        android:id="@+id/MyProfileFragment"
+        android:name="com.midterm.destined.MyProfileFragment"
+        tools:layout="@layout/fragment_my_profile">
+        <action
+            android:id="@+id/action_MyProfileFragment_to_HomepageFragment"
+            app:destination="@id/MyProfileFragment" />
+
+        <action
+            android:id="@+id/action_MyProfileFragment_to_MySettingFragment"
+            app:destination="@id/MySettingFragment" />
+    </fragment>
+
+
+
+
+    <fragment
         android:id="@+id/SearchFragment"
         android:name="com.midterm.destined.SearchFragment"
         tools:layout="@layout/search" />
@@ -77,5 +93,11 @@
     <action
         android:id="@+id/action_global_AddStoryFragment"
         app:destination="@id/AddStoryFragment" />
+    <action
+        android:id="@+id/action_global_MyProfileFragment"
+        app:destination="@id/MyProfileFragment" />
+
+
+
 
 </navigation>

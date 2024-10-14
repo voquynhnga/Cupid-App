@@ -13,7 +13,9 @@ Join us to discover your ideal partner and ignite the sparks of romance in your 
     <string name="login_with_">
 Login with Phone
 </string>
-        <string name="choose_image">Choose Image</string>
-        <string name="add_story">Add Story</string> <!-- Đây là chuỗi bị thiếu -->
-        <string name="story_image">Story Image</string>
-    </resources>
+    <string name="choose_image">Choose Image</string>
+    <string name="add_story">Add Story</string> <!-- Đây là chuỗi bị thiếu -->
+    <string name="story_image">Story Image</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

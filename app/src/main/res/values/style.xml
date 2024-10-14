@@ -17,4 +17,10 @@
         <item name="android:textColor">#FFFFFF</item>
     </style>
 
+    <!-- Thêm style cho hình ảnh bo tròn -->
+    <style name="RoundImageShape" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item> <!-- Điều chỉnh để bo tròn hoàn toàn hình ảnh -->
+    </style>
+
 </resources>
