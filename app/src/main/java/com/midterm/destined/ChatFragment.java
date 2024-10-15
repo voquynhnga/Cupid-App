@@ -80,6 +80,7 @@
 package com.midterm.destined;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,16 +92,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-public class ChatFragment extends Fragment {
+public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClickListener {
 
     private ImageView btnBack;
     private SearchView searchView;
-    private ListView listViewConversations;
+    private RecyclerView listViewConversations;
     private ChatAdapter chatAdapter;
-    private ArrayList<Message> messages;
+    private List<Message> messages;
 
     @Nullable
     @Override
@@ -110,23 +116,21 @@ public class ChatFragment extends Fragment {
         btnBack = view.findViewById(R.id.btn_back);
         searchView = view.findViewById(R.id.searchView);
         listViewConversations = view.findViewById(R.id.listViewConversations);
+        listViewConversations.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        btnBack.setOnClickListener(v -> {
-            Navigation.findNavController(v).popBackStack();
-        });
+
+
 
         messages = new ArrayList<>();
-        messages.add(new Message("Alice", "Hey! How are you?"));
-        messages.add(new Message("Bob", "I'm good. What about you?"));
-        messages.add(new Message("Charlie", "Have you completed the assignment?"));
-        messages.add(new Message("David", "Yes, I submitted it yesterday."));
-        messages.add(new Message("Eve", "Let's meet up this weekend!"));
+        messages.add(new Message("Alice", "Hey! How are you?", getTime(),"me"));
+        messages.add(new Message("Bob", "I'm good. What about you?", getTime(),"me"));
+        messages.add(new Message("Charlie", "Have you completed the assignment?", getTime(),"me"));
+        messages.add(new Message("David", "Yes, I submitted it yesterday.", getTime(),"me"));
+        messages.add(new Message("Eve", "Let's meet up this weekend!", getTime(),"me"));
 
-        // Khởi tạo ChatAdapter và gán vào ListView
-        chatAdapter = new ChatAdapter(requireContext(), messages);
+        chatAdapter = new ChatAdapter(messages, this);
         listViewConversations.setAdapter(chatAdapter);
 
-        // Xử lý tìm kiếm tin nhắn
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -141,6 +145,8 @@ public class ChatFragment extends Fragment {
             }
         });
 
+
+
         return view;
     }
 
@@ -152,7 +158,22 @@ public class ChatFragment extends Fragment {
                 filteredMessages.add(message);
             }
         }
-        chatAdapter = new ChatAdapter(requireContext(), filteredMessages);
+        chatAdapter = new ChatAdapter(filteredMessages, this);
         listViewConversations.setAdapter(chatAdapter);
+    }
+    public String getTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");  // Định dạng thời gian, ví dụ: 09:25
+        return sdf.format(new Date());  // Trả về thời gian hiện tại
+    }
+
+    @Override
+    public void onMessageClick(Message selectedMessage) {
+        Bundle bundle = new Bundle();
+        bundle.putString("sender", selectedMessage.getSender());
+        bundle.putString("content", selectedMessage.getContent());
+
+        Log.d("ChatFragment", "Item clicked: " + selectedMessage.getSender());
+
+        Navigation.findNavController(requireView()).navigate(R.id.action_chatFragment_to_chatDetailFragment, bundle);
     }
 }

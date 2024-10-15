@@ -26,6 +26,21 @@
         <action
             android:id="@+id/action_ChatFragment_to_HomepageFragment"
             app:destination="@id/HomepageFragment" />
+        <action
+            android:id="@+id/action_chatFragment_to_chatDetailFragment"
+            app:destination="@id/chatDetailFragment" />
+    </fragment>
+
+
+    <!--    Chat Detail -->
+
+    <fragment
+        android:id="@+id/chatDetailFragment"
+        android:name="com.midterm.destined.ChatDetailFragment"
+        tools:layout="@layout/fragment_chat_detail" >
+        <action
+            android:id="@+id/action_chatDetailFragment_to_chatFragment"
+            app:destination="@id/ChatFragment" />
     </fragment>
 
     <!-- MyFavouriteFragment -->
@@ -57,6 +72,14 @@
         android:id="@+id/AddStoryFragment"
         android:name="com.midterm.destined.AddStoryFragment"
         tools:layout="@layout/add_story" />
+
+
+
+
+
+
+
+
 
     <!-- Global actions for navigation -->
     <action

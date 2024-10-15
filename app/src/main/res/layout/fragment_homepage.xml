@@ -56,44 +56,20 @@
         </ImageView>
 
 
-    </LinearLayout>
+</LinearLayout>
 
-    <ImageView
-        android:id="@+id/profileImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/sample_person"
-        app:layout_constraintDimensionRatio="h,3:4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.662"
+    <include layout="@layout/fragment_card">
+
+    </include>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_top"
+        app:layout_constraintBottom_toBottomOf="@id/actionButtons"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/userName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="40dp"
-        android:text="Kalvin, 23"
-        android:textColor="@android:color/white"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/profileImage"
-        app:layout_constraintStart_toStartOf="@id/profileImage" />
-
-    <TextView
-        android:id="@+id/location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Malibu - 20 KMS AWAY"
-        android:textSize="16sp"
-        android:textColor="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/userName"
-        app:layout_constraintStart_toStartOf="@id/userName"
-        android:layout_marginTop="4dp"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
     <LinearLayout

@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1045543560115",
+    "firebase_url": "https://cupid-app-ad700-default-rtdb.firebaseio.com",
+    "project_id": "cupid-app-ad700",
+    "storage_bucket": "cupid-app-ad700.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1045543560115:android:0e0abc9c883a6c939261c6",
+        "android_client_info": {
+          "package_name": "com.midterm.destined"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDokcKyMii1-rBIQM1hFaFsNiTFHOZdBEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
