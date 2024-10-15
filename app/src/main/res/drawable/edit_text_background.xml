@@ -3,7 +3,7 @@
     <item>
         <!-- Bóng -->
         <shape>
-            <solid android:color="#FAB5CC"/> <!-- Màu bóng với độ trong suốt -->
+            <solid android:color="#FF266F"/> <!-- Màu bóng với độ trong suốt -->
             <corners android:radius="10dp"/> <!-- Bo góc tương ứng -->
             <padding android:left="2dp" android:top="2dp" android:right="2dp" android:bottom="2dp"/> <!-- Padding để tạo khoảng cách cho bóng -->
         </shape>
@@ -13,8 +13,8 @@
             <solid android:color="@android:color/transparent"/> <!-- Nền trong suốt -->
             <stroke
                 android:width="2dp"
-                android:color="#FAB5CC"/> <!-- Đường viền màu FAB5CC -->
-            <corners android:radius="10dp"/> <!-- Bo góc nếu muốn -->
+                android:color="#FF266F"/> <!-- Đường viền màu FAB5CC -->
+            <corners android:radius="14dp"/> <!-- Bo góc nếu muốn -->
         </shape>
     </item>
 </layer-list>

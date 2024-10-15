@@ -54,11 +54,13 @@
                     android:layout_height="wrap_content"
                     android:text="Remove them"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:textColor="#F974A0"
                     android:textSize="14sp"
                     ></TextView>
 
                 <ImageView
+                    android:id="@+id/im_removeItem"
                     android:layout_width="48dp"
                     android:layout_height="30dp"
                     android:src="@drawable/favourite_remove"

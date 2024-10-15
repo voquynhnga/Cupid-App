@@ -35,11 +35,63 @@ public class MySettingFragment extends Fragment {
         binding = FragmentMySettingBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
 
+        binding.edFullName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    binding.edFullName.setHint("");
+                }
+                else {
+                    binding.edFullName.setHint("Unset");
+                }
+            }
+        });
+
+        binding.edUserName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    binding.edUserName.setHint("");
+                }
+                else {
+                    binding.edUserName.setHint("Unset");
+                }
+            }
+        });
+
+        binding.edAddress.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus){
+                    binding.edAddress.setHint("");
+                }
+                else {
+                    binding.edAddress.setHint("Unset");
+                }
+            }
+        });
+
 
         binding.btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(),"Save your new information",Toast.LENGTH_SHORT).show();
+                String fullName = binding.edFullName.getText().toString().trim();
+                String userName = binding.edUserName.getText().toString().trim();
+                String address = binding.edAddress.getText().toString().trim();
+
+
+                if(userName.length() < 8){
+                    Toast.makeText(getContext(), "User name must be longer than 8 characters ", Toast.LENGTH_SHORT).show();
+                }
+                else if(fullName.isEmpty()) {
+                    Toast.makeText(getContext(), "Full name is empty", Toast.LENGTH_SHORT).show();
+                }
+                else if(address.isEmpty()) {
+                    Toast.makeText(getContext(), "Address is empty", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getContext(), "Save your new information", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
