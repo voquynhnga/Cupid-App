@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_arrow_back_24"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Back"
+        android:layout_marginBottom="16dp" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:progress="50"
+        android:progressTint="@color/progress_color"
+        android:indeterminate="false"
+        android:max="100"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="I Am Looking For..."
+        android:textSize="24sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Provide us with further insights into your preferences"
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center"
+        android:layout_marginBottom="32dp" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/radio_relationship"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="A relationship"
+            android:textSize="18sp"
+            android:layout_marginBottom="16dp" />
+
+        <RadioButton
+            android:id="@+id/radio_casual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Something casual"
+            android:textSize="18sp"
+            android:layout_marginBottom="16dp" />
+
+        <RadioButton
+            android:id="@+id/radio_unsure"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="I'm not sure yet"
+            android:textSize="18sp"
+            android:layout_marginBottom="16dp" />
+
+        <RadioButton
+            android:id="@+id/radio_prefer_not_say"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Prefer not to say"
+            android:textSize="18sp"
+            android:layout_marginBottom="32dp" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btn_continue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Continue"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/button_color"
+        android:layout_marginTop="24dp" />
+
+</LinearLayout>

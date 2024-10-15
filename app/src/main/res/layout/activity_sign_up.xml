@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/signupIcon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/cupid" />
+
+
+        <EditText
+            android:id="@+id/etFullName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Full Name"
+            android:padding="12dp"
+            android:background="@drawable/rounded_input"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="12dp"
+            android:layout_below="@+id/signupIcon"/>
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:padding="12dp"
+            android:background="@drawable/rounded_input"
+            android:inputType="textEmailAddress"
+            android:layout_below="@id/etFullName"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:padding="12dp"
+            android:background="@drawable/rounded_input"
+            android:inputType="textPassword"
+            android:layout_below="@id/etEmail"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/etConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Confirm Password"
+            android:padding="12dp"
+            android:background="@drawable/rounded_input"
+            android:inputType="textPassword"
+            android:layout_below="@id/etPassword"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/etPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Phone Number"
+            android:padding="12dp"
+            android:background="@drawable/rounded_input"
+            android:inputType="phone"
+            android:layout_below="@id/etConfirmPassword"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/etDob"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Date of Birth (DD/MM/YYYY)"
+            android:padding="12dp"
+            android:background="@drawable/rounded_input"
+            android:layout_below="@id/etPhone"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:focusable="false"
+            android:clickable="true"/>
+
+        <RadioGroup
+            android:id="@+id/rgGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/etDob"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <RadioButton
+                android:id="@+id/rbMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Male"
+                android:layout_marginEnd="16dp" />
+
+            <RadioButton
+                android:id="@+id/rbFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Female" />
+        </RadioGroup>
+        <Button
+            android:id="@+id/btnSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign Up"
+            android:background="@drawable/rounded_button"
+            android:textColor="@android:color/white"
+            android:layout_below="@id/rgGender"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/orText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnSignUp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:text="OR"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray" />
+
+        <Button
+            android:id="@+id/btnContinueWithFb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/orText"
+            android:layout_marginTop="16dp"
+            android:text="Continue with Facebook"
+            android:drawablePadding="12dp"
+            android:background="@drawable/rounded_button_facebook"
+            android:textColor="@android:color/white" />
+        <Button
+            android:id="@+id/btnContinueWithGoogle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnContinueWithFb"
+            android:layout_marginTop="16dp"
+            android:text="Continue with Google"
+            android:drawablePadding="12dp"
+            android:background="@drawable/rounded_button_google"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/alreadyHaveAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnContinueWithGoogle"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="24dp"
+            android:text="Already have an account? Log in"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="14sp"
+            android:clickable="true"
+            android:focusable="true"/>
+
+    </RelativeLayout>
+</ScrollView>

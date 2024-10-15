@@ -1,10 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/pink_main">
 
-    <!-- Logo CupidArrow -->
     <ImageView
         android:id="@+id/logo"
         android:layout_width="144dp"
@@ -24,9 +24,6 @@
         android:background="@drawable/maskgr"
         android:scaleType="centerCrop" />
 
-
-
-    <!-- Title text -->
     <TextView
         android:id="@+id/discover_title"
         android:layout_width="wrap_content"
@@ -38,8 +35,6 @@
         android:textSize="22sp"
         android:textColor="@color/black"
         android:textStyle="bold" />
-
-    <!-- Subtitle text -->
     <TextView
         android:id="@+id/discover_subtitle"
         android:layout_width="wrap_content"
@@ -53,7 +48,6 @@
         android:gravity="center"
         android:paddingHorizontal="20dp" />
 
-    <!-- Login button -->
     <Button
         android:id="@+id/login_with_phone"
         android:layout_width="wrap_content"
@@ -65,7 +59,6 @@
         android:text="@string/login_with_"
         android:textColor="@color/white"
         android:backgroundTint="#FAAFBE"
-        android:drawableStart="@drawable/img"
         android:drawablePadding="8dp"
         android:textStyle="bold" />
 

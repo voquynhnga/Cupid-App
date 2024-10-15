@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/background_gradient">
+
+    <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_arrow_back_24"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Back"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"/>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:progress="75"
+        android:max="100"
+        android:progressTint="@color/progress_color"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Up To 3 Interest"
+        android:textSize="24sp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Subtitle -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tell us what piques your curiosity and passions"
+        android:textSize="16sp"
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        android:layout_marginBottom="2dp"
+        android:gravity="center">
+
+        <ToggleButton
+            android:id="@+id/toggleButtonReading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reading"
+            android:textOn="Reading"
+            android:textOff="Reading"
+            android:textAllCaps="false"
+            android:textSize="16dp"
+            android:background="@drawable/interest_button_bg"
+            android:textColor="@drawable/interest_button_text_color"
+            android:padding="12dp"
+            android:layout_margin="8dp"/>
+
+
+        <ToggleButton
+            android:id="@+id/toggleButtonMusic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Music"
+            android:textOn="Music"
+            android:textOff="Music"
+            android:textAllCaps="false"
+            android:textSize="16dp"
+            android:background="@drawable/interest_button_bg"
+            android:textColor="@drawable/interest_button_text_color"
+            android:padding="12dp"
+            android:layout_margin="8dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        android:layout_marginBottom="2dp"
+        android:gravity="center">
+
+        <ToggleButton
+            android:id="@+id/toggleButtonPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Photography"
+            android:textOn="Photography"
+            android:textOff="Photography"
+            android:textAllCaps="false"
+            android:textSize="16dp"
+            android:background="@drawable/interest_button_bg"
+            android:textColor="@drawable/interest_button_text_color"
+            android:padding="12dp"
+            android:layout_margin="8dp"/>
+
+
+        <ToggleButton
+            android:id="@+id/toggleButtonGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gaming"
+            android:textOn="Gaming"
+            android:textOff="Gaming"
+            android:textAllCaps="false"
+            android:textSize="16dp"
+            android:background="@drawable/interest_button_bg"
+            android:textColor="@drawable/interest_button_text_color"
+            android:padding="12dp"
+            android:layout_margin="8dp"/>
+
+        <ToggleButton
+            android:id="@+id/toggleButtonTravel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Travel"
+            android:textOn="Travel"
+            android:textOff="Travel"
+            android:textAllCaps="false"
+            android:textSize="16dp"
+            android:background="@drawable/interest_button_bg"
+            android:textColor="@drawable/interest_button_text_color"
+            android:padding="12dp"
+            android:layout_margin="8dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        android:layout_marginBottom="2dp"
+        android:gravity="center">
+
+        <ToggleButton
+            android:id="@+id/toggleButtonPainting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Painting"
+            android:textOn="Painting"
+            android:textOff="Painting"
+            android:textAllCaps="false"
+            android:textSize="16dp"
+            android:background="@drawable/interest_button_bg"
+            android:textColor="@drawable/interest_button_text_color"
+            android:padding="12dp"
+            android:layout_margin="8dp"/>
+
+        <ToggleButton
+            android:id="@+id/toggleButtonCook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cooking"
+            android:textOn="Cooking"
+            android:textOff="Cooking"
+            android:textAllCaps="false"
+            android:textSize="16dp"
+            android:background="@drawable/interest_button_bg"
+            android:textColor="@drawable/interest_button_text_color"
+            android:padding="12dp"
+            android:layout_margin="8dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        android:layout_marginBottom="2dp"
+        android:gravity="center">
+
+        <ToggleButton
+            android:id="@+id/toggleButtonPet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pets"
+            android:textOn="Pets"
+            android:textOff="Pets"
+            android:textAllCaps="false"
+            android:textSize="16dp"
+            android:background="@drawable/interest_button_bg"
+            android:textColor="@drawable/interest_button_text_color"
+            android:padding="12dp"
+            android:layout_margin="8dp"/>
+
+
+        <ToggleButton
+            android:id="@+id/toggleButtonShop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shopping"
+            android:textOn="Shopping"
+            android:textOff="Shopping"
+            android:textAllCaps="false"
+            android:textSize="16dp"
+            android:background="@drawable/interest_button_bg"
+            android:textColor="@drawable/interest_button_text_color"
+            android:padding="12dp"
+            android:layout_margin="8dp"/>
+
+        <ToggleButton
+            android:id="@+id/toggleButtonChat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chatting"
+            android:textOn="Chatting"
+            android:textOff="Chatting"
+            android:textAllCaps="false"
+            android:textSize="16dp"
+            android:background="@drawable/interest_button_bg"
+            android:textColor="@drawable/interest_button_text_color"
+            android:padding="12dp"
+            android:layout_margin="8dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="2dp"
+        android:layout_marginBottom="2dp"
+        android:gravity="center">
+
+        <ToggleButton
+            android:id="@+id/toggleButtonFashion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fashion"
+            android:textOn="Fashion"
+            android:textOff="Fashion"
+            android:textAllCaps="false"
+            android:textSize="16dp"
+            android:background="@drawable/interest_button_bg"
+            android:textColor="@drawable/interest_button_text_color"
+            android:padding="12dp"
+            android:layout_margin="8dp"/>
+
+        <ToggleButton
+            android:id="@+id/toggleButtonSport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sport"
+            android:textOn="Sport"
+            android:textOff="Sport"
+            android:textAllCaps="false"
+            android:textSize="16dp"
+            android:background="@drawable/interest_button_bg"
+            android:textColor="@drawable/interest_button_text_color"
+            android:padding="12dp"
+            android:layout_margin="8dp"/>
+
+    </LinearLayout>
+
+
+
+    <Button
+        android:id="@+id/btncontinue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Continue"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/button_color"/>
+
+</LinearLayout>
