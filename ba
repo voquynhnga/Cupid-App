@@ -1,0 +1,69 @@
+[33mcommit 3f66700865c2886efccc43800ce8633095f56c5f[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;32mqnv[m[33m)[m
+Merge: 085310a 0f91b95
+Author: voquynhnga <121788357+voquynhnga@users.noreply.github.com>
+Date:   Mon Sep 30 20:03:22 2024 +0700
+
+    Merge branch 'master' into qnv
+
+[33mcommit 085310a1e449ff45561ecd5d377572bf4a40720b[m
+Author: voquynhnga <voquynhnga75@gmail.com>
+Date:   Mon Sep 30 19:59:08 2024 +0700
+
+    run MainActivity + MainUI - remove comment
+
+[33mcommit 55ba8d7cfab756c0a44e7def1c0c2a055731b092[m
+Author: voquynhnga <voquynhnga75@gmail.com>
+Date:   Mon Sep 30 19:55:05 2024 +0700
+
+    run MainActivity + MainUI
+
+[33mcommit 0f91b953acc3ec05cd6c76868c3f523b27b5f55e[m
+Author: NgKien94 <quangkienofqn@gmail.com>
+Date:   Mon Sep 30 19:38:55 2024 +0700
+
+    UI Setting activity favouriteActivity favouriteRow
+
+[33mcommit b1f2ee240badc4736f889eb0cc5fbfe016238c11[m
+Author: NgKien94 <quangkienofqn@gmail.com>
+Date:   Mon Sep 30 12:05:43 2024 +0700
+
+    Git ignore
+
+[33mcommit e30c5a88199a86d00ad309405f4d9657a02dfd0c[m
+Author: NgKien94 <quangkienofqn@gmail.com>
+Date:   Mon Sep 30 12:05:25 2024 +0700
+
+    Remove .idea/misc.xml and gradle/libs.versions.toml, update .gitignore
+
+[33mcommit 24e82992336f40a1d67c1e98ced4ed3f6bd8d137[m[33m ([m[1;31morigin/main[m[33m)[m
+Merge: 7d2d841 eb67780
+Author: voquynhnga <121788357+voquynhnga@users.noreply.github.com>
+Date:   Mon Sep 30 10:07:09 2024 +0700
+
+    Merge pull request #1 from voquynhnga/qnv
+    
+    Main UI - fixed 2nd - test qnv branch
+
+[33mcommit eb6778086c27e94d68cddb9b2412e15795bc0e9f[m
+Author: voquynhnga <voquynhnga75@gmail.com>
+Date:   Mon Sep 30 09:51:58 2024 +0700
+
+    Main UI - fixed 2nd - test qnv branch
+
+[33mcommit 7d2d84142459377d5b9bc473dd221ed92486a2a1[m
+Author: voquynhnga <voquynhnga75@gmail.com>
+Date:   Mon Sep 30 09:41:01 2024 +0700
+
+    Main UI - fixed 1st
+
+[33mcommit 871bff390f3cfccdae516e3a190d26ea34bbe95f[m
+Author: voquynhnga <voquynhnga75@gmail.com>
+Date:   Sun Sep 29 23:05:35 2024 +0700
+
+    Main UI
+
+[33mcommit 6cd07a21b2f05589c1d3cd9c6dac58ac8a7e6a16[m[33m ([m[1;31morigin/vit[m[33m)[m
+Author: voquynhnga <voquynhnga75@gmail.com>
+Date:   Sun Sep 29 20:59:27 2024 +0700
+
+    First commit - UI first
