@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
@@ -30,6 +31,12 @@ public class MyFavouriteFragment extends Fragment {
         arrayFavourite = new ArrayList<>();
         arrayFavourite.add("Nguyen Quang Kien");
         arrayFavourite.add("John Terry");
+        arrayFavourite.add("Stone");
+        arrayFavourite.add("Rock");
+        arrayFavourite.add("Ha Tran");
+        arrayFavourite.add("SnapDog");
+        arrayFavourite.add("Jack 100M");
+        arrayFavourite.add("Switf");
     }
 
     @Override
@@ -47,7 +54,7 @@ public class MyFavouriteFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Setup RecyclerView và Adapter tại đây khi view đã được tạo
-        binding.rvFavourites.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rvFavourites.setLayoutManager(new GridLayoutManager(getContext(),2));
         favouriteAdapter = new FavouriteAdapter(arrayFavourite);
         binding.rvFavourites.setAdapter(favouriteAdapter);
 

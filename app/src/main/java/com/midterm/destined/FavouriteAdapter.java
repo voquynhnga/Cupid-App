@@ -1,9 +1,12 @@
 package com.midterm.destined;
 
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +32,17 @@ public class FavouriteAdapter  extends RecyclerView.Adapter<FavouriteAdapter.Vie
     @Override
     public void onBindViewHolder(@NonNull FavouriteAdapter.ViewHolder holder, int position) {
         holder.tvName.setText(listfavourite.get(position));
+        holder.imRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                int currentPosition = holder.getAdapterPosition();
+                listfavourite.remove(currentPosition);
+                notifyItemRemoved(currentPosition);
+                notifyItemRangeChanged(currentPosition, listfavourite.size());
+                Toast.makeText(view.getContext(), "Remove person", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -38,12 +52,15 @@ public class FavouriteAdapter  extends RecyclerView.Adapter<FavouriteAdapter.Vie
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView tvName;
+        public ImageView imRemove;
 
         public ViewHolder(View view) {
             super(view);
             // Define click listener for the ViewHolder's View
 
             tvName = (TextView) view.findViewById(R.id.tv_Name);
+            imRemove = (ImageView) view.findViewById(R.id.im_removeItem);
+          
         }
 
         public TextView getTextView() {
