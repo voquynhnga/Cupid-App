@@ -1,6 +1,7 @@
 package com.midterm.destined;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,8 +48,9 @@ public class HomepageFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.filter.setOnClickListener(v -> {
+            Log.d("DEBUG", "an zo search");
             NavHostFragment.findNavController(HomepageFragment.this)
-                    .navigate(R.id.action_global_SearchFragment);
+                    .navigate(R.id.action_HomepageFragment_to_SearchFragment);
         });
 
         binding.story.setOnClickListener(v -> {
