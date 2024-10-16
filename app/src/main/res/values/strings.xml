@@ -11,11 +11,19 @@ Join us to discover your ideal partner and ignite the sparks of romance in your 
 </string>
 
     <string name="login_with_">
-Login with Phone
+Login with Email
 </string>
+
+    <string name="let_s_start">
+        Let start with your number
+    </string>
+
+    <string name="or">
+        OR
+    </string>
+
+
     <string name="choose_image">Choose Image</string>
-    <string name="add_story">Add Story</string> <!-- Đây là chuỗi bị thiếu -->
+    <string name="add_story">Add Story</string>
     <string name="story_image">Story Image</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

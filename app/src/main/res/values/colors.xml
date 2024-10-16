@@ -3,4 +3,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name = "pink_main">#FFF2F4</color>
+    <color name="progress_color">#FF4081</color>
+    <color name="button_color">#FF4081</color>
+    <color name="selected_interest">#FF4081</color>
+    <color name="border_color">#FFC1C1C1</color>
+    <color name="text_color">#FF4444</color>
+
+
 </resources>
