@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg"
-    android:id="@+id/search">
+    android:id="@+id/search"
+    tools:context=".SearchFragment">
 
     <LinearLayout
         android:id="@+id/rjc0dai8y2q"
