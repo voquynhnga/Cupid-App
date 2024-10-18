@@ -1,6 +1,7 @@
 package com.midterm.destined;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,10 +35,10 @@ public class HomepageFragment extends Fragment {
     ) {
         binding = FragmentHomepageBinding.inflate(inflater, container, false);
 
-        viewPager = binding.viewPager;
+//        viewPager = binding.viewPager;
         userProfiles = new ArrayList<>();
 
-        fetchUserProfiles();
+//        fetchUserProfiles();
 
         return binding.getRoot();
     }
@@ -46,12 +47,24 @@ public class HomepageFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.filter.setOnClickListener(v -> {
+        binding.filterhp.setOnClickListener(v -> {
+            Log.d("DEBUG", "search");
             NavHostFragment.findNavController(HomepageFragment.this)
                     .navigate(R.id.action_global_SearchFragment);
         });
 
+//        binding.filterhp.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d("DEBUG", "search");
+//                NavHostFragment.findNavController(HomepageFragment.this)
+//                        .navigate(R.id.action_global_SearchFragment);
+//            }
+//        });
+
+
         binding.story.setOnClickListener(v -> {
+            Log.d("DEBUG", "add story");
             NavHostFragment.findNavController(HomepageFragment.this)
                     .navigate(R.id.action_global_AddStoryFragment);
         });
