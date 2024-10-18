@@ -3,26 +3,20 @@ package com.midterm.destined;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.midterm.destined.databinding.ActivitySignUpBinding;
-import com.midterm.destined.model.UserReal;
+import com.midterm.destined.model.User;
 
 import java.util.Calendar;
 
@@ -109,7 +103,7 @@ public class SignUp extends AppCompatActivity {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
                             String uid = firebaseUser.getUid();
-                            UserReal user = new UserReal(uid, email, password, fullName, phone, dob, gender);
+                            User user = new User(uid, email, password, fullName, phone, dob, gender,"", "", "");
                             saveUserToFirestore(user);
                         }
                     } else {
@@ -118,7 +112,7 @@ public class SignUp extends AppCompatActivity {
                 });
     }
 
-    private void saveUserToFirestore(UserReal user) {
+    private void saveUserToFirestore(User user) {
         db.collection("users").document(user.getUid())
                 .set(user)
                 .addOnCompleteListener(task -> {

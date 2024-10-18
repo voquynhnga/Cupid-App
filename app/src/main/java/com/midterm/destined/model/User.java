@@ -1,6 +1,6 @@
 package com.midterm.destined.model;
 
-public class UserReal {
+public class User {
 
     private String uid;
     private String email;
@@ -9,12 +9,39 @@ public class UserReal {
     private String phoneNumber;
     private String dateOfBirth;
     private String gender;
+    private String bio;
+    private String imageURL;
+    private String location;
 
-    public UserReal() {
-        // Default constructor required for calls to DataSnapshot.getValue(UserReal.class)
+    public User() {
+        // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public UserReal(String uid, String email, String password, String fullName, String phoneNumber, String dateOfBirth, String gender) {
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public User(String uid, String email, String password, String fullName, String phoneNumber, String dateOfBirth, String gender, String bio, String imageURL, String location) {
         this.uid = uid;
         this.email = email;
         this.password = password;
@@ -22,7 +49,11 @@ public class UserReal {
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
+        this.bio = bio;
+        this.imageURL = imageURL;
+        this.location = location;
     }
+
 
     public String getUid() {
         return uid;

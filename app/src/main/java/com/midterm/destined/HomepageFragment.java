@@ -8,25 +8,22 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.midterm.destined.databinding.FragmentHomepageBinding;
+import com.midterm.destined.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class HomepageFragment extends Fragment {
 
     private FragmentHomepageBinding binding;
-    private ViewPager2 viewPager;
-    private List<UserProfile> userProfiles;
+    private List<User> userProfiles = new ArrayList<>();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     public View onCreateView(
@@ -34,13 +31,39 @@ public class HomepageFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         binding = FragmentHomepageBinding.inflate(inflater, container, false);
+//        View view = inflater.inflate(R.layout.fragment_homepage, container, false);
 
-//        viewPager = binding.viewPager;
-        userProfiles = new ArrayList<>();
-
-//        fetchUserProfiles();
+        // Lấy dữ liệu từ Firestore
+        fetchUserProfiles();
 
         return binding.getRoot();
+    }
+
+    private void fetchUserProfiles() {
+        db.collection("users").get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            User user = document.toObject(User.class);
+                            userProfiles.add(user);
+                        }
+                        if (!userProfiles.isEmpty()) {
+                            displayCardFragment(userProfiles.get(0));
+                        }
+                    } else {
+                        Log.w("Firestore", "Error getting documents.", task.getException());
+                    }
+                    Log.d("DEBUG", "ton tai nguoi dung");
+
+                });
+    }
+
+    private void displayCardFragment(User user) {
+        CardFragment cardFragment = CardFragment.newInstance(user);
+
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.add(R.id.fragment_card, cardFragment);
+        transaction.commit();
     }
 
     @Override
@@ -48,23 +71,13 @@ public class HomepageFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.filterhp.setOnClickListener(v -> {
-            Log.d("DEBUG", "search");
+
             NavHostFragment.findNavController(HomepageFragment.this)
                     .navigate(R.id.action_global_SearchFragment);
         });
 
-//        binding.filterhp.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d("DEBUG", "search");
-//                NavHostFragment.findNavController(HomepageFragment.this)
-//                        .navigate(R.id.action_global_SearchFragment);
-//            }
-//        });
-
-
         binding.story.setOnClickListener(v -> {
-            Log.d("DEBUG", "add story");
+
             NavHostFragment.findNavController(HomepageFragment.this)
                     .navigate(R.id.action_global_AddStoryFragment);
         });
@@ -74,32 +87,5 @@ public class HomepageFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-    private void fetchUserProfiles() {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("userProfiles");
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                userProfiles.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    UserProfile profile = snapshot.getValue(UserProfile.class);
-                    if (profile != null) {
-                        userProfiles.add(profile);
-                    }
-                }
-                showCards(userProfiles);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Xử lý lỗi
-            }
-        });
-    }
-
-    private void showCards(List<UserProfile> profiles) {
-        CardAdapter adapter = new CardAdapter(this, profiles);
-        viewPager.setAdapter(adapter);
     }
 }
