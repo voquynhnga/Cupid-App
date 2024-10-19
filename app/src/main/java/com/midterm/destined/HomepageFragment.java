@@ -31,34 +31,13 @@ public class HomepageFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         binding = FragmentHomepageBinding.inflate(inflater, container, false);
-//        View view = inflater.inflate(R.layout.fragment_homepage, container, false);
-
-        // Lấy dữ liệu từ Firestore
-        fetchUserProfiles();
-
+//        displayCardFragment();
         return binding.getRoot();
+
     }
+    private void displayCardFragment() {
 
-    private void fetchUserProfiles() {
-        db.collection("users").get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            User user = document.toObject(User.class);
-                            userProfiles.add(user);
-                        }
-                        if (!userProfiles.isEmpty()) {
-                            displayCardFragment(userProfiles.get(0));
-                        }
-                    } else {
-                        Log.w("Firestore", "Error getting documents.", task.getException());
-                    }
-                    Log.d("DEBUG", "ton tai nguoi dung");
-
-                });
-    }
-
-    private void displayCardFragment(User user) {
+        User user = new User("uid123"," ", " ", "Sara", "0949959999", "12/7/2000", "female", "HEHE", "", "Da Nang");
         CardFragment cardFragment = CardFragment.newInstance(user);
 
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();

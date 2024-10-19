@@ -21,7 +21,7 @@
     <!-- ChatFragment -->
     <fragment
         android:id="@+id/ChatFragment"
-        android:name="com.midterm.destined.ChatFragment"
+        android:name="com.midterm.destined.chat.ChatFragment"
         tools:layout="@layout/fragment_chat">
         <action
             android:id="@+id/action_ChatFragment_to_HomepageFragment"
@@ -36,7 +36,7 @@
 
     <fragment
         android:id="@+id/chatDetailFragment"
-        android:name="com.midterm.destined.ChatDetailFragment"
+        android:name="com.midterm.destined.chat.ChatDetailFragment"
         tools:layout="@layout/fragment_chat_detail" >
         <action
             android:id="@+id/action_chatDetailFragment_to_chatFragment"

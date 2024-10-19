@@ -103,7 +103,7 @@ public class SignUp extends AppCompatActivity {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
                             String uid = firebaseUser.getUid();
-                            User user = new User(uid, email, password, fullName, phone, dob, gender,"", "", "");
+                            User user = new User(uid, email, password, fullName, phone, dob, gender,"", "","");
                             saveUserToFirestore(user);
                         }
                     } else {
