@@ -57,6 +57,11 @@ public class Login extends AppCompatActivity {
 //                    finish();
 //                }
 
+                if (user.isEmpty() || pass.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Please enter email and password", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 mAuth.signInWithEmailAndPassword(user,pass)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
@@ -64,9 +69,11 @@ public class Login extends AppCompatActivity {
                                 if(task.isSuccessful()){
                                     Intent intent = new Intent(Login.this,MainActivity.class);
                                     startActivity(intent);
+
                                 }
                                 else {
-                                    Toast.makeText(getApplicationContext(), "Login fail - Account not found", Toast.LENGTH_SHORT).show();
+                                    String errorMessage = task.getException().getMessage();
+                                    Toast.makeText(getApplicationContext(), "Login failed: " + errorMessage, Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
@@ -90,5 +97,6 @@ public class Login extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+
     }
 }

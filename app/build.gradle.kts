@@ -75,7 +75,10 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 
-    implementation ("com.google.android.material:material:1.11.0") // Bo tròn hình ảnh
+    implementation ("com.google.android.material:material:1.11.0")
+
+    implementation ("com.lorentzos.swipecards:library:1.0.9")
+
 
 
 }

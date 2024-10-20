@@ -28,10 +28,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseApp.initializeApp(this);
+
+        Log.d("DEBUG", "dung");
+//        FirebaseApp.initializeApp(this);
 
 
-        // Gọi phương thức uploadImagesToGallery
         uploadImagesToGallery();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -42,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
 
-        // Xử lý sự kiện cho toolbar
         setupToolbarNavigation();
     }
 
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (String imageName : imageNames) {
             File imageFile = new File(getExternalFilesDir(null), imageName);
-            Uri imageUri = Uri.fromFile(imageFile); // Chuyển đổi File thành Uri
+            Uri imageUri = Uri.fromFile(imageFile);
             ImageUploader.uploadImageToGallery(this, imageUri, imageName); // Gọi phương thức upload
         }
     }

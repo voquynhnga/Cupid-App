@@ -103,4 +103,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             timeText.setText(message.getTime());
         }
     }
+
+    public void updateData(List<Message> newMessages) {
+        this.messages.clear();
+        this.messages.addAll(newMessages);
+        notifyDataSetChanged();
+    }
+
 }

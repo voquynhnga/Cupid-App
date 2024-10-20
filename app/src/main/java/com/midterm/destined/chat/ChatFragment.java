@@ -26,7 +26,7 @@ import java.util.List;
 
 public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClickListener {
 
-    private ImageView btnBack;
+
     private SearchView searchView;
     private RecyclerView listViewConversations;
     private ChatAdapter chatAdapter;
@@ -37,7 +37,6 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
-//        btnBack = view.findViewById(R.id.btn_back);
         searchView = view.findViewById(R.id.searchView);
         listViewConversations = view.findViewById(R.id.listViewConversations);
         listViewConversations.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -54,6 +53,7 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
 
         chatAdapter = new ChatAdapter(messages, this);
         listViewConversations.setAdapter(chatAdapter);
+        listViewConversations.setHasFixedSize(true);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -82,12 +82,11 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
                 filteredMessages.add(message);
             }
         }
-        chatAdapter = new ChatAdapter(filteredMessages, this);
-        listViewConversations.setAdapter(chatAdapter);
+        chatAdapter.updateData(filteredMessages);
     }
     public String getTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");  // Định dạng thời gian, ví dụ: 09:25
-        return sdf.format(new Date());  // Trả về thời gian hiện tại
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        return sdf.format(new Date());
     }
 
     @Override
