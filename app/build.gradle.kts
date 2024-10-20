@@ -74,5 +74,5 @@ dependencies {
 
     implementation ("com.google.android.material:material:1.11.0") // Bo tròn hình ảnh
 
-
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
 }

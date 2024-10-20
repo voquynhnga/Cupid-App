@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.midterm.destined.databinding.ActivityInterestsBinding;
+import com.midterm.destined.model.UserReal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
 public class Interests extends AppCompatActivity {
 
     private ToggleButton reading, music, travel, cook, game, photo, chat, shop, fashion, sport, pet,
-    paint;
+            paint;
     private int selectedCount = 0;
     private final int MAX_SELECTION = 3;
     private List<ToggleButton> selectedButtons = new ArrayList<>();
@@ -61,13 +62,41 @@ public class Interests extends AppCompatActivity {
         setupToggleButton(fashion);
         setupToggleButton(sport);
 
-        continueButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Interests.this, UploadPhoto.class);
-                startActivity(intent);
+//        continueButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(Interests.this, UploadPhoto.class);
+//                startActivity(intent);
+//            }
+//        });
+
+        UserReal user = (UserReal) getIntent().getSerializableExtra("user");
+
+//        continueButton.setOnClickListener(v -> {
+//            List<String> selectedInterests = new ArrayList<>();
+//            for (ToggleButton toggleButton : selectedButtons) {
+//                selectedInterests.add(toggleButton.getText().toString());
+//            }
+//
+//            Intent intent = new Intent(Interests.this, UploadPhoto.class);
+//            intent.putStringArrayListExtra("selectedInterests", (ArrayList<String>) selectedInterests);
+//            startActivity(intent);
+//        });
+
+        continueButton.setOnClickListener(v -> {
+            List<String> selectedInterests = new ArrayList<>();
+            for (ToggleButton toggleButton : selectedButtons) {
+                selectedInterests.add(toggleButton.getText().toString());
             }
+
+            user.setInterests(selectedInterests); // Cập nhật sở thích trong UserReal
+
+            Intent intent = new Intent(Interests.this, UploadPhoto.class);
+            intent.putExtra("user", user); // Chuyển đối tượng UserReal đã cập nhật
+            startActivity(intent);
         });
+
+
     }
 
 
