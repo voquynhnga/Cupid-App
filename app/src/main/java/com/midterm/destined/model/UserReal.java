@@ -1,6 +1,11 @@
 package com.midterm.destined.model;
 
-public class UserReal {
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class UserReal implements Serializable {
 
     private String uid;
     private String email;
@@ -9,12 +14,16 @@ public class UserReal {
     private String phoneNumber;
     private String dateOfBirth;
     private String gender;
+    private List<String> interests; // New field for interests
+    private GPSAddress location; // New field for location
 
     public UserReal() {
         // Default constructor required for calls to DataSnapshot.getValue(UserReal.class)
+        this.interests = new ArrayList<>(); // Initialize interests list
+        this.location = new GPSAddress(0.0, 0.0); // Initialize location with default values
     }
 
-    public UserReal(String uid, String email, String password, String fullName, String phoneNumber, String dateOfBirth, String gender) {
+    public UserReal(String uid, String email, String password, String fullName, String phoneNumber, String dateOfBirth, String gender, List<String> interests, GPSAddress location) {
         this.uid = uid;
         this.email = email;
         this.password = password;
@@ -22,8 +31,11 @@ public class UserReal {
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
+        this.interests = interests != null ? interests : new ArrayList<>();
+        this.location = location != null ? location : new GPSAddress(0.0, 0.0);
     }
 
+    // Getters and Setters
     public String getUid() {
         return uid;
     }
@@ -79,4 +91,21 @@ public class UserReal {
     public void setGender(String gender) {
         this.gender = gender;
     }
+
+    public List<String> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(List<String> interests) {
+        this.interests = interests;
+    }
+
+    public GPSAddress getLocation() {
+        return location;
+    }
+
+    public void setLocation(GPSAddress location) {
+        this.location = location;
+    }
+
 }
