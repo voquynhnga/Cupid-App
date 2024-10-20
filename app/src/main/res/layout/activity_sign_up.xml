@@ -112,6 +112,7 @@
                 android:layout_height="wrap_content"
                 android:text="Female" />
         </RadioGroup>
+
         <Button
             android:id="@+id/btnSignUp"
             android:layout_width="match_parent"
@@ -120,7 +121,8 @@
             android:background="@drawable/rounded_button"
             android:textColor="@android:color/white"
             android:layout_below="@id/rgGender"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            />
 
         <TextView
             android:id="@+id/orText"
@@ -131,7 +133,8 @@
             android:layout_marginTop="16dp"
             android:text="OR"
             android:textSize="16sp"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="@android:color/darker_gray"
+            />
 
         <Button
             android:id="@+id/btnContinueWithFb"
