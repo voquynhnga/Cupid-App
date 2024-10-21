@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         Log.d("DEBUG", "dung");
-//        FirebaseApp.initializeApp(this);
+        FirebaseApp.initializeApp(this);
 
 
         uploadImagesToGallery();
@@ -110,12 +110,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (binding.toolbar.findViewById(R.id.nav_profile) != null) {
             binding.toolbar.findViewById(R.id.nav_profile).setOnClickListener(view -> {
-                // Xử lý sự kiện cho Profile
                 if (navController.getCurrentDestination() != null) {
                     if (navController.getCurrentDestination().getId() == R.id.fragment_homepage) {
                         navController.navigate(R.id.action_MyProfileFragment_to_HomepageFragment);
                     } else if (navController.getCurrentDestination().getId() != R.id.MyProfileFragment) {
-                        navController.navigate(R.id.action_global_MyProfileFragment); // Đảm bảo bạn đã định nghĩa action này trong nav_graph.xml
+                        navController.navigate(R.id.action_global_MyProfileFragment);
                     } else {
                         Log.d("Navigation", "Already on MyProfileFragment");
                     }

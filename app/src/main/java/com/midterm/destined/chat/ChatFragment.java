@@ -5,11 +5,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -17,8 +16,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 import com.midterm.destined.R;
 
 import java.text.SimpleDateFormat;
@@ -28,57 +25,34 @@ import java.util.List;
 
 public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClickListener {
 
-
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mChatAdapter;
-    private RecyclerView.LayoutManager mChatLayoutManager;
-
-    private EditText mSendEditText;
-    private ImageView mSendButton, btnBack;
-
-    private String notification;
-
-    private String currentUserID, matchID, chatID;
-    private String matchName, matchProfile;
-
-    private String lastMessage, lastTimeStamp;
-    private String message, createdByUser, isSeen, messageID, currentUserName;
-    private Boolean currentUserBoolean;
-
-    ValueEventListener seenListener;
-    private DatabaseReference mDatabaseUser, mDatabaseChat;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_chat);
-
-        matchID = getArguments().getString("matchId");
-    }
-
+    private ImageView btnBack;
+    private SearchView searchView;
+    private RecyclerView listViewConversations;
+    private ChatAdapter chatAdapter;
+    private ArrayList<Message> messages;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
+        if (getActivity() instanceof AppCompatActivity) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        }
+
         searchView = view.findViewById(R.id.searchView);
-        mRecyclerView = view.findViewById(R.id.listViewConversations);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-
-
+        listViewConversations = view.findViewById(R.id.listViewConversations);
+        listViewConversations.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         messages = new ArrayList<>();
-        messages.add(new Message("Alice", "Hey! How are you?", getTime(),"me"));
-        messages.add(new Message("Bob", "I'm good. What about you?", getTime(),"me"));
-        messages.add(new Message("Charlie", "Have you completed the assignment?", getTime(),"me"));
-        messages.add(new Message("David", "Yes, I submitted it yesterday.", getTime(),"me"));
-        messages.add(new Message("Eve", "Let's meet up this weekend!", getTime(),"me"));
+        messages.add(new Message("Alice", "Hey! How are you?", getTime()));
+        messages.add(new Message("Bob", "I'm good. What about you?", getTime()));
+        messages.add(new Message("Charlie", "Have you completed the assignment?", getTime()));
+        messages.add(new Message("David", "Yes, I submitted it yesterday.", getTime()));
+        messages.add(new Message("Eve", "Let's meet up this weekend!", getTime()));
 
-        mChatAdapter = new ChatAdapter(messages, this);
-        mRecyclerView.setAdapter(mChatAdapter);
-        mRecyclerView.setHasFixedSize(true);
+        chatAdapter = new ChatAdapter(messages, this);
+        listViewConversations.setAdapter(chatAdapter);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -94,8 +68,6 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
             }
         });
 
-
-
         return view;
     }
 
@@ -107,8 +79,9 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
                 filteredMessages.add(message);
             }
         }
-        mChatAdapter.updateData(filteredMessages);
+        chatAdapter.updateMessages(filteredMessages);
     }
+
     public String getTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         return sdf.format(new Date());

@@ -30,13 +30,13 @@ public class HomepageFragment extends Fragment {
     ) {
         binding = FragmentHomepageBinding.inflate(inflater, container, false);
         //displayCardFragment();
-        if (savedInstanceState == null) {
-            getChildFragmentManager().beginTransaction()
-                    .replace(R.id.card_container, new CardFragment())
-                    .commit();
-
-
-        }
+//        if (savedInstanceState == null) {
+//            getChildFragmentManager().beginTransaction()
+//                    .replace(R.id.card_container, new CardFragment())
+//                    .commit();
+//
+//
+//        }
         return binding.getRoot();
 
     }
