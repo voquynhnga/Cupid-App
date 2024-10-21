@@ -1,5 +1,7 @@
 package com.midterm.destined.model;
 
+import java.util.ArrayList;
+
 public class User {
 
     private String uid;
@@ -12,36 +14,16 @@ public class User {
     private String bio;
     private String imageURL;
     private String location;
+    private String lastMessage;
+    private String lastTimeStamp, childID;
+
+    private ArrayList<User> userArrayList = new ArrayList<>();
 
     public User() {
         // Default constructor required for calls to DataSnapshot.getValue(User.class)
     }
 
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
-    public String getImageURL() {
-        return imageURL;
-    }
-
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public User(String uid, String email, String password, String fullName, String phoneNumber, String dateOfBirth, String gender, String bio, String imageURL, String location) {
+    public User(String uid, String email, String password, String fullName, String phoneNumber, String dateOfBirth, String gender, String bio, String imageURL, String location, String lastMessage, String lastTimeStamp, String childID, ArrayList<User> userArrayList) {
         this.uid = uid;
         this.email = email;
         this.password = password;
@@ -52,8 +34,11 @@ public class User {
         this.bio = bio;
         this.imageURL = imageURL;
         this.location = location;
+        this.lastMessage = lastMessage;
+        this.lastTimeStamp = lastTimeStamp;
+        this.childID = childID;
+        this.userArrayList = userArrayList;
     }
-
 
     public String getUid() {
         return uid;
@@ -109,5 +94,64 @@ public class User {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getLastMessage() {
+        return lastMessage;
+    }
+
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
+    }
+
+    public String getLastTimeStamp() {
+        return lastTimeStamp;
+    }
+
+    public void setLastTimeStamp(String lastTimeStamp) {
+        this.lastTimeStamp = lastTimeStamp;
+    }
+
+    public String getChildID() {
+        return childID;
+    }
+
+    public void setChildID(String childID) {
+        this.childID = childID;
+    }
+
+    public ArrayList<User> getUserArrayList() {
+        return userArrayList;
+    }
+    public void addUser(User user) {
+        userArrayList.add(user);
+    }
+
+    public void setUserArrayList(ArrayList<User> userArrayList) {
+        this.userArrayList = userArrayList;
     }
 }

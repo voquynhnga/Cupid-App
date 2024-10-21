@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.appcompat.widget.SearchView;
@@ -16,7 +17,8 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.midterm.destined.Message;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.midterm.destined.R;
 
 import java.text.SimpleDateFormat;
@@ -27,10 +29,33 @@ import java.util.List;
 public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClickListener {
 
 
-    private SearchView searchView;
-    private RecyclerView listViewConversations;
-    private ChatAdapter chatAdapter;
-    private List<Message> messages;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mChatAdapter;
+    private RecyclerView.LayoutManager mChatLayoutManager;
+
+    private EditText mSendEditText;
+    private ImageView mSendButton, btnBack;
+
+    private String notification;
+
+    private String currentUserID, matchID, chatID;
+    private String matchName, matchProfile;
+
+    private String lastMessage, lastTimeStamp;
+    private String message, createdByUser, isSeen, messageID, currentUserName;
+    private Boolean currentUserBoolean;
+
+    ValueEventListener seenListener;
+    private DatabaseReference mDatabaseUser, mDatabaseChat;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_chat);
+
+        matchID = getArguments().getString("matchId");
+    }
+
 
     @Nullable
     @Override
@@ -38,8 +63,8 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
         searchView = view.findViewById(R.id.searchView);
-        listViewConversations = view.findViewById(R.id.listViewConversations);
-        listViewConversations.setLayoutManager(new LinearLayoutManager(requireContext()));
+        mRecyclerView = view.findViewById(R.id.listViewConversations);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
 
 
@@ -51,9 +76,9 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
         messages.add(new Message("David", "Yes, I submitted it yesterday.", getTime(),"me"));
         messages.add(new Message("Eve", "Let's meet up this weekend!", getTime(),"me"));
 
-        chatAdapter = new ChatAdapter(messages, this);
-        listViewConversations.setAdapter(chatAdapter);
-        listViewConversations.setHasFixedSize(true);
+        mChatAdapter = new ChatAdapter(messages, this);
+        mRecyclerView.setAdapter(mChatAdapter);
+        mRecyclerView.setHasFixedSize(true);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -82,7 +107,7 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
                 filteredMessages.add(message);
             }
         }
-        chatAdapter.updateData(filteredMessages);
+        mChatAdapter.updateData(filteredMessages);
     }
     public String getTime() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
