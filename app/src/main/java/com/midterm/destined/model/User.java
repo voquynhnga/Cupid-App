@@ -29,7 +29,7 @@ public class User {
         this.password = password;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
-//        this.dateOfBirth = dateOfBirth;
+        this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.bio = bio;
         this.imageURL = imageURL;

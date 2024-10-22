@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.volley)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -78,6 +79,9 @@ dependencies {
     implementation ("com.google.android.material:material:1.11.0")
 
     implementation ("com.lorentzos.swipecards:library:1.0.9")
+
+    implementation ("com.jopencage:jopencage-geocoder:0.1.2")
+
 
 
 

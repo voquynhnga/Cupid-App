@@ -3,7 +3,7 @@ package com.midterm.destined.card;
 public class Card {
 
     private String name;
-//    private String age;
+    private String age;
     private String bio;
     //HASHMAP
 //    private String location;
@@ -11,9 +11,9 @@ public class Card {
 
     public Card(){}
 
-    public Card(String name, String bio, String profileImageUrl) {
+    public Card(String name, String profileImageUrl,  String bio, String age) {
         this.name = name;
-//        this.age = age;
+        this.age = age;
         this.bio = bio;
 //        this.location = location;
         this.profileImageUrl = profileImageUrl;
@@ -27,13 +27,13 @@ public class Card {
         this.name = name;
     }
 
-//    public String getAge() {
-//        return age;
-//    }
-//
-//    public void setAge(String age) {
-//        this.age = age;
-//    }
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
 
     public String getBio() {
         return bio;

@@ -1,35 +1,6 @@
-//package com.midterm.destined;
-//
-//import androidx.annotation.NonNull;
-//import androidx.fragment.app.Fragment;
-//import androidx.viewpager2.adapter.FragmentStateAdapter;
-//
-//import com.midterm.destined.model.User;
-//
-//import java.util.List;
-//
-//public class CardAdapter extends FragmentStateAdapter {
-//
-//    private List<User> profiles;
-//
-//    public CardAdapter(Fragment fragment, List<User> profiles) {
-//        super(fragment);
-//        this.profiles = profiles;
-//    }
-//
-//    @NonNull
-//    @Override
-//    public Fragment createFragment(int position) {
-//        return CardFragment.newInstance(profiles.get(position));
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        return profiles.size();
-//    }
-//}
 
 package com.midterm.destined.card;
+
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -42,6 +13,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.midterm.destined.R;
+
+//import com.jopencage.api.JOpenCageGeocoder;
+//import com.jopencage.api.JOpenCageReverseRequest;
+//import com.jopencage.api.JOpenCageResponse;
+
 
 import java.util.List;
 
@@ -79,24 +55,49 @@ public class CardAdapter extends BaseAdapter {
 
         Card card = cards.get(position);
         TextView name = convertView.findViewById(R.id.userName);
+        TextView age = convertView.findViewById(R.id.age);
 //        TextView location = convertView.findViewById(R.id.location);
         TextView bio = convertView.findViewById(R.id.bio);
         ImageView profileImage = convertView.findViewById(R.id.profileImage);
 
         name.setText(card.getName());
 //        location.setText(card.getLocation());
+        age.setText(card.getAge());
         bio.setText(card.getBio());
 
-        if (card.getProfileImageUrl() != null && card.getProfileImageUrl().equals("default")) {
+
+//        if (card.getProfileImageUrl() != null && card.getProfileImageUrl().equals("default")) {
+//            Glide.with(context).load(card.getProfileImageUrl()).into(profileImage);
+//        } else {
+//            Glide.with(context).load(R.drawable.avatardefault).into(profileImage);
+//
+//        }
+
+        if (card.getProfileImageUrl() != null && !card.getProfileImageUrl().equals("")) {
             Glide.with(context).load(card.getProfileImageUrl()).into(profileImage);
         } else {
             Glide.with(context).load(R.drawable.avatardefault).into(profileImage);
-
         }
+
 
 
         return convertView;
     }
+
+
+
+//    JOpenCageGeocoder jOCG = new JOpenCageGeocoder("fc4e36bbe5d241f0937e85501b21190e");
+//
+//    JOpenCageReverseRequest req = new JOpenCageReverseRequest(41.40015, 2.15765);
+//req.setLanguage("es"); // we want Spanish address format
+//req.setLimit(5); // only return the first 5 results
+//
+//    JOpenCageResponse res = jOpenCageGeocoder.reverse(req);
+//
+//    // get the formatted address of the first result:
+//    String fAddress = res.getResults().get(0).getFormatted();
+//    System.out.print(fAddress)
+// 'Travessera de Gràcia, 142, 08012 Barcelona, España'
 }
 
 
