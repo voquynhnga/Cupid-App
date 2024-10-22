@@ -121,7 +121,7 @@ public class SignUp extends AppCompatActivity {
                             List<String> url = new ArrayList<>();
 
                             // Tạo một đối tượng UserReal
-                            UserReal user = new UserReal(uid, email, password, fullName, phone, dob, gender, interests, location, pic, url );
+                            UserReal user = new UserReal(uid, email, fullName, phone, dob, gender, interests, location, pic, url );
 
                             // Chuyển đối tượng UserReal đến activity tiếp theo
                             Intent intent = new Intent(SignUp.this, Interests.class);

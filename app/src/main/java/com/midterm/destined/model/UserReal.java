@@ -34,10 +34,10 @@ public class UserReal implements Serializable {
         this.profilePicture = "gs://cupid-app-ad700.appspot.com/avatar_def.jpg";
     }
 
-    public UserReal(String uid, String email, String password, String fullName, String phoneNumber, String dateOfBirth, String gender, List<String> interests, GPSAddress location, String profilePicture, List<String> imageUrls) {
+    public UserReal(String uid, String email, String fullName, String phoneNumber, String dateOfBirth, String gender, List<String> interests, GPSAddress location, String profilePicture, List<String> imageUrls) {
         this.uid = uid;
         this.email = email;
-        this.password = password;
+
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
@@ -67,13 +67,13 @@ public class UserReal implements Serializable {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+//    public String getPassword() {
+//        return password;
+//    }
+//
+//    public void setPassword(String password) {
+//        this.password = password;
+//    }
 
     public String getFullName() {
         return fullName;

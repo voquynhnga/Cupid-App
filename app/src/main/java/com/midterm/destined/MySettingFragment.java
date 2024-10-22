@@ -31,7 +31,7 @@ public class MySettingFragment extends Fragment {
     private FirebaseFirestore firestore;
     private FirebaseAuth mAuth;
     private ListenerRegistration userListener;
-    private String myPasswordInternal;
+   /// private String myPasswordInternal;
     private List<String> myInterestInternal;
     private GPSAddress myLocationGPS;
 
@@ -144,7 +144,7 @@ public class MySettingFragment extends Fragment {
 
                     updatedUser.setUid(uid);
                     updatedUser.setEmail(mAuth.getCurrentUser().getEmail());
-                    updatedUser.setPassword(myPasswordInternal);
+                    //updatedUser.setPassword(myPasswordInternal);
                     updatedUser.setInterests(myInterestInternal);
                     updatedUser.setLocation(myLocationGPS);
                     updatedUser.setFullName(fullName);
@@ -196,7 +196,7 @@ public class MySettingFragment extends Fragment {
             if (documentSnapshot != null && documentSnapshot.exists()) {
                 UserReal user = documentSnapshot.toObject(UserReal.class);
                 if (user != null) {
-                    myPasswordInternal = user.getPassword();
+                    //myPasswordInternal = user.getPassword();
                     myInterestInternal = user.getInterests();
                     myLocationGPS = user.getLocation();
                     binding.edFullName.setText(user.getFullName());
