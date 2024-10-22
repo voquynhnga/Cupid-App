@@ -168,7 +168,7 @@ public class MyProfileFragment extends Fragment {
         byte[] imageData = baos.toByteArray();
 
         // Tạo một đường dẫn ngẫu nhiên cho ảnh trong Firebase Storage
-        String fileName = "profile_images/" + uid + "/" + UUID.randomUUID() + ".jpg";
+        String fileName = "images/" + uid + "/" + UUID.randomUUID() + ".jpg";
         StorageReference storageRef = storage.getReference().child(fileName);
 
         // Upload ảnh lên Firebase Storage
