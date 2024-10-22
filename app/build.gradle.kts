@@ -80,7 +80,6 @@ dependencies {
 
     implementation ("com.lorentzos.swipecards:library:1.0.9")
 
-    implementation ("com.jopencage:jopencage-geocoder:0.1.2")
 
 
 
