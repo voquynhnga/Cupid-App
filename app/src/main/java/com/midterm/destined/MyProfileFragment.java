@@ -17,6 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.midterm.destined.databinding.FragmentMyProfileBinding;
 
 import java.io.IOException;
@@ -30,7 +33,8 @@ public class MyProfileFragment extends Fragment {
 
     private String mParam1;
     private String mParam2;
-
+    private FirebaseFirestore firestore ;
+    private String uid ;
 
 
     @Override
@@ -39,34 +43,46 @@ public class MyProfileFragment extends Fragment {
 //        if (getArguments() != null) {
 //
 //        }
-        imagePickerLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == getActivity().RESULT_OK && result.getData() != null) {
-                        Uri selectedImageUri = result.getData().getData();
-                        if (selectedImageUri != null) {
-                            try {
-                                // Chuyển đổi URI thành Bitmap
-                                Bitmap originalBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImageUri);
-
-                                // Cắt ảnh theo tỷ lệ 1:1
-                                Bitmap croppedBitmap = cropCenterSquare(originalBitmap);
-
-                                // Scale ảnh thành 300x300
-                                Bitmap scaledBitmap = Bitmap.createScaledBitmap(croppedBitmap, 300, 300, true);
-
-                                // Hiển thị ảnh đã được scale lên ImageView
-                                binding.imAvatar.setImageBitmap(scaledBitmap);
-
-                            } catch (IOException e) {
-                                Toast.makeText(getActivity(), "Failed to load image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    } else {
-                        Toast.makeText(getActivity(), "Image selection canceled", Toast.LENGTH_SHORT).show();
-                    }
+//        imagePickerLauncher = registerForActivityResult(
+//                new ActivityResultContracts.StartActivityForResult(),
+//                result -> {
+//                    if (result.getResultCode() == getActivity().RESULT_OK && result.getData() != null) {
+//                        Uri selectedImageUri = result.getData().getData();
+//                        if (selectedImageUri != null) {
+//                            try {
+//                                // Chuyển đổi URI thành Bitmap
+//                                Bitmap originalBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImageUri);
+//
+//                                // Cắt ảnh theo tỷ lệ 1:1
+//                                Bitmap croppedBitmap = cropCenterSquare(originalBitmap);
+//
+//                                // Scale ảnh thành 300x300
+//                                Bitmap scaledBitmap = Bitmap.createScaledBitmap(croppedBitmap, 300, 300, true);
+//
+//                                // Hiển thị ảnh đã được scale lên ImageView
+//                                binding.imAvatar.setImageBitmap(scaledBitmap);
+//
+//                            } catch (IOException e) {
+//                                Toast.makeText(getActivity(), "Failed to load image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    } else {
+//                        Toast.makeText(getActivity(), "Image selection canceled", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//        );
+        firestore = FirebaseFirestore.getInstance();
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        firestore.collection("users").document(uid).get().addOnSuccessListener(documentSnapshot -> {
+            if(documentSnapshot.exists()) {
+                String profileUrl = documentSnapshot.getString("profilePicture");
+                if(profileUrl != null) {
+                    Glide.with(getContext()).load(profileUrl).into(binding.imAvatar);
                 }
-        );
+            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(getContext(), "Lỗi khi tải dữ liệu người dùng", Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override

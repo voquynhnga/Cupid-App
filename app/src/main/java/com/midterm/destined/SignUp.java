@@ -114,9 +114,11 @@ public class SignUp extends AppCompatActivity {
                             String uid = firebaseUser.getUid();
                             List<String> interests = new ArrayList<>(); // Ban đầu rỗng
                             GPSAddress location = new GPSAddress(0.0, 0.0); // Ban đầu rỗng
+                            String pic = "";
+                            List<String> url = new ArrayList<>();
 
                             // Tạo một đối tượng UserReal
-                            UserReal user = new UserReal(uid, email, password, fullName, phone, dob, gender, interests, location);
+                            UserReal user = new UserReal(uid, email, password, fullName, phone, dob, gender, interests, location, pic, url );
 
                             // Chuyển đối tượng UserReal đến activity tiếp theo
                             Intent intent = new Intent(SignUp.this, Interests.class);

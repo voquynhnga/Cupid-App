@@ -15,15 +15,19 @@ public class UserReal implements Serializable {
     private String dateOfBirth;
     private String gender;
     private List<String> interests; // New field for interests
-    private GPSAddress location; // New field for location
+    private GPSAddress location;
+    private String profilePicture;
+    private List<String> imageUrls;
 
     public UserReal() {
         // Default constructor required for calls to DataSnapshot.getValue(UserReal.class)
         this.interests = new ArrayList<>(); // Initialize interests list
-        this.location = new GPSAddress(0.0, 0.0); // Initialize location with default values
+        this.location = new GPSAddress(0.0, 0.0);
+        this.imageUrls = new ArrayList<>();
+        this.profilePicture = "gs://cupid-app-ad700.appspot.com/avatar_def.jpg";
     }
 
-    public UserReal(String uid, String email, String password, String fullName, String phoneNumber, String dateOfBirth, String gender, List<String> interests, GPSAddress location) {
+    public UserReal(String uid, String email, String password, String fullName, String phoneNumber, String dateOfBirth, String gender, List<String> interests, GPSAddress location, String profilePicture, List<String> imageUrls) {
         this.uid = uid;
         this.email = email;
         this.password = password;
@@ -33,6 +37,8 @@ public class UserReal implements Serializable {
         this.gender = gender;
         this.interests = interests != null ? interests : new ArrayList<>();
         this.location = location != null ? location : new GPSAddress(0.0, 0.0);
+        this.profilePicture = profilePicture != null ? profilePicture : "gs://cupid-app-ad700.appspot.com/avatar_def.jpg";
+        this.imageUrls = imageUrls != null ? imageUrls : new ArrayList<>();
     }
 
     // Getters and Setters
@@ -107,5 +113,11 @@ public class UserReal implements Serializable {
     public void setLocation(GPSAddress location) {
         this.location = location;
     }
+
+    public String getProfilePicture() { return profilePicture; }
+    public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
+
+    public List<String> getImageUrls() { return imageUrls; }
+    public void setImageUrls(List<String> imageUrls) { this.imageUrls = imageUrls; }
 
 }

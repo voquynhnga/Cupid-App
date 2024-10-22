@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.firebase.database)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -72,7 +73,7 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 
-    implementation ("com.google.android.material:material:1.11.0") // Bo tròn hình ảnh
+    implementation ("com.google.android.material:material:1.11.0")
 
     implementation ("com.google.android.gms:play-services-location:21.0.1")
 }
