@@ -1,8 +1,11 @@
 package com.midterm.destined.model;
 
-import java.util.ArrayList;
 
-public class User {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class UserReal implements Serializable {
 
     private String uid;
     private String email;
@@ -16,14 +19,18 @@ public class User {
 //    private String location;
 //    private String lastMessage;
 //    private String lastTimeStamp, childID;
+    private List<String> interests; // New field for interests
+    private GPSAddress location; // New field for location
 
     private ArrayList<User> userArrayList = new ArrayList<>();
 
-    public User() {
-        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    public UserReal() {
+        // Default constructor required for calls to DataSnapshot.getValue(UserReal.class)
+        this.interests = new ArrayList<>(); // Initialize interests list
+        this.location = new GPSAddress(0.0, 0.0); // Initialize location with default values
     }
 
-    public User(String uid, String email, String password, String fullName, String phoneNumber, String dateOfBirth, String gender, String bio, String imageURL, String location) {
+    public UserReal(String uid, String email, String password, String fullName, String phoneNumber, String dateOfBirth, String gender, List<String> interests, GPSAddress location) {
         this.uid = uid;
         this.email = email;
         this.password = password;
@@ -36,6 +43,8 @@ public class User {
 //        this.location = location;
 
         this.userArrayList = userArrayList;
+        this.interests = interests != null ? interests : new ArrayList<>();
+        this.location = location != null ? location : new GPSAddress(0.0, 0.0);
     }
 
     public String getUid() {
@@ -129,4 +138,21 @@ public class User {
     public void setUserArrayList(ArrayList<User> userArrayList) {
         this.userArrayList = userArrayList;
     }
+
+    public List<String> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(List<String> interests) {
+        this.interests = interests;
+    }
+
+    public GPSAddress getLocation() {
+        return location;
+    }
+
+    public void setLocation(GPSAddress location) {
+        this.location = location;
+    }
+
 }

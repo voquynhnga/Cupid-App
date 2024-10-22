@@ -4,21 +4,32 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.Button;
+
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.midterm.destined.databinding.ActivitySignUpBinding;
+import com.midterm.destined.model.GPSAddress;
 import com.midterm.destined.model.User;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class SignUp extends AppCompatActivity {
 
@@ -103,16 +114,25 @@ public class SignUp extends AppCompatActivity {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
                             String uid = firebaseUser.getUid();
-                            User user = new User(uid, email, password, fullName, phone, dob, gender,"", "","");
-                            saveUserToFirestore(user);
+                            List<String> interests = new ArrayList<>(); // Ban đầu rỗng
+                            GPSAddress location = new GPSAddress(0.0, 0.0); // Ban đầu rỗng
+
+                            // Tạo một đối tượng UserReal
+                            UserReal user = new UserReal(uid, email, password, fullName, phone, dob, gender, interests, location);
+
+                            // Chuyển đối tượng UserReal đến activity tiếp theo
+                            Intent intent = new Intent(SignUp.this, Interests.class);
+                            intent.putExtra("user", user); // Serialize đối tượng UserReal
+                            startActivity(intent);
+                            finish();
                         }
                     } else {
-                        Toast.makeText(SignUp.this, "Authentication failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignUp.this, "Đăng nhập không thành công: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    private void saveUserToFirestore(User user) {
+    private void saveUserToFirestore(UserReal user) {
         db.collection("users").document(user.getUid())
                 .set(user)
                 .addOnCompleteListener(task -> {
