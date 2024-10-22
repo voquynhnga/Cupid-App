@@ -17,17 +17,29 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.midterm.destined.databinding.ActivityUploadPhotoBinding;
 import com.midterm.destined.model.UserReal;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class UploadPhoto extends AppCompatActivity {
     private ImageView[] images = new ImageView[6];
     private int selectedIndex = -1;
     private ActivityUploadPhotoBinding binding;
     private Button btn;
-    private List<String> selectedInterests; // Danh sách sở thích
+    private List<String> selectedInterests;
+    private StorageReference ref;
+    private FirebaseAuth auth;
+    private FirebaseFirestore firestore;
+    private Uri[] imageUris = new Uri[6];
+    private UserReal user;
+    private FirebaseStorage storage;
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -38,6 +50,7 @@ public class UploadPhoto extends AppCompatActivity {
                         if (selectedIndex != -1) {
                             images[selectedIndex].setImageURI(imageUri);
                             images[selectedIndex].setScaleType(ImageView.ScaleType.CENTER_CROP);
+                            imageUris[selectedIndex] = imageUri;
                             Toast.makeText(this, "Ảnh đã được chọn " + (selectedIndex + 1), Toast.LENGTH_SHORT).show();
                             selectedIndex = -1;
                         }
@@ -51,10 +64,12 @@ public class UploadPhoto extends AppCompatActivity {
         binding = ActivityUploadPhotoBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        UserReal user = (UserReal) getIntent().getSerializableExtra("user");
+        user = (UserReal) getIntent().getSerializableExtra("user");
 
-        // Lấy danh sách sở thích từ Intent
         selectedInterests = getIntent().getStringArrayListExtra("selectedInterests");
+        firestore = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+
 
         images[0] = binding.imageSlot1;
         images[1] = binding.imageSlot2;
@@ -64,6 +79,7 @@ public class UploadPhoto extends AppCompatActivity {
         images[5] = binding.imageSlot6;
 
         btn = binding.btnContinue;
+        ref = storage.getReference();
 
         for (int i = 0; i < images.length; ++i) {
             final int index = i;
@@ -78,10 +94,20 @@ public class UploadPhoto extends AppCompatActivity {
 //            intent.putStringArrayListExtra("selectedInterests", (ArrayList<String>) selectedInterests);
 //            startActivity(intent);
 //        });
+//        btn.setOnClickListener(v -> {
+//            Intent intent = new Intent(UploadPhoto.this, MyLocation.class);
+//            intent.putExtra("user", user); // Chuyển đối tượng UserReal đã cập nhật
+//            startActivity(intent);
+//        });
+
         btn.setOnClickListener(v -> {
-            Intent intent = new Intent(UploadPhoto.this, MyLocation.class);
-            intent.putExtra("user", user); // Chuyển đối tượng UserReal đã cập nhật
-            startActivity(intent);
+            if(noImageSelected()) {
+                user.setProfilePicture("gs://cupid-app-ad700.appspot.com/avatar_def.jpg");
+                saveUserDataAndProceed();
+            }
+            else {
+                uploadImagesAndProceed();
+            }
         });
 
     }
@@ -89,5 +115,76 @@ public class UploadPhoto extends AppCompatActivity {
     private void openImageChooser() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         imagePickerLauncher.launch(intent);
+    }
+
+    private boolean noImageSelected() {
+        for (Uri uri : imageUris) {
+            if (uri != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void proceedToNextActivity() {
+        Intent intent = new Intent(UploadPhoto.this, MyLocation.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
+    }
+
+    private int countSelectedImages() {
+        int count = 0;
+        for (Uri uri : imageUris) {
+            if (uri != null) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private void uploadImagesAndProceed() {
+        List<String> imageUrls = new ArrayList<>();
+        int totalSelectedImages = countSelectedImages();  // Tổng số ảnh đã chọn
+
+        for (int i = 0; i < imageUris.length; ++i) {
+            Uri imageUri = imageUris[i];
+            if (imageUri != null) {
+                StorageReference imageRef = ref.child("images/" + user.getUid() + "/image_" + i);
+
+                int finalI = i;
+                imageRef.putFile(imageUri).addOnSuccessListener(taskSnapshot ->
+                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                            imageUrls.add(uri.toString());
+
+
+                            if (finalI == 0) {
+                                user.setProfilePicture(uri.toString());
+                            }
+
+
+                            if (imageUrls.size() == totalSelectedImages) {
+                                user.setImageUrls(imageUrls);
+                                saveUserDataAndProceed();
+                            }
+                        })
+                ).addOnFailureListener(e -> {
+                    Toast.makeText(UploadPhoto.this, "Lỗi upload ảnh: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+            }
+        }
+    }
+
+
+    private void saveUserDataAndProceed() {
+        firestore.collection("users")
+                .document(user.getUid())
+                .set(user)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        proceedToNextActivity();
+                    } else {
+                        Toast.makeText(UploadPhoto.this, "Lỗi khi lưu thông tin người dùng", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
