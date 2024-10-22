@@ -3,18 +3,19 @@ package com.midterm.destined.card;
 public class Card {
 
     private String name;
-    private String age;
+//    private String age;
     private String bio;
-    private String location;
+    //HASHMAP
+//    private String location;
     private String profileImageUrl;
 
     public Card(){}
 
-    public Card(String name, String age, String bio, String location, String profileImageUrl) {
+    public Card(String name, String bio, String profileImageUrl) {
         this.name = name;
-        this.age = age;
+//        this.age = age;
         this.bio = bio;
-        this.location = location;
+//        this.location = location;
         this.profileImageUrl = profileImageUrl;
     }
 
@@ -26,13 +27,13 @@ public class Card {
         this.name = name;
     }
 
-    public String getAge() {
-        return age;
-    }
-
-    public void setAge(String age) {
-        this.age = age;
-    }
+//    public String getAge() {
+//        return age;
+//    }
+//
+//    public void setAge(String age) {
+//        this.age = age;
+//    }
 
     public String getBio() {
         return bio;
@@ -42,13 +43,13 @@ public class Card {
         this.bio = bio;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
+//    public String getLocation() {
+//        return location;
+//    }
+//
+//    public void setLocation(String location) {
+//        this.location = location;
+//    }
 
     public String getProfileImageUrl() {
         return profileImageUrl;

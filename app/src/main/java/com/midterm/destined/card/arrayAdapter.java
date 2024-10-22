@@ -49,8 +49,8 @@ public class arrayAdapter extends ArrayAdapter<Card> {
 
 
         viewHolder.name.setText(card_item.getName());
-        viewHolder.age.setText(card_item.getAge());
-        viewHolder.location.setText(card_item.getLocation());
+//        viewHolder.age.setText(card_item.getAge());
+//        viewHolder.location.setText(card_item.getLocation());
         viewHolder.bio.setText(card_item.getBio());
 
         if (card_item.getProfileImageUrl().equals("default")) {

@@ -4,12 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_item">
 
-    <!-- ImageView -->
     <ImageView
         android:id="@+id/profileImage"
         android:layout_width="match_parent"
-        android:layout_height="360dp"
-        android:layout_marginTop="200dp"
+        android:layout_height="400dp"
         android:scaleType="centerCrop"
         android:src="@drawable/sample_person"
         app:layout_constraintDimensionRatio="h,3:4"
@@ -18,7 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Tên người dùng -->
     <TextView
         android:id="@+id/userName"
         android:layout_width="wrap_content"

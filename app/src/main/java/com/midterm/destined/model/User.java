@@ -13,7 +13,7 @@ public class User {
     private String gender;
     private String bio;
     private String imageURL;
-    private String location;
+//    private String location;
 //    private String lastMessage;
 //    private String lastTimeStamp, childID;
 
@@ -29,11 +29,11 @@ public class User {
         this.password = password;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
-        this.dateOfBirth = dateOfBirth;
+//        this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.bio = bio;
         this.imageURL = imageURL;
-        this.location = location;
+//        this.location = location;
 
         this.userArrayList = userArrayList;
     }
@@ -110,13 +110,13 @@ public class User {
         this.imageURL = imageURL;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
+//    public String getLocation() {
+//        return location;
+//    }
+//
+//    public void setLocation(String location) {
+//        this.location = location;
+//    }
 
 
     public ArrayList<User> getUserArrayList() {

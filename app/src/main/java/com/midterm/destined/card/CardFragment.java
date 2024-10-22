@@ -115,7 +115,7 @@ public class CardFragment extends Fragment {
         cardAdapter = new CardAdapter(getContext(), cardList);
         flingContainer.setAdapter(cardAdapter);
 
-//        fetchUsersFromFirebase();
+        fetchUsersFromFirebase();
 
         return view;
 
@@ -129,14 +129,12 @@ public class CardFragment extends Fragment {
 
         flingContainer = view.findViewById(R.id.frame);
 
-        // Khởi tạo adapter
+
         cardAdapter = new CardAdapter(getContext(), cardList);
         flingContainer.setAdapter(cardAdapter);
 
-        // Lấy dữ liệu từ Firebase
         fetchUsersFromFirebase();
 
-        // Xử lý quẹt trái/phải
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
@@ -172,7 +170,8 @@ public class CardFragment extends Fragment {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     User user = document.toObject(User.class);
 
-                    Card card = new Card(user.getFullName(), user.getImageURL(), user.getLocation(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())));
+                    //Card card = new Card(user.getFullName(), user.getImageURL(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())));
+                    Card card = new Card(user.getFullName(), user.getImageURL(), user.getBio());
                     cardList.add(card);
                     Log.d("DEBUG", "User profile: " + user.getFullName());
 
@@ -183,16 +182,16 @@ public class CardFragment extends Fragment {
             }
         });
     }
-    public static int calculateAge(String dateOfBirth) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate birthDate = LocalDate.parse(dateOfBirth, formatter);
-        LocalDate currentDate = LocalDate.now();
-        if ((birthDate != null) && (currentDate != null)) {
-            return Period.between(birthDate, currentDate).getYears();
-
-        }
-        else{
-            return 0;
-        }
-    }
+//    public static int calculateAge(String dateOfBirth) {
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//        LocalDate birthDate = LocalDate.parse(dateOfBirth, formatter);
+//        LocalDate currentDate = LocalDate.now();
+//        if ((birthDate != null) && (currentDate != null)) {
+//            return Period.between(birthDate, currentDate).getYears();
+//
+//        }
+//        else{
+//            return 0;
+//        }
+//    }
 }
