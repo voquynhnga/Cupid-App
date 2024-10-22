@@ -13,7 +13,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.midterm.destined.card.CardFragment;
 import com.midterm.destined.databinding.FragmentHomepageBinding;
-import com.midterm.destined.model.User;
+import com.midterm.destined.model.UserReal;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -13,7 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.midterm.destined.R;
-import com.midterm.destined.model.User;
+import com.midterm.destined.model.UserReal;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -89,7 +89,7 @@ public class CardFragment extends Fragment {
         db.collection("users").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    User user = document.toObject(User.class);
+                    UserReal user = document.toObject(UserReal.class);
 
                     Card card = new Card(user.getFullName(), user.getImageURL(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())));
                     cardList.add(card);

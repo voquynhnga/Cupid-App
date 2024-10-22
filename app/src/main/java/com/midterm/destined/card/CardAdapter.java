@@ -56,7 +56,7 @@ public class CardAdapter extends BaseAdapter {
         Card card = cards.get(position);
         TextView name = convertView.findViewById(R.id.userName);
         TextView age = convertView.findViewById(R.id.age);
-//        TextView location = convertView.findViewById(R.id.location);
+        //TextView location = convertView.findViewById(R.id.location);
         TextView bio = convertView.findViewById(R.id.bio);
         ImageView profileImage = convertView.findViewById(R.id.profileImage);
 
@@ -66,12 +66,7 @@ public class CardAdapter extends BaseAdapter {
         bio.setText(card.getBio());
 
 
-//        if (card.getProfileImageUrl() != null && card.getProfileImageUrl().equals("default")) {
-//            Glide.with(context).load(card.getProfileImageUrl()).into(profileImage);
-//        } else {
-//            Glide.with(context).load(R.drawable.avatardefault).into(profileImage);
-//
-//        }
+
 
         if (card.getProfileImageUrl() != null && !card.getProfileImageUrl().equals("")) {
             Glide.with(context).load(card.getProfileImageUrl()).into(profileImage);

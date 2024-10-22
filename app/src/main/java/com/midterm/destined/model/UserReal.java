@@ -24,7 +24,7 @@ public class UserReal implements Serializable {
     private String profilePicture;
     private List<String> imageUrls;
 
-    private ArrayList<User> userArrayList = new ArrayList<>();
+    private ArrayList<UserReal> userArrayList = new ArrayList<>();
 
     public UserReal() {
         // Default constructor required for calls to DataSnapshot.getValue(UserReal.class)
@@ -44,8 +44,6 @@ public class UserReal implements Serializable {
         this.gender = gender;
         this.bio = bio;
         this.imageURL = imageURL;
-//        this.location = location;
-
         this.userArrayList = userArrayList;
         this.interests = interests != null ? interests : new ArrayList<>();
         this.location = location != null ? location : new GPSAddress(0.0, 0.0);
@@ -134,14 +132,14 @@ public class UserReal implements Serializable {
 //    }
 
 
-    public ArrayList<User> getUserArrayList() {
+    public ArrayList<UserReal> getUserArrayList() {
         return userArrayList;
     }
-    public void addUser(User user) {
+    public void addUser(UserReal user) {
         userArrayList.add(user);
     }
 
-    public void setUserArrayList(ArrayList<User> userArrayList) {
+    public void setUserArrayList(ArrayList<UserReal> userArrayList) {
         this.userArrayList = userArrayList;
     }
 

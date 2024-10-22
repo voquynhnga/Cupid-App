@@ -25,7 +25,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.midterm.destined.databinding.ActivitySignUpBinding;
 import com.midterm.destined.model.GPSAddress;
-import com.midterm.destined.model.User;
+import com.midterm.destined.model.UserReal;
+import com.midterm.destined.model.UserReal;
 
 import java.util.ArrayList;
 import java.util.Calendar;
