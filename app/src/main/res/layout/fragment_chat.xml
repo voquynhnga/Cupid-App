@@ -22,17 +22,24 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:iconifiedByDefault="false"
-             />
+            />
 
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listViewConversations"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="596dp"
+        android:layout_marginTop="8dp"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp"
-        android:padding="8dp"
-        android:layout_marginTop="8dp" />
+        android:padding="8dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_add"
+        android:layout_width="329dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:srcCompat="@drawable/add" />
 
 </LinearLayout>

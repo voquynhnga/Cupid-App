@@ -40,7 +40,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
-    implementation("org.jetbrains.kotlin:kotlin-script-runtime:1.7.10") // Thêm dòng này với phiên bản phù hợp
+   // implementation("org.jetbrains.kotlin:kotlin-script-runtime:1.7.10") // Thêm dòng này với phiên bản phù hợp
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

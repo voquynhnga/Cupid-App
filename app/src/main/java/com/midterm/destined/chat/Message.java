@@ -1,17 +1,18 @@
-package com.midterm.destined;
+package com.midterm.destined.chat;
 
 public class Message {
 
     private String sender;
     private String content;
     private String time;
-    private String currentUser;
+    private String chatId;
 
-    public Message(String sender, String content, String time, String currentUser) {
+
+    public Message(String sender, String content, String time, String chatId) {
         this.sender = sender;
         this.content = content;
         this.time = time;
-        this.currentUser = currentUser;
+        this.chatId = chatId;
 
     }
 
@@ -31,13 +32,7 @@ public class Message {
         this.time = time;
     }
 
-    public String getCurrentUser() {
-        return currentUser;
-    }
 
-    public void setCurrentUser(String currentUser) {
-        this.currentUser = currentUser;
-    }
 
     public String getContent() {
         return content;
@@ -46,7 +41,5 @@ public class Message {
     public String getTime() {
         return time;  // Getter for time
     }
-    public boolean isSender() {
-        return sender.equals(currentUser);
-    }
+
 }

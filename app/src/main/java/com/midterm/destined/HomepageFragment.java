@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -42,18 +43,26 @@ public class HomepageFragment extends Fragment {
 
         return binding.getRoot();
     }
+//    private void displayCardFragment() {
+//
+//        CardFragment cardFragment = new CardFragment();
+//
+//        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+//        transaction.replace(R.id.fragment_card, cardFragment);
+//        transaction.commit();
+//    }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         binding.filter.setOnClickListener(v -> {
-            Log.d("DEBUG", "an zo search");
             NavHostFragment.findNavController(HomepageFragment.this)
                     .navigate(R.id.action_HomepageFragment_to_SearchFragment);
         });
 
         binding.story.setOnClickListener(v -> {
+
             NavHostFragment.findNavController(HomepageFragment.this)
                     .navigate(R.id.action_global_AddStoryFragment);
         });
