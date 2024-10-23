@@ -4,9 +4,8 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.view.View;
 import android.widget.DatePicker;
-import android.widget.Button;
-
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -26,7 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.midterm.destined.databinding.ActivitySignUpBinding;
 import com.midterm.destined.model.GPSAddress;
 import com.midterm.destined.model.UserReal;
-import com.midterm.destined.model.UserReal;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,9 +32,9 @@ import java.util.List;
 
 public class SignUp extends AppCompatActivity {
 
-    private EditText dateOfBirth, password, confirmPassword, email, fullName, phoneNumber;
+    private EditText dateOfBirth, password, confirmPassword, email, fullName, phoneNumber, userName;
     private ActivitySignUpBinding binding;
-    private TextView textViewLogin;
+    private TextView textViewLogin, tvErr;
     private Button btSignUp;
     private RadioGroup genderGroup;
     private FirebaseAuth mAuth;
@@ -61,6 +59,8 @@ public class SignUp extends AppCompatActivity {
         textViewLogin = binding.alreadyHaveAccount;
         btSignUp = binding.btnSignUp;
         genderGroup = binding.rgGender;
+        userName = binding.etUserName;
+        tvErr = binding.tvUsernameError;
 
         dateOfBirth.setOnClickListener(v -> showDatePicker());
 
@@ -77,9 +77,10 @@ public class SignUp extends AppCompatActivity {
             String phoneInput = phoneNumber.getText().toString().trim();
             String dobInput = dateOfBirth.getText().toString().trim();
             String genderInput = getSelectedGender();
+            String userNameInput = userName.getText().toString().trim();
 
             if (passwordInput.equals(confirmPasswordInput)) {
-                registerUser(emailInput, passwordInput, fullNameInput, phoneInput, dobInput, genderInput);
+                checkUsernameExists(userNameInput, emailInput, passwordInput, fullNameInput, phoneInput, dobInput, genderInput);
             } else {
                 Toast.makeText(SignUp.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             }
@@ -108,24 +109,38 @@ public class SignUp extends AppCompatActivity {
         return radioButton == null ? "" : radioButton.getText().toString();
     }
 
-    private void registerUser(String email, String password, String fullName, String phone, String dob, String gender) {
+    private void checkUsernameExists(String username, String email, String password, String fullName, String phone, String dob, String gender) {
+        db.collection("users").whereEqualTo("username", username).get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        tvErr.setText("Username already exists, please choose another username.");
+                    } else {
+                        registerUser(email, password, fullName, phone, dob, gender, username);
+                    }
+                });
+    }
+
+    private void registerUser(String email, String password, String fullName, String phone, String dob, String gender, String userName) {
+        if (email.isEmpty() || password.isEmpty() || fullName.isEmpty() || phone.isEmpty() || dob.isEmpty() || gender.isEmpty()) {
+            tvErr.setText("Please fill in all the information.");
+            return;
+        }
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
                             String uid = firebaseUser.getUid();
-                            List<String> interests = new ArrayList<>(); // Ban đầu rỗng
-                            GPSAddress location = new GPSAddress(0.0, 0.0); // Ban đầu rỗng
+                            List<String> interests = new ArrayList<>();
+                            GPSAddress location = new GPSAddress(0.0, 0.0);
                             String pic = "";
                             List<String> url = new ArrayList<>();
 
-                            // Tạo một đối tượng UserReal
-                            UserReal user = new UserReal(uid, email, fullName, phone, dob, gender, interests, location, pic, url );
 
-                            // Chuyển đối tượng UserReal đến activity tiếp theo
+                            UserReal user = new UserReal(uid, email, password, fullName, phone, dob, gender, interests, location, pic, url , userName);
+
                             Intent intent = new Intent(SignUp.this, Interests.class);
-                            intent.putExtra("user", user); // Serialize đối tượng UserReal
+                            intent.putExtra("user", user);
                             startActivity(intent);
                             finish();
                         }
