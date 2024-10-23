@@ -5,13 +5,14 @@ public class Message {
     private String sender;
     private String content;
     private String time;
+    private String chatId;
 
 
-    public Message(String sender, String content, String time) {
+    public Message(String sender, String content, String time, String chatId) {
         this.sender = sender;
         this.content = content;
         this.time = time;
-
+        this.chatId = chatId;
 
     }
 

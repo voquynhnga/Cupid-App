@@ -25,7 +25,7 @@ import java.util.List;
 
 public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClickListener {
 
-    private ImageView btnBack;
+    private ImageView btnAdd;
     private SearchView searchView;
     private RecyclerView listViewConversations;
     private ChatAdapter chatAdapter;
@@ -42,14 +42,15 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
 
         searchView = view.findViewById(R.id.searchView);
         listViewConversations = view.findViewById(R.id.listViewConversations);
+        btnAdd = view.findViewById(R.id.btn_add);
         listViewConversations.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         messages = new ArrayList<>();
-        messages.add(new Message("Alice", "Hey! How are you?", getTime()));
-        messages.add(new Message("Bob", "I'm good. What about you?", getTime()));
-        messages.add(new Message("Charlie", "Have you completed the assignment?", getTime()));
-        messages.add(new Message("David", "Yes, I submitted it yesterday.", getTime()));
-        messages.add(new Message("Eve", "Let's meet up this weekend!", getTime()));
+//        messages.add(new Message("Alice", "Hey! How are you?", getTime(), "chat1"));
+//        messages.add(new Message("Bob", "I'm good. What about you?", getTime()));
+//        messages.add(new Message("Charlie", "Have you completed the assignment?", getTime()));
+//        messages.add(new Message("David", "Yes, I submitted it yesterday.", getTime()));
+//        messages.add(new Message("Eve", "Let's meet up this weekend!", getTime()));
 
         chatAdapter = new ChatAdapter(messages, this);
         listViewConversations.setAdapter(chatAdapter);
@@ -66,6 +67,10 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
                 searchMessages(newText);
                 return true;
             }
+        });
+
+        btnAdd.setOnClickListener(v->{
+
         });
 
         return view;
@@ -97,4 +102,7 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
 
         Navigation.findNavController(requireView()).navigate(R.id.action_chatFragment_to_chatDetailFragment, bundle);
     }
+
+
+
 }

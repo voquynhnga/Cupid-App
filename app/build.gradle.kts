@@ -78,6 +78,10 @@ dependencies {
 
     implementation ("com.lorentzos.swipecards:library:1.0.9")
 
+    implementation ("com.google.code.gson:gson:2.10.1")
+
+
+
 
 
 
