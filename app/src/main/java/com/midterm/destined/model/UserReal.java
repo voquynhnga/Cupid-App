@@ -18,6 +18,7 @@ public class UserReal implements Serializable {
     private GPSAddress location;
     private String profilePicture;
     private List<String> imageUrls;
+    private String userName;
 
     public UserReal() {
         // Default constructor required for calls to DataSnapshot.getValue(UserReal.class)
@@ -27,7 +28,7 @@ public class UserReal implements Serializable {
         this.profilePicture = "gs://cupid-app-ad700.appspot.com/avatar_def.jpg";
     }
 
-    public UserReal(String uid, String email, String password, String fullName, String phoneNumber, String dateOfBirth, String gender, List<String> interests, GPSAddress location, String profilePicture, List<String> imageUrls) {
+    public UserReal(String uid, String email, String password, String fullName, String phoneNumber, String dateOfBirth, String gender, List<String> interests, GPSAddress location, String profilePicture, List<String> imageUrls, String userName) {
         this.uid = uid;
         this.email = email;
         this.password = password;
@@ -39,6 +40,7 @@ public class UserReal implements Serializable {
         this.location = location != null ? location : new GPSAddress(0.0, 0.0);
         this.profilePicture = profilePicture != null ? profilePicture : "gs://cupid-app-ad700.appspot.com/avatar_def.jpg";
         this.imageUrls = imageUrls != null ? imageUrls : new ArrayList<>();
+        this.userName = userName;
     }
 
     // Getters and Setters
@@ -48,6 +50,14 @@ public class UserReal implements Serializable {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String uid) {
+        this.userName = uid;
     }
 
     public String getEmail() {
