@@ -9,7 +9,6 @@ public class UserReal implements Serializable {
 
     private String uid;
     private String email;
-    private String password;
     private String fullName;
     private String phoneNumber;
     private String dateOfBirth;
