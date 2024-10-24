@@ -1,4 +1,7 @@
 package com.midterm.destined.card;
+import static java.lang.reflect.Array.get;
+import static java.util.Collections.addAll;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,10 +14,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.MemoryCacheSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.DocumentReference;
+
+import com.google.firebase.firestore.Source;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
@@ -32,8 +42,9 @@ public class CardFragment extends Fragment {
     private CardAdapter cardAdapter;
     private List<Card> cardList = new ArrayList<>();
     private List<Card> favoritedCardList = new ArrayList<>();
+    private List<String> savedCardList = new ArrayList<>();
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db;
 
 
     @Nullable
@@ -41,7 +52,7 @@ public class CardFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_card, container, false);
         flingContainer = view.findViewById(R.id.frame);
-
+        db = FirebaseFirestore.getInstance();
         String currentUserId = Card.fetchCurrentUserID();
         if (currentUserId != null) {
             fetchUsersFromFirebase(currentUserId);
@@ -57,17 +68,9 @@ public class CardFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        cardAdapter = new CardAdapter(getContext(), cardList);
-        flingContainer.setAdapter(cardAdapter);
-
-
-
         flingContainer = view.findViewById(R.id.frame);
-
-
         cardAdapter = new CardAdapter(getContext(), cardList);
         flingContainer.setAdapter(cardAdapter);
-
 
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
@@ -132,29 +135,76 @@ public class CardFragment extends Fragment {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
-                    List<String> savedCardList = (List<String>) document.get("cardList");
+                    savedCardList = (List<String>) document.get("cardList");
                     if (savedCardList != null) {
                         cardList.clear();
-                        db.collection("users").get().addOnCompleteListener(userTask -> {
-                            if (userTask.isSuccessful()) {
-                                for (QueryDocumentSnapshot userDocument : userTask.getResult()) {
-                                    UserReal user = userDocument.toObject(UserReal.class);
+                        fetchUsersByIds(savedCardList);
 
-                                    if (!user.getUid().equals(currentUserId) && savedCardList.contains(user.getUid())) {
-                                        Card card = new Card(user.getFullName(), user.getImageURL(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
-                                        cardList.add(card);
-                                    }
-                                }
-                                cardAdapter.notifyDataSetChanged();
-                            }
-                        });
+
                     }
+                    else {
+                        fetchAllUsers(currentUserId);
+                    }
+
                 }
+                else{
+                    fetchAllUsers(currentUserId);
+                }
+
             } else {
                 Log.e("DEBUG", "Error getting cardList: ", task.getException());
             }
         });
     }
+    private void fetchUsersByIds(List<String> userIds) {
+        List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+
+        for (String userId : userIds) {
+            tasks.add(db.collection("users").document(userId).get());
+        }
+
+        Tasks.whenAllComplete(tasks).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (Task<?> userTask : tasks) {
+                    if (userTask.isSuccessful()) {
+                        DocumentSnapshot userDocument = (DocumentSnapshot) userTask.getResult();
+                        if (userDocument.exists()) {
+                            UserReal user = userDocument.toObject(UserReal.class);
+                            List<String> imageUrls = user.getImageUrls();
+                            String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
+                            Card card = new Card(user.getFullName(), firstImageUrl, user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                            cardList.add(card);
+                        }
+                    }
+                }
+                cardAdapter.notifyDataSetChanged();
+            } else {
+                Log.e("DEBUG", "Error fetching users by IDs", task.getException());
+            }
+        });
+    }
+
+
+
+
+    private void fetchAllUsers(String currentUserId){
+        db.collection("users").get().addOnCompleteListener(userTask -> {
+            if (userTask.isSuccessful()) {
+                for (QueryDocumentSnapshot userDocument : userTask.getResult()) {
+                    UserReal user = userDocument.toObject(UserReal.class);
+
+                    if (!user.getUid().equals(currentUserId)) {
+                        List<String> imageUrls = user.getImageUrls();
+                        String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
+                        Card card = new Card(user.getFullName(), firstImageUrl, user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                        cardList.add(card);
+                    }
+                }
+                cardAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
 
 
     private void saveCardListToFirestore(String currentUserId) {
