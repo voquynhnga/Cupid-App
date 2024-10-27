@@ -78,7 +78,10 @@ dependencies {
 
     implementation ("com.lorentzos.swipecards:library:1.0.9")
 
-    implementation ("com.google.code.gson:gson:2.10.1")
-
+    //implementation ("com.google.code.gson:gson:2.10.1")
+    implementation ("com.google.code.gson:gson:2.10")
     implementation ("com.google.android.gms:play-services-location:21.0.1")
+
+    implementation ("com.github.bumptech.glide:glide:4.11.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.11.0")
 }

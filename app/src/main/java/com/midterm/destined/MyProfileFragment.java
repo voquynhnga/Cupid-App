@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,6 +29,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.midterm.destined.databinding.FragmentMyProfileBinding;
+import com.midterm.destined.model.GPSAddress;
+import com.midterm.destined.model.UserReal;
+import com.midterm.destined.viewmodel.CalculateCoordinates;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,12 +50,14 @@ public class MyProfileFragment extends Fragment {
     private String uid ;
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         storage = FirebaseStorage.getInstance();
         firestore = FirebaseFirestore.getInstance();
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
 
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -85,12 +91,37 @@ public class MyProfileFragment extends Fragment {
         firestore.collection("users").document(uid).get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 String profileUrl = documentSnapshot.getString("profilePicture");
+
+                /*
+                // Lấy thông tin người dùng hiện tại từ documentSnapshot
+                String email = documentSnapshot.getString("email");
+                String fullName = documentSnapshot.getString("fullName");
+                String dateOfBirth = documentSnapshot.getString("dateOfBirth");
+                String gender = documentSnapshot.getString("gender");
+                String phoneNumber = documentSnapshot.getString("phoneNumber");
+                String MyprofileUrl = documentSnapshot.getString("profilePicture");
+                String MyUserName = documentSnapshot.getString("userName");
+
+                // Lấy thông tin tọa độ
+                double latitude = documentSnapshot.getDouble("location.latitude");
+                double longitude = documentSnapshot.getDouble("location.longitude");
+                GPSAddress location = new GPSAddress(latitude, longitude);
+
+                GPSAddress locationUser1 = new GPSAddress(16.072985,108.150218);
+                // Tạo đối tượng UserReal từ thông tin người dùng hiện tại
+                UserReal currentUser = new UserReal(uid, email, fullName, phoneNumber, dateOfBirth, gender, null, location, MyprofileUrl, null, "");
+                UserReal user1 = new UserReal(uid, email, fullName, phoneNumber, dateOfBirth, gender, null, locationUser1, MyprofileUrl, null, "");
+                // Fake dữ liệu cho user 1,
+                double distance = CalculateCoordinates.calculateDistance(user1, currentUser);
+                Toast.makeText(getContext(), "Distance: " + distance + " km", Toast.LENGTH_SHORT).show();
+                */
+                // Tính toán khoảng cách
                 if (profileUrl != null) {
                     // Tải ảnh từ URL và chuyển đổi thành Bitmap để cắt
                     Glide.with(getContext())
                             .asBitmap()
                             .load(profileUrl)
-                            .into(new com.bumptech.glide.request.target.CustomTarget<Bitmap>() {
+                            .into(new CustomTarget<Bitmap>() {
                                 @Override
                                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                                     // Cắt ảnh tải về theo tỷ lệ 1:1

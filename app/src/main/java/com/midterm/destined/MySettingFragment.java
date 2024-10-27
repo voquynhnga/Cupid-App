@@ -35,6 +35,8 @@ public class MySettingFragment extends Fragment {
     private List<String> myInterestInternal;
     private GPSAddress myLocationGPS;
     private String myUserName;
+    private String myDetailAddress;
+    private String myProfilePicture;
 
 
     @Override
@@ -147,6 +149,8 @@ public class MySettingFragment extends Fragment {
                     updatedUser.setUserName(myUserName);
                     updatedUser.setEmail(mAuth.getCurrentUser().getEmail());
                     //updatedUser.setPassword(myPasswordInternal);
+                    updatedUser.setDetailAdrress(myDetailAddress);
+                    updatedUser.setProfilePicture(myProfilePicture);
                     updatedUser.setInterests(myInterestInternal);
                     updatedUser.setLocation(myLocationGPS);
                     updatedUser.setFullName(fullName);
@@ -202,6 +206,8 @@ public class MySettingFragment extends Fragment {
                     myInterestInternal = user.getInterests();
                     myLocationGPS = user.getLocation();
                     myUserName = user.getUserName();
+                    myDetailAddress = user.getDetailAdrress();
+                    myProfilePicture = user.getProfilePicture();
                     binding.edFullName.setText(user.getFullName());
                     binding.edPhoneNumber.setText(user.getPhoneNumber());
                     binding.edDayOfBirth.setText(user.getDateOfBirth());

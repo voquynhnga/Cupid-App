@@ -102,7 +102,7 @@ public class UploadPhoto extends AppCompatActivity {
 
         btn.setOnClickListener(v -> {
             if(noImageSelected()) {
-                user.setProfilePicture("gs://cupid-app-ad700.appspot.com/avatar_def.jpg");
+                user.setProfilePicture("https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_def.jpg?alt=media&token=a96937d6-84c3-4ef3-b0d2-aba2f7affc26");
                 saveUserDataAndProceed();
             }
             else {
