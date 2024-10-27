@@ -2,7 +2,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_item">
+    app:cardCornerRadius="16dp"
+    android:elevation="4dp"
+    android:id="@+id/card_item"
+    >
 
     <ImageView
         android:id="@+id/profileImage"
@@ -10,6 +13,7 @@
         android:layout_height="400dp"
         android:scaleType="centerCrop"
         android:src="@drawable/sample_person"
+        android:background="@drawable/rounded_conner_layout"
         app:layout_constraintDimensionRatio="h,3:4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.662"
