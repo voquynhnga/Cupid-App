@@ -53,7 +53,7 @@ public class HomepageFragment extends Fragment {
         btnRefresh = view.findViewById(R.id.refreshButton);
         btnRefresh.setOnClickListener(v -> {
             CardFragment cf = (CardFragment) getChildFragmentManager().findFragmentById(R.id.card_container);
-            cf.fetchAllUsersExceptCurrentAndFavorited(currentUserId);
+            cf.fetchAllUsersExceptCurrentAndFavorited();
         });
 
         binding.filterhp.setOnClickListener(v -> {

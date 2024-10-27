@@ -23,6 +23,24 @@ public class UserReal implements Serializable {
     private String profilePicture;
     private List<String> imageUrls;
     private String userName;
+    private List<String> cardList;
+    private List<String> favoritedCardList;
+
+    public List<String> getCardList() {
+        return cardList;
+    }
+
+    public void setCardList(List<String> cardList) {
+        this.cardList = cardList;
+    }
+
+    public List<String> getFavoritedCardList() {
+        return favoritedCardList;
+    }
+
+    public void setFavoritedCardList(List<String> favoritedCardList) {
+        this.favoritedCardList = favoritedCardList;
+    }
 
     public UserReal() {
         // Default constructor required for calls to DataSnapshot.getValue(UserReal.class)
@@ -30,6 +48,8 @@ public class UserReal implements Serializable {
         this.location = new GPSAddress(0.0, 0.0);
         this.imageUrls = new ArrayList<>();
         this.profilePicture = "gs://cupid-app-ad700.appspot.com/avatar_def.jpg";
+        this.cardList = new ArrayList<>();
+        this.favoritedCardList = new ArrayList<>();
     }
 
     public UserReal(String uid, String email, String fullName, String phoneNumber, String dateOfBirth, String gender, List<String> interests, GPSAddress location, String profilePicture, List<String> imageUrls, String userName) {
@@ -47,6 +67,8 @@ public class UserReal implements Serializable {
         this.profilePicture = profilePicture != null ? profilePicture : "https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_def.jpg?alt=media&token=a96937d6-84c3-4ef3-b0d2-aba2f7affc26";
         this.imageUrls = imageUrls != null ? imageUrls : new ArrayList<>();
         this.userName = userName;
+        this.cardList = new ArrayList<>();
+        this.favoritedCardList = new ArrayList<>();
     }
 
     // Getters and Setters
