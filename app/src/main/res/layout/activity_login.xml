@@ -62,7 +62,8 @@
                 android:inputType="textEmailAddress"
                 android:layout_gravity="center_vertical"
                 android:background="@null"
-                android:padding="5dp"/>
+                android:padding="5dp"
+                android:textColor="@color/black"/>
 
             <EditText
                 android:id="@+id/pass"
@@ -73,7 +74,8 @@
                 android:layout_gravity="center_vertical"
                 android:background="@null"
                 android:layout_marginTop="25dp"
-                android:padding="5dp"/>
+                android:padding="5dp"
+                android:textColor="@color/black"/>
         </LinearLayout>
 
     </LinearLayout>
