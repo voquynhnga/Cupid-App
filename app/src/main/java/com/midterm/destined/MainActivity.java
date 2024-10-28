@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         for (String imageName : imageNames) {
             File imageFile = new File(getExternalFilesDir(null), imageName);
             Uri imageUri = Uri.fromFile(imageFile);
-            ImageUploader.uploadImageToGallery(this, imageUri, imageName); // Gọi phương thức upload
+            ImageUploader.uploadImageToGallery(this, imageUri, imageName);
         }
     }
 

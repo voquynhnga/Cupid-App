@@ -1,6 +1,7 @@
 package com.midterm.destined;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,10 @@ public class HomepageFragment extends Fragment {
 
     private FragmentHomepageBinding binding;
     private ImageView btnRefresh;
+    private ImageView btnLike;
+    private ImageView btndisLike;
     private String currentUserId ;
-
+    private CardFragment cf;
 
     @Override
     public View onCreateView( @NonNull LayoutInflater inflater, ViewGroup container,
@@ -35,6 +38,7 @@ public class HomepageFragment extends Fragment {
     ) {
         binding = FragmentHomepageBinding.inflate(inflater, container, false);
         currentUserId = Card.fetchCurrentUserID();
+
 
         if (savedInstanceState == null) {
             getChildFragmentManager().beginTransaction()
@@ -50,10 +54,34 @@ public class HomepageFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         btnRefresh = view.findViewById(R.id.refreshButton);
+        btnLike = view.findViewById(R.id.likeButton);
+        btndisLike = view.findViewById(R.id.dislikeButton);
+
+        //FIXXXX
         btnRefresh.setOnClickListener(v -> {
-            CardFragment cf = (CardFragment) getChildFragmentManager().findFragmentById(R.id.card_container);
-            cf.fetchAllUsersExceptCurrentAndFavorited();
+            cf = (CardFragment) getChildFragmentManager().findFragmentById(R.id.card_container);
+            if (cf != null) {
+                cf.fetchAllUsersExceptCurrentAndFavorited();
+            } else {
+                Log.d("Refresh", "CardFragment not found in container");
+            }
+        });
+
+        btnLike.setOnClickListener(v -> {
+            cf = (CardFragment) getChildFragmentManager().findFragmentById(R.id.card_container);
+            if (cf != null) {
+                cf.getFlingContainer().getTopCardListener().selectRight();
+            }
+
+        });
+        btndisLike.setOnClickListener(v -> {
+            cf = (CardFragment) getChildFragmentManager().findFragmentById(R.id.card_container);
+            if (cf != null) {
+                cf.getFlingContainer().getTopCardListener().selectLeft();
+            }
+
         });
 
         binding.filterhp.setOnClickListener(v -> {

@@ -51,11 +51,12 @@ public class ChatDetailFragment extends Fragment {
     private ChatDetailAdapter adapter;
     private String chatId;
     private FirebaseUser currentUser;
+    LinearLayoutManager layoutManager;
 
 
-    private ImageView senderAvatar;
+
     private String userName;
-    private String userAvatar;
+
 
 
     @Nullable
@@ -69,12 +70,17 @@ public class ChatDetailFragment extends Fragment {
 
 
         senderTextView = view.findViewById(R.id.tv_nameChat);
-        senderAvatar = view.findViewById(R.id.img_avatarChat);
+
 
         btnBack = view.findViewById(R.id.btn_back);
         btnSend = view.findViewById(R.id.btn_send);
         editText = view.findViewById(R.id.et_message);
         recyclerView = view.findViewById(R.id.rv_chat_messages);
+
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+
         messageList = new ArrayList<>();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -82,10 +88,10 @@ public class ChatDetailFragment extends Fragment {
         if (getArguments() != null ) {
             chatId = requireArguments().getString("chatId");
             userName = getArguments().getString("userName");
-            userAvatar = getArguments().getString("avatar");
+
 
             senderTextView.setText(userName);
-            Picasso.get().load(userAvatar).into(senderAvatar);
+
             chatRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
             loadMessage();
 
@@ -105,7 +111,7 @@ public class ChatDetailFragment extends Fragment {
                 Message message = new Message(currentUser.getUid(), messageContent, getTime(), chatId);
                 addMessageToChat(chatId, message);
                 editText.setText("");
-//                recyclerView.smoothScrollToPosition(messageList.size() - 1);
+                scrollToBottom();
             }
         });
 
@@ -132,8 +138,9 @@ public class ChatDetailFragment extends Fragment {
                         messageList.add(message);
                     }
                 }
+                scrollToBottom();
                 adapter.notifyDataSetChanged();
-              //  recyclerView.smoothScrollToPosition(messageList.size() - 1);
+
             }
 
             @Override
@@ -163,14 +170,19 @@ public class ChatDetailFragment extends Fragment {
 
         Map<String, Object> updateData = new HashMap<>();
         updateData.put("lastMessage", lastMessage);
-        updateData.put("timestamp", ServerValue.TIMESTAMP);
 
         chatRef.updateChildren(updateData)
                 .addOnSuccessListener(aVoid -> Log.d("RealtimeDB", "Last message updated"))
                 .addOnFailureListener(e -> Log.w("RealtimeDB", "Error updating last message", e));
     }
     public String getTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         return sdf.format(new Date());
     }
+    private void scrollToBottom() {
+        if (layoutManager != null && adapter.getItemCount() > 0) {
+            recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+        }
+    }
+
 }

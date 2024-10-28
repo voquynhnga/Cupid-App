@@ -1,15 +1,9 @@
 package com.midterm.destined.card;
-import static java.lang.reflect.Array.get;
-import static java.util.Collections.addAll;
 
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.*;
-import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,24 +13,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.firestore.MemoryCacheSettings;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.DocumentReference;
 
-import com.google.firebase.firestore.Source;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.midterm.destined.R;
 import com.midterm.destined.chat.ChatFragment;
 import com.midterm.destined.model.UserReal;
 
-import java.lang.reflect.Type;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -53,6 +39,11 @@ public class CardFragment extends Fragment {
     private List<String> savedCardList = new ArrayList<>();
     private String currentUserId = Card.fetchCurrentUserID();
     private ChatFragment chatFragment = new ChatFragment();
+    private String userId;
+    private String userName;
+    private String avatarUser;
+    private String bio;
+    private String dateOfBirth;
 
     private FirebaseFirestore db;
 
@@ -141,16 +132,23 @@ public class CardFragment extends Fragment {
 
 
     }
+    public SwipeFlingAdapterView getFlingContainer() {
+        return flingContainer;
+    }
     public void fetchAllUsersExceptCurrentAndFavorited() {
         cardList.clear();
         db.collection("users").get().addOnCompleteListener(userTask -> {
             if (userTask.isSuccessful()) {
                 for (QueryDocumentSnapshot userDocument : userTask.getResult()) {
-                    String userId = userDocument.getId();
-                    String userName = userDocument.getString("fullName");
-                    String avatarUser = userDocument.getString("profilePicture");
-                    String bio = userDocument.getString("bio");
-                    String dateOfBirth = userDocument.getString("dateOfBirth");
+                    if (userDocument.getId().equals(currentUserId) || savedCardList.contains(userDocument.getId())) {
+                        continue;
+                    }
+
+                    userId = userDocument.getId();
+                     userName = userDocument.getString("fullName");
+                     avatarUser = userDocument.getString("profilePicture");
+                     bio = userDocument.getString("bio");
+                     dateOfBirth = userDocument.getString("dateOfBirth");
                         Card card = new Card(userName, avatarUser, bio, String.valueOf(calculateAge(dateOfBirth)), userId);
                         cardList.add(card);
 
@@ -351,14 +349,13 @@ public class CardFragment extends Fragment {
         chatData.put("userID1", userID1);
         chatData.put("userID2", userID2);
         chatData.put("lastMessage", "");
-        chatData.put("timestamp", ServerValue.TIMESTAMP);
+
 
         if(chatID != null){
             chatRef.child(chatID).setValue(chatData)
                     .addOnCompleteListener(aVoid -> {
                         Log.d("RealtimeDB", "Chat added with ID: " + chatID);
 
-                        chatFragment.loadChat();
                     })
                     .addOnFailureListener(e -> Log.w("RealtimeDB", "Error adding chat", e));
 
