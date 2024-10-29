@@ -76,8 +76,8 @@ public class CardAdapter extends BaseAdapter {
         // Tính khoảng cách giữa người dùng hiện tại và người dùng trên card
         CalculateCoordinates.calculateDistance(currentUserUID, card.getCurrentUserID(), distance -> {
 
-            if(distance < 1) {
-                tvDistance.setText("  "+String.format("%d", (int)(distance * 1000)) +" MS"+" AWAY"); // đơn vị m
+            if(distance < 5) {
+                tvDistance.setText(" <5KM AWAY"); // đơn vị m
             }
             else{
                 tvDistance.setText("  "+String.format("%d", (int)(distance)) +" KMS" +" AWAY"); // đơn vị km
