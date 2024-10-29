@@ -117,6 +117,8 @@ public class MySettingFragment extends Fragment {
                 String fullName = binding.edFullName.getText().toString().trim();
                 String dayOfBirth = binding.edDayOfBirth.getText().toString().trim();
                 String phoneNumber = binding.edPhoneNumber.getText().toString().trim();
+                String yourBio = binding.edBio.getText().toString().trim();
+
 
                 if(binding.rbMale.isChecked()) genderPerson = true;
                 else genderPerson = false;
@@ -132,6 +134,10 @@ public class MySettingFragment extends Fragment {
                 }
                 else if(dayOfBirth.isEmpty()) {
                     Toast.makeText(getContext(), "Day Of Birth is empty", Toast.LENGTH_SHORT).show();
+                    isSuccess =false;
+                }
+                else if(yourBio.isEmpty()) {
+                    Toast.makeText(getContext(), "Your Bio is empty", Toast.LENGTH_SHORT).show();
                     isSuccess =false;
                 }
                 else {
@@ -153,6 +159,7 @@ public class MySettingFragment extends Fragment {
                     updatedUser.setProfilePicture(myProfilePicture);
                     updatedUser.setInterests(myInterestInternal);
                     updatedUser.setLocation(myLocationGPS);
+                    updatedUser.setBio(yourBio);
                     updatedUser.setFullName(fullName);
                     updatedUser.setPhoneNumber(phoneNumber);
                     updatedUser.setDateOfBirth(dayOfBirth);
@@ -208,6 +215,7 @@ public class MySettingFragment extends Fragment {
                     myUserName = user.getUserName();
                     myDetailAddress = user.getDetailAdrress();
                     myProfilePicture = user.getProfilePicture();
+                    binding.edBio.setText(user.getBio());
                     binding.edFullName.setText(user.getFullName());
                     binding.edPhoneNumber.setText(user.getPhoneNumber());
                     binding.edDayOfBirth.setText(user.getDateOfBirth());

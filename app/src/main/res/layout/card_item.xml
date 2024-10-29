@@ -31,6 +31,9 @@
         android:textColor="@color/text"
         android:textSize="22sp"
         android:textStyle="bold"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"
         app:layout_constraintBottom_toBottomOf="@id/profileImage"
         app:layout_constraintStart_toStartOf="@id/profileImage" />
 
@@ -42,21 +45,27 @@
         android:text="23"
         android:textColor="@color/text"
         android:textSize="22sp"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"
         app:layout_constraintBottom_toBottomOf="@id/userName"
         app:layout_constraintStart_toEndOf="@id/userName" />
+
 
     <TextView
         android:id="@+id/location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="28dp"
         android:text="Malibu - Mumbail"
         android:textColor="@color/text"
         android:textSize="16sp"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"
         app:layout_constraintStart_toStartOf="@id/userName"
         app:layout_constraintTop_toBottomOf="@id/userName" />
-
 
     <TextView
         android:id="@+id/gender"
@@ -65,24 +74,29 @@
         android:text="Gender: Male"
         android:textColor="@color/text"
         android:textSize="16sp"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"
         app:layout_constraintBottom_toBottomOf="@+id/profileImage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintHorizontal_bias="0.063"
         app:layout_constraintStart_toStartOf="@+id/profileImage"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.962" />
+        app:layout_constraintVertical_bias="0.981" />
 
     <TextView
         android:id="@+id/bio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginStart="20dp"
         android:text="HAHHAHA"
         android:textColor="@color/text"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="@id/location"
-        app:layout_constraintTop_toBottomOf="@id/location" />
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/hobby" />
 
     <TextView
         android:id="@+id/hobby"
@@ -91,28 +105,34 @@
         android:text="Sở thích : Đọc sách , ngủ"
         android:textColor="@color/text"
         android:textSize="16sp"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"
         app:layout_constraintBottom_toBottomOf="@+id/profileImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.084"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/profileImage"
-        app:layout_constraintVertical_bias="0.835" />
+        app:layout_constraintVertical_bias="0.865" />
 
     <TextView
         android:id="@+id/distance"
-        android:layout_marginLeft="25dp"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
         android:text="20KM AWAYS"
         android:textColor="@color/text"
         android:textSize="16sp"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/profileImage"
         app:layout_constraintEnd_toEndOf="@+id/profileImage"
-        app:layout_constraintHorizontal_bias="0.402"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.962" />
+        app:layout_constraintVertical_bias="0.981" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

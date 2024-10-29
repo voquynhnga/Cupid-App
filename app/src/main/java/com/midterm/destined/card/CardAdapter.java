@@ -86,10 +86,10 @@ public class CardAdapter extends BaseAdapter {
 
         name.setText(card.getName());
        location.setText( card.getLocation());
-        age.setText(card.getAge());
-        bio.setText(card.getBio());
-        hobby.setText("🩷😘   "+ card.getAllInterest());
-        gioitinh.setText( "🚻   "+card.getGender());
+        age.setText("🎂 "+ card.getAge());
+        bio.setText("🙋🏻‍♀️🙋🏻‍♂️  "+ card.getBio());
+        hobby.setText("📑  "+ card.getAllInterest());
+        gioitinh.setText("Gender: "+card.getGender());
 
 
 
