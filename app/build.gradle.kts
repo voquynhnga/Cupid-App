@@ -27,20 +27,17 @@ android {
             )
         }
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-
     buildFeatures {
         viewBinding = true
     }
 }
 
 dependencies {
-    implementation ("androidx.recyclerview:recyclerview:1.2.1")
-    implementation(libs.firebase.firestore)
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
@@ -49,6 +46,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.firebase.database)
     implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
 
     testImplementation(libs.junit)

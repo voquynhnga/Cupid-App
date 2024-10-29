@@ -35,6 +35,8 @@ public class MySettingFragment extends Fragment {
     private List<String> myInterestInternal;
     private GPSAddress myLocationGPS;
     private String myUserName;
+    private String myDetailAddress;
+    private String myProfilePicture;
 
 
     @Override
@@ -115,6 +117,8 @@ public class MySettingFragment extends Fragment {
                 String fullName = binding.edFullName.getText().toString().trim();
                 String dayOfBirth = binding.edDayOfBirth.getText().toString().trim();
                 String phoneNumber = binding.edPhoneNumber.getText().toString().trim();
+                String yourBio = binding.edBio.getText().toString().trim();
+
 
                 if(binding.rbMale.isChecked()) genderPerson = true;
                 else genderPerson = false;
@@ -132,6 +136,10 @@ public class MySettingFragment extends Fragment {
                     Toast.makeText(getContext(), "Day Of Birth is empty", Toast.LENGTH_SHORT).show();
                     isSuccess =false;
                 }
+                else if(yourBio.isEmpty()) {
+                    Toast.makeText(getContext(), "Your Bio is empty", Toast.LENGTH_SHORT).show();
+                    isSuccess =false;
+                }
                 else {
                     Toast.makeText(getContext(), "Save your new information", Toast.LENGTH_SHORT).show();
                     isSuccess =true;
@@ -147,8 +155,11 @@ public class MySettingFragment extends Fragment {
                     updatedUser.setUserName(myUserName);
                     updatedUser.setEmail(mAuth.getCurrentUser().getEmail());
                     //updatedUser.setPassword(myPasswordInternal);
+                    updatedUser.setDetailAdrress(myDetailAddress);
+                    updatedUser.setProfilePicture(myProfilePicture);
                     updatedUser.setInterests(myInterestInternal);
                     updatedUser.setLocation(myLocationGPS);
+                    updatedUser.setBio(yourBio);
                     updatedUser.setFullName(fullName);
                     updatedUser.setPhoneNumber(phoneNumber);
                     updatedUser.setDateOfBirth(dayOfBirth);
@@ -202,6 +213,9 @@ public class MySettingFragment extends Fragment {
                     myInterestInternal = user.getInterests();
                     myLocationGPS = user.getLocation();
                     myUserName = user.getUserName();
+                    myDetailAddress = user.getDetailAdrress();
+                    myProfilePicture = user.getProfilePicture();
+                    binding.edBio.setText(user.getBio());
                     binding.edFullName.setText(user.getFullName());
                     binding.edPhoneNumber.setText(user.getPhoneNumber());
                     binding.edDayOfBirth.setText(user.getDateOfBirth());

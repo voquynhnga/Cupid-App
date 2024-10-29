@@ -5,6 +5,7 @@ import static java.util.Collections.addAll;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.Task;
@@ -31,6 +33,7 @@ import com.google.gson.reflect.TypeToken;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.midterm.destined.R;
 import com.midterm.destined.model.UserReal;
+import com.midterm.destined.viewmodel.CalculateCoordinates;
 
 import java.lang.reflect.Type;
 import java.time.*;
@@ -50,6 +53,7 @@ public class CardFragment extends Fragment {
     private String currentUserId = Card.fetchCurrentUserID();
 
     private FirebaseFirestore db;
+    private UserReal currentUser;
 
 
 
@@ -61,7 +65,9 @@ public class CardFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
 
         if (currentUserId != null) {
-            fetchUsersFromFirebase(currentUserId);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                fetchUsersFromFirebase(currentUserId);
+            }
             checkForMatches(currentUserId);
         }
 
@@ -84,8 +90,6 @@ public class CardFragment extends Fragment {
             public void removeFirstObjectInAdapter() {
                 cardList.remove(0);
                 cardAdapter.notifyDataSetChanged();
-
-
             }
 
             @Override
@@ -107,27 +111,30 @@ public class CardFragment extends Fragment {
             public void onRightCardExit(Object dataObject) {
                 Card card = (Card) dataObject;
                 String favoritedUserId = card.getCurrentUserID();
+                String currentUserId = Card.fetchCurrentUserID(); // UID của người đang authentication
 
-                db.collection("users").document(card.fetchCurrentUserID())
-                        .update("cardList", FieldValue.arrayRemove(favoritedUserId))
+                // Cập nhật danh sách người dùng yêu thích
+                db.collection("users").document(favoritedUserId)
+                        .update("cardList", FieldValue.arrayRemove(currentUserId))
                         .addOnSuccessListener(aVoid -> {
                             favoritedCardList.add(card);
                             cardList.remove(card);
                             cardAdapter.notifyDataSetChanged();
 
-                            saveCardListToFirestore(card.fetchCurrentUserID());
-                            saveFavoritedCardListToFirestore(card.fetchCurrentUserID());
-
+                            saveCardListToFirestore(favoritedUserId);
+                            saveFavoritedCardListToFirestore(favoritedUserId);
                             Log.d("DEBUG", "User removed from cardList and added to favoritedCardList: " + favoritedUserId);
+
+                            // Thêm UID của người đang authentication vào waitinglist
+                          //  addToWaitingList(favoritedUserId, currentUserId);
                         })
                         .addOnFailureListener(e -> Log.e("DEBUG", "Error removing user from cardList", e));
-                db.collection("users").document(card.fetchCurrentUserID())
-                        .update("favoritedCardList", FieldValue.arrayUnion(favoritedUserId))
+
+                db.collection("users").document(favoritedUserId)
+                        .update("favoritedCardList", FieldValue.arrayUnion(currentUserId))
                         .addOnSuccessListener(aVoid -> {
-                            Log.d("FAVORITED", "User " + favoritedUserId + " added to favoritedCardList.");
-
-                            checkIfMatched(favoritedUserId, card.fetchCurrentUserID());
-
+                            Log.d("FAVORITED", "User " + currentUserId + " added to favoritedCardList.");
+                            checkIfMatched(currentUserId, favoritedUserId);
                         })
                         .addOnFailureListener(e -> Log.e("FAVORITED", "Error adding to favoritedCardList", e));
             }
@@ -139,12 +146,45 @@ public class CardFragment extends Fragment {
 
             @Override
             public void onScroll(float scrollProgressPercent) {
-                // Xử lý khi người dùng cuộn
+              //  Toast.makeText(getContext(), "Cuộn với độ cuộn " + scrollProgressPercent, Toast.LENGTH_SHORT).show();
             }
+
         });
 
-
     }
+
+    private void addToWaitingList(String userId, String currentUserId) {
+        DocumentReference waitingListDocRef = db.collection("waitinglist").document(userId);
+
+        // Kiểm tra nếu document đã tồn tại
+        waitingListDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // Nếu document đã tồn tại, cập nhật trường "likes"
+                    waitingListDocRef.update("likes", FieldValue.arrayUnion(currentUserId))
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("WAITINGLIST", "User " + currentUserId + " added to waiting list of user " + userId);
+                            })
+                            .addOnFailureListener(e -> Log.e("WAITINGLIST", "Error adding to waiting list", e));
+                } else {
+                    // Nếu document chưa tồn tại, tạo document mới với trường "likes"
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("likes", FieldValue.arrayUnion(currentUserId));
+
+                    waitingListDocRef.set(data)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("WAITINGLIST", "Waiting list created for user " + userId);
+                            })
+                            .addOnFailureListener(e -> Log.e("WAITINGLIST", "Error creating waiting list", e));
+                }
+            } else {
+                Log.e("WAITINGLIST", "Error getting waiting list document", task.getException());
+            }
+        });
+    }
+
+
     public void fetchAllUsersExceptCurrentAndFavorited(String currentUserId) {
         cardList.clear();
         db.collection("users").get().addOnCompleteListener(userTask -> {
@@ -154,7 +194,11 @@ public class CardFragment extends Fragment {
                     if (!user.getUid().equals(currentUserId) && !favoritedCardList.contains(user.getUid())) {
                         List<String> imageUrls = user.getImageUrls();
                         String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
-                        Card card = new Card(user.getFullName(), firstImageUrl, user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                        Card card = null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),user.getDetailAdrress(),user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                            // sửa lại khi update card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),user.getDetailAdrress(),user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                        }
                         cardList.add(card);
                     }
                 }
@@ -165,11 +209,15 @@ public class CardFragment extends Fragment {
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void fetchUsersFromFirebase(String currentUserId) {
         db.collection("users").document(currentUserId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
+
+                    currentUser = document.toObject(UserReal.class);
+
                     savedCardList = (List<String>) document.get("cardList");
                     if (savedCardList != null) {
                         cardList.clear();
@@ -203,9 +251,15 @@ public class CardFragment extends Fragment {
                         DocumentSnapshot userDocument = (DocumentSnapshot) userTask.getResult();
                         if (userDocument.exists()) {
                             UserReal user = userDocument.toObject(UserReal.class);
+
+
+
                             List<String> imageUrls = user.getImageUrls();
                             String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
-                            Card card = new Card(user.getFullName(), firstImageUrl, user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                            Card card = null;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),user.getDetailAdrress(),user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                            }
                             cardList.add(card);
                         }
                     }
@@ -225,11 +279,13 @@ public class CardFragment extends Fragment {
             if (userTask.isSuccessful()) {
                 for (QueryDocumentSnapshot userDocument : userTask.getResult()) {
                     UserReal user = userDocument.toObject(UserReal.class);
-
                     if (!user.getUid().equals(currentUserId)) {
                         List<String> imageUrls = user.getImageUrls();
                         String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
-                        Card card = new Card(user.getFullName(), firstImageUrl, user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                        Card card = null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),user.getDetailAdrress(),user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                        }
                         cardList.add(card);
                     }
                 }
@@ -333,6 +389,7 @@ public class CardFragment extends Fragment {
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static int calculateAge(String dateOfBirth) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
         LocalDate birthDate = LocalDate.parse(dateOfBirth, formatter);

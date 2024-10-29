@@ -23,16 +23,18 @@ public class UserReal implements Serializable {
     private String profilePicture;
     private List<String> imageUrls;
     private String userName;
+   private String detailAdrress;
+
 
     public UserReal() {
         // Default constructor required for calls to DataSnapshot.getValue(UserReal.class)
         this.interests = new ArrayList<>(); // Initialize interests list
         this.location = new GPSAddress(0.0, 0.0);
         this.imageUrls = new ArrayList<>();
-        this.profilePicture = "gs://cupid-app-ad700.appspot.com/avatar_def.jpg";
+        this.profilePicture = "";
     }
 
-    public UserReal(String uid, String email, String fullName, String phoneNumber, String dateOfBirth, String gender, List<String> interests, GPSAddress location, String profilePicture, List<String> imageUrls, String userName) {
+    public UserReal(String uid, String email, String fullName, String phoneNumber, String dateOfBirth, String gender, List<String> interests, GPSAddress location,String detailAddress, String profilePicture, List<String> imageUrls, String userName) {
         this.uid = uid;
         this.email = email;
         this.fullName = fullName;
@@ -42,6 +44,7 @@ public class UserReal implements Serializable {
         this.bio = bio;
         this.imageURL = imageURL;
 //        this.userArrayList = userArrayList;
+        this.detailAdrress = detailAddress;
         this.interests = interests != null ? interests : new ArrayList<>();
         this.location = location != null ? location : new GPSAddress(0.0, 0.0);
         this.profilePicture = profilePicture != null ? profilePicture : "https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_def.jpg?alt=media&token=a96937d6-84c3-4ef3-b0d2-aba2f7affc26";
@@ -124,7 +127,15 @@ public class UserReal implements Serializable {
         this.imageURL = imageURL;
     }
 
-//    public String getLocation() {
+    public String getDetailAdrress() {
+        return detailAdrress;
+    }
+
+    public void setDetailAdrress(String detailAdrress) {
+        this.detailAdrress = detailAdrress;
+    }
+
+    //    public String getLocation() {
 //        return location;
 //    }
 //
@@ -166,4 +177,7 @@ public class UserReal implements Serializable {
     public List<String> getImageUrls() { return imageUrls; }
     public void setImageUrls(List<String> imageUrls) { this.imageUrls = imageUrls; }
 
+    public String displayInterest(){
+        return String.join(" - ",interests);
+    }
 }

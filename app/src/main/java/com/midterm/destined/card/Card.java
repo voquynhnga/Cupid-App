@@ -9,19 +9,23 @@ public class Card {
     private String age;
     private String bio;
     //HASHMAP
-//    private String location;
+   private String location;
     private String profileImageUrl;
     private String currentUserID;
+    private String allInterest;
+    private String gender;
 
     public Card(){}
 
 
 
-    public Card(String name, String profileImageUrl, String bio, String age, String currentUserID) {
+    public Card(String name, String profileImageUrl,String allInterest,String location,String gender, String bio, String age, String currentUserID) {
         this.name = name;
         this.age = age;
         this.bio = bio;
-//        this.location = location;
+        this.location = location;
+        this.allInterest = allInterest;
+        this.gender = gender;
         this.profileImageUrl = profileImageUrl;
         this.currentUserID = currentUserID;
     }
@@ -50,13 +54,29 @@ public class Card {
         this.bio = bio;
     }
 
-//    public String getLocation() {
-//        return location;
-//    }
-//
-//    public void setLocation(String location) {
-//        this.location = location;
-//    }
+    public String getAllInterest() {
+        return allInterest;
+    }
+
+    public void setAllInterest(String allInterest) {
+        this.allInterest = allInterest;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+        public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
     public String getProfileImageUrl() {
         return profileImageUrl;

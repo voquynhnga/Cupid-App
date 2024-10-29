@@ -74,6 +74,8 @@ public class HomepageFragment extends Fragment {
                     .navigate(R.id.action_global_SearchFragment);
         });
 
+
+
         binding.story.setOnClickListener(v -> {
 
             NavHostFragment.findNavController(HomepageFragment.this)

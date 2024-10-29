@@ -12,16 +12,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.midterm.destined.databinding.FragmentMyFavouriteBinding;
+import com.midterm.destined.model.UserReal;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MyFavouriteFragment extends Fragment {
 
     private FragmentMyFavouriteBinding binding;
-    private ArrayList<String> arrayFavourite;
+    private ArrayList<UserReal> arrayFavourite;
     private FavouriteAdapter favouriteAdapter;
-
+    private FirebaseFirestore firestore;
+    private FirebaseAuth auth;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,15 +34,49 @@ public class MyFavouriteFragment extends Fragment {
         if (getArguments() != null) {
          }
         arrayFavourite = new ArrayList<>();
-        arrayFavourite.add("Nguyen Quang Kien");
-        arrayFavourite.add("John Terry");
-        arrayFavourite.add("Stone");
-        arrayFavourite.add("Rock");
-        arrayFavourite.add("Ha Tran");
-        arrayFavourite.add("SnapDog");
-        arrayFavourite.add("Jack 100M");
-        arrayFavourite.add("Switf");
+        firestore = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+        fetchFavouriteUsers();
+
     }
+
+
+    private void fetchFavouriteUsers() {
+        String currentUserId = auth.getCurrentUser().getUid(); // Lấy UID người dùng đang đăng nhập
+        firestore.collection("users").document(currentUserId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        List<String> favouriteCardList = (List<String>) documentSnapshot.get("favoritedCardList");
+                        if (favouriteCardList != null) {
+                            // Duyệt qua từng UID trong danh sách yêu thích
+                            for (String uid : favouriteCardList) {
+                                // Lấy thông tin người dùng từ UID
+                                firestore.collection("users").document(uid)
+                                        .get()
+                                        .addOnSuccessListener(userSnapshot -> {
+                                            if (userSnapshot.exists()) {
+                                                // Lấy đối tượng UserReal từ Firestore
+                                                UserReal user = userSnapshot.toObject(UserReal.class);
+                                                if (user != null) {
+                                                    arrayFavourite.add(user); // Thêm đối tượng UserReal vào danh sách
+                                                    favouriteAdapter.notifyDataSetChanged(); // Cập nhật adapter
+                                                }
+                                            }
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            // Xử lý lỗi nếu cần
+                                        });
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Xử lý lỗi nếu cần
+                });
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,12 +93,12 @@ public class MyFavouriteFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // Setup RecyclerView và Adapter tại đây khi view đã được tạo
-        binding.rvFavourites.setLayoutManager(new GridLayoutManager(getContext(),2));
+
+
+        binding.rvFavourites.setLayoutManager(new GridLayoutManager(getContext(), 2));
         favouriteAdapter = new FavouriteAdapter(arrayFavourite);
         binding.rvFavourites.setAdapter(favouriteAdapter);
 
-        // Cập nhật dữ liệu nếu cần thiết
         favouriteAdapter.notifyDataSetChanged();
-
     }
 }
