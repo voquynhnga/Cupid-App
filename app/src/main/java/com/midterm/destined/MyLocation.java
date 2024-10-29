@@ -114,7 +114,7 @@ public class MyLocation extends AppCompatActivity {
                                     // Gán địa chỉ vào UserReal
                                     String detailAddress = (district != null ? district : "") + ", " +
                                             (city != null ? city : "");
-                                    user.setDetailAdrress(detailAddress);
+                                    user.setDetailAddress(detailAddress);
 
                                     Log.d("Location", "Latitude: " + user.getLocation().getLatitude() + ", Longitude: " + user.getLocation().getLongitude());
                                     Log.d("Address", "Detail Address: " + detailAddress);

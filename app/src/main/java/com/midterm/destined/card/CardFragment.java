@@ -196,7 +196,7 @@ public class CardFragment extends Fragment {
                         String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
                         Card card = null;
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                            card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),user.getDetailAdrress(),user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                            card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),user.getDetailAddress(),user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
                             // sửa lại khi update card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),user.getDetailAdrress(),user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
                         }
                         cardList.add(card);
@@ -258,7 +258,7 @@ public class CardFragment extends Fragment {
                             String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
                             Card card = null;
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),user.getDetailAdrress(),user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                                card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),user.getDetailAddress(),user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
                             }
                             cardList.add(card);
                         }
@@ -284,7 +284,7 @@ public class CardFragment extends Fragment {
                         String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
                         Card card = null;
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                            card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),user.getDetailAdrress(),user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                            card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),user.getDetailAddress(),user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
                         }
                         cardList.add(card);
                     }

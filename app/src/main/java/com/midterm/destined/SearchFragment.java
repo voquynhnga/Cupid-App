@@ -4,12 +4,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.KeyEvent; // Thêm import cho KeyEvent
+import android.view.KeyEvent;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -26,58 +25,54 @@ import java.util.List;
 
 public class SearchFragment extends Fragment {
 
-    private EditText detailInput; // Đổi tên biến thành detailInput
+    private EditText detailInput;
     private RecyclerView resultsRecyclerView;
     private UserAdapter userAdapter;
     private List<UserReal> userList;
-    private String selectedFilter; // Tiêu chí lọc được chọn
-    private Spinner filterSpinner; // Spinner cho tiêu chí lọc
+    private String selectedFilter;
+    private Spinner filterSpinner;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search, container, false);
 
-        detailInput = view.findViewById(R.id.editTextInput); // Sử dụng ID đúng
+        detailInput = view.findViewById(R.id.editTextInput);
         resultsRecyclerView = view.findViewById(R.id.resultsRecyclerView);
-        filterSpinner = view.findViewById(R.id.filterSpinner); // Spinner cho tiêu chí lọc
+        filterSpinner = view.findViewById(R.id.filterSpinner);
 
         userList = new ArrayList<>();
         userAdapter = new UserAdapter(getContext(), userList, true);
         resultsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         resultsRecyclerView.setAdapter(userAdapter);
 
-        // Thiết lập cho Spinner
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.filter_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(adapter);
 
-        // Thiết lập hành động cho Spinner
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedFilter = parent.getItemAtPosition(position).toString(); // Gán giá trị cho selectedFilter
+                selectedFilter = parent.getItemAtPosition(position).toString();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                selectedFilter = null; // Đặt lại khi không có lựa chọn nào
+                selectedFilter = null;
             }
         });
 
-        // Thiết lập sự kiện nhấn phím Enter cho EditText
         detailInput.setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 performSearch();
-                return true; // Trả về true để chỉ ra rằng sự kiện đã được xử lý
+                return true;
             }
             return false;
         });
 
         return view;
     }
-
 
     private String capitalizeDetail(String detail) {
         if (detail == null || detail.isEmpty()) {
@@ -87,9 +82,8 @@ public class SearchFragment extends Fragment {
     }
 
     private void performSearch() {
-        String detail = detailInput.getText().toString().trim(); // Sử dụng biến detailInput
-        detail = capitalizeDetail(detail);
-        Log.d("SearchFragment", "Detail Address: " + detail);
+        String detail = detailInput.getText().toString().trim(); // Trim input
+
         if (selectedFilter == null) {
             Toast.makeText(getContext(), "Vui lòng chọn tiêu chí lọc", Toast.LENGTH_SHORT).show();
             return;
@@ -104,13 +98,15 @@ public class SearchFragment extends Fragment {
 
         switch (selectedFilter) {
             case "Gender":
+                detail = capitalizeDetail(detail);
                 query = query.whereEqualTo("gender", detail);
                 break;
             case "Interests":
+                detail = capitalizeDetail(detail);
                 query = query.whereArrayContains("interests", detail);
                 break;
             case "Location":
-                query = query.whereEqualTo("detailAddress", detail);
+                query = query.orderBy("detailAdrress").startAt(detail).endAt(detail + "\uf8ff");
                 break;
         }
 
