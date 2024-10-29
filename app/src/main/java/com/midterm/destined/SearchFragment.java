@@ -22,6 +22,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.midterm.destined.model.UserReal;
 import java.util.ArrayList;
 import java.util.List;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class SearchFragment extends Fragment {
 
@@ -94,6 +95,8 @@ public class SearchFragment extends Fragment {
             return;
         }
 
+        // Lấy ID người dùng đang đăng nhập
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Query query = FirebaseFirestore.getInstance().collection("users");
 
         switch (selectedFilter) {
@@ -115,7 +118,10 @@ public class SearchFragment extends Fragment {
                 userList.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     UserReal user = document.toObject(UserReal.class);
-                    userList.add(user);
+                    // Kiểm tra ID người dùng
+                    if (!user.getUid().equals(currentUserId)) { // Giả sử UserReal có phương thức getId() để lấy ID
+                        userList.add(user);
+                    }
                 }
                 userAdapter.notifyDataSetChanged();
             } else {
@@ -123,4 +129,5 @@ public class SearchFragment extends Fragment {
             }
         });
     }
+
 }

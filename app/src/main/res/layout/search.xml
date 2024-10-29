@@ -37,8 +37,9 @@
             android:id="@+id/filterSpinner"
             android:layout_width="150dp"
             android:layout_height="38dp"
-            android:background="#F5F8F7"
+            android:background="@drawable/round"
             android:entries="@array/filter_options" />
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
