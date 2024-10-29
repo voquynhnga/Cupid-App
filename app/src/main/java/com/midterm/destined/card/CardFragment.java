@@ -7,6 +7,7 @@ import android.view.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.Task;
@@ -22,6 +23,7 @@ import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.midterm.destined.R;
 import com.midterm.destined.chat.ChatFragment;
 import com.midterm.destined.model.UserReal;
+import com.midterm.destined.viewmodel.CalculateCoordinates;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -207,8 +209,9 @@ public class CardFragment extends Fragment {
                             UserReal user = userDocument.toObject(UserReal.class);
                             List<String> imageUrls = user.getImageUrls();
                             String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
+                            String detailAddress = userDocument.getString("detailAdrress");
                             Card card = null;
-                            card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),user.getDetailAddress(),user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                            card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),detailAddress,user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
                             cardList.add(card);
                         }
                     }
@@ -232,8 +235,9 @@ public class CardFragment extends Fragment {
                     if (!user.getUid().equals(currentUserId)) {
                         List<String> imageUrls = user.getImageUrls();
                         String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
+                        String detailAddress = userDocument.getString("detailAdrress");
                         Card card = null;
-                        card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),user.getDetailAddress(),user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                        card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),detailAddress,user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
                         cardList.add(card);
                     }
                 }

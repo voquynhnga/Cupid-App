@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.security.AccessController;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.midterm.destined.R;
@@ -54,26 +57,25 @@ public class CardAdapter extends BaseAdapter {
         TextView tvDistance = convertView.findViewById(R.id.distance);
         ImageView genderIcon = convertView.findViewById(R.id.genderIcon);
 
-        // Lấy UID của người dùng hiện tại đang đăng nhập
+
+
         String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        // Tính khoảng cách giữa người dùng hiện tại và người dùng trên card
         CalculateCoordinates.calculateDistance(currentUserUID, card.getCurrentUserID(), distance -> {
-            if (distance < 1) {
-                tvDistance.setText("  " + String.format("%d", (int) (distance * 1000)) + " MS" + " AWAY");
+
+            if (distance < 5) {
+                tvDistance.setText("📌 < 5Km");
             } else {
-                tvDistance.setText("  " + String.format("%d", (int) (distance)) + " KMS" + " AWAY");
+                tvDistance.setText("📌 " + String.format("%d", (int) (distance)) + " Km");
             }
         });
 
-        // Gán dữ liệu vào các view
         name.setText(card.getName());
-        location.setText(card.getLocation());
-        age.setText("🎂 " + card.getAge());
-        bio.setText("🙋🏻‍♀️🙋🏻‍♂️ " + card.getBio());
-        hobby.setText("📑 " + card.getAllInterest());
+        location.setText("🏠" +card.getLocation());
+        age.setText(card.getAge());
+        bio.setText("📝️ " + card.getBio());
+        hobby.setText(card.getAllInterest());
 
-        // Gán icon giới tính
         if ("Male".equals(card.getGender())) {
             genderIcon.setImageResource(R.drawable.male_picture);
         } else {
@@ -89,4 +91,5 @@ public class CardAdapter extends BaseAdapter {
 
         return convertView;
     }
+
 }

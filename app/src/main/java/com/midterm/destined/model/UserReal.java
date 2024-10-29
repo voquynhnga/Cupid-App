@@ -118,7 +118,7 @@ public class UserReal implements Serializable {
         this.imageURL = imageURL;
     }
 
-    public String getDetailAddress() { // Cập nhật ở đây
+    public String getDetailAddress() {
         return detailAddress;
     }
 

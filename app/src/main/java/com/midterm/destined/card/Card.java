@@ -70,7 +70,7 @@ public class Card {
         this.gender = gender;
     }
 
-        public String getLocation() {
+    public String getLocation() {
         return location;
     }
 
