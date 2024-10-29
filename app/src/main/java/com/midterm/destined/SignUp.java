@@ -137,7 +137,7 @@ public class SignUp extends AppCompatActivity {
                             List<String> url = new ArrayList<>();
 
 
-                            UserReal user = new UserReal(uid, email, fullName, phone, dob, gender, interests, location, "No address", pic, url , userName);
+                            UserReal user = new UserReal(uid, email, fullName, phone, dob, gender, interests, location,"No address", pic, url , userName);
 
                             Intent intent = new Intent(SignUp.this, Interests.class);
                             intent.putExtra("user", user);

@@ -1,6 +1,5 @@
 package com.midterm.destined.model;
 
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,46 +14,21 @@ public class UserReal implements Serializable {
     private String gender;
     private String bio;
     private String imageURL;
-//    private String location;
-//    private String lastMessage;
-//    private String lastTimeStamp, childID;
     private List<String> interests; // New field for interests
     private GPSAddress location;
     private String profilePicture;
     private List<String> imageUrls;
     private String userName;
-    private List<String> cardList;
-    private List<String> favoritedCardList;
-    private String detailAdrress;
-
-
-    public List<String> getCardList() {
-        return cardList;
-    }
-
-    public void setCardList(List<String> cardList) {
-        this.cardList = cardList;
-    }
-
-    public List<String> getFavoritedCardList() {
-        return favoritedCardList;
-    }
-
-    public void setFavoritedCardList(List<String> favoritedCardList) {
-        this.favoritedCardList = favoritedCardList;
-    }
+    private String detailAddress; // Sửa tên biến ở đây
 
     public UserReal() {
-        // Default constructor required for calls to DataSnapshot.getValue(UserReal.class)
-        this.interests = new ArrayList<>(); // Initialize interests list
+        this.interests = new ArrayList<>();
         this.location = new GPSAddress(0.0, 0.0);
         this.imageUrls = new ArrayList<>();
-        this.profilePicture = "gs://cupid-app-ad700.appspot.com/avatar_def.jpg";
-        this.cardList = new ArrayList<>();
-        this.favoritedCardList = new ArrayList<>();
+        this.profilePicture = "";
     }
 
-    public UserReal(String uid, String email, String fullName, String phoneNumber, String dateOfBirth, String gender, List<String> interests, GPSAddress location,String detailAddress, String profilePicture, List<String> imageUrls, String userName) {
+    public UserReal(String uid, String email, String fullName, String phoneNumber, String dateOfBirth, String gender, List<String> interests, GPSAddress location, String detailAddress, String profilePicture, List<String> imageUrls, String userName) {
         this.uid = uid;
         this.email = email;
         this.fullName = fullName;
@@ -63,8 +37,7 @@ public class UserReal implements Serializable {
         this.gender = gender;
         this.bio = bio;
         this.imageURL = imageURL;
-//        this.userArrayList = userArrayList;
-        this.detailAdrress = detailAddress;
+        this.detailAddress = detailAddress; // Cập nhật ở đây
         this.interests = interests != null ? interests : new ArrayList<>();
         this.location = location != null ? location : new GPSAddress(0.0, 0.0);
         this.profilePicture = profilePicture != null ? profilePicture : "https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_def.jpg?alt=media&token=a96937d6-84c3-4ef3-b0d2-aba2f7affc26";
@@ -72,13 +45,7 @@ public class UserReal implements Serializable {
         this.userName = userName;
     }
 
-    public String getDetailAdrress() {
-        return detailAdrress;
-    }
-    public void setDetailAdrress(String detailAdrress) {
-        this.detailAdrress = detailAdrress;
-    }
-
+    // Getters and Setters
     public String getUid() {
         return uid;
     }
@@ -91,8 +58,8 @@ public class UserReal implements Serializable {
         return userName;
     }
 
-    public void setUserName(String uid) {
-        this.userName = uid;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getEmail() {
@@ -102,8 +69,6 @@ public class UserReal implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-
-
 
     public String getFullName() {
         return fullName;
@@ -153,25 +118,13 @@ public class UserReal implements Serializable {
         this.imageURL = imageURL;
     }
 
-//    public String getLocation() {
-//        return location;
-//    }
-//
-//    public void setLocation(String location) {
-//        this.location = location;
-//    }
+    public String getDetailAddress() { // Cập nhật ở đây
+        return detailAddress;
+    }
 
-
-//    public ArrayList<UserReal> getUserArrayList() {
-//        return userArrayList;
-//    }
-//    public void addUser(UserReal user) {
-//        userArrayList.add(user);
-//    }
-//
-//    public void setUserArrayList(ArrayList<UserReal> userArrayList) {
-//        this.userArrayList = userArrayList;
-//    }
+    public void setDetailAddress(String detailAddress) { // Cập nhật ở đây
+        this.detailAddress = detailAddress;
+    }
 
     public List<String> getInterests() {
         return interests;
@@ -189,10 +142,23 @@ public class UserReal implements Serializable {
         this.location = location;
     }
 
-    public String getProfilePicture() { return profilePicture; }
-    public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
+    public String getProfilePicture() {
+        return profilePicture;
+    }
 
-    public List<String> getImageUrls() { return imageUrls; }
-    public void setImageUrls(List<String> imageUrls) { this.imageUrls = imageUrls; }
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
 
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
+    }
+
+    public String displayInterest() {
+        return String.join(" - ", interests);
+    }
 }

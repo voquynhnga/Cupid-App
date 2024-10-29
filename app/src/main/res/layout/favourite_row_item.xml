@@ -28,16 +28,16 @@
                 android:src="@drawable/sample_person" />
 
 
-                <TextView
-                    android:id="@+id/tv_Name"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="10dp"
-                    android:text="Their name"
-                    android:gravity="center"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    />
+            <TextView
+                android:id="@+id/tv_Name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:gravity="center"
+                android:text="Their name"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -50,20 +50,21 @@
                 >
 
                 <TextView
+                    android:id="@+id/tv_Accept"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Remove them"
+                    android:text="Accept them"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:textColor="#F974A0"
-                    android:textSize="14sp"
+                    android:textColor="#FF5069"
+                    android:textSize="13sp"
                     ></TextView>
 
                 <ImageView
                     android:id="@+id/im_removeItem"
                     android:layout_width="48dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/favourite_remove"
+                    android:src="@drawable/acceptfavourite"
                     ></ImageView>
 
             </LinearLayout>

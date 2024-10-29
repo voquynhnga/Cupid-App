@@ -12,6 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -33,7 +36,8 @@ public class HomepageFragment extends Fragment {
     private CardFragment cf;
 
     @Override
-    public View onCreateView( @NonNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(
+            @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
         binding = FragmentHomepageBinding.inflate(inflater, container, false);
@@ -48,7 +52,14 @@ public class HomepageFragment extends Fragment {
         return binding.getRoot();
 
     }
-
+//    private void displayCardFragment() {
+//
+//        CardFragment cardFragment = new CardFragment();
+//
+//        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+//        transaction.replace(R.id.fragment_card, cardFragment);
+//        transaction.commit();
+//    }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -90,13 +101,14 @@ public class HomepageFragment extends Fragment {
                     .navigate(R.id.action_global_SearchFragment);
         });
 
+
+
         binding.story.setOnClickListener(v -> {
 
             NavHostFragment.findNavController(HomepageFragment.this)
                     .navigate(R.id.action_global_AddStoryFragment);
         });
     }
-
 
     @Override
     public void onDestroyView() {
