@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.midterm.destined.Story;
 import com.midterm.destined.User;
+import com.midterm.destined.card.CardFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,17 +99,17 @@ public class StoryActivity extends AppCompatActivity {
             }
         });
 
-//        // Click on view count
-//        r_seen.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(StoryActivity.this, FollowersActivity.class);
-//                intent.putExtra("id", userid);
-//                intent.putExtra("storyid", storyids.get(counter));
-//                intent.putExtra("title", "views");
-//                startActivity(intent);
-//            }
-//        });
+        // Click on view count
+        r_seen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(StoryActivity.this, CardFragment.class);
+                intent.putExtra("id", userid);
+                intent.putExtra("storyid", storyids.get(counter));
+                intent.putExtra("title", "views");
+                startActivity(intent);
+            }
+        });
 
         // Delete story
         story_delete.setOnClickListener(new View.OnClickListener() {

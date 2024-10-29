@@ -17,7 +17,7 @@
             android:id="@+id/action_HomepageFragment_to_MyFavouriteFragment"
             app:destination="@id/MyFavouriteFragment" />
         <action
-            android:id="@+id/action_HomepageFragment_to_SearchFragment"
+            android:id="@+id/action_global_SearchFragment"
             app:destination="@id/SearchFragment" />
     </fragment>
 
