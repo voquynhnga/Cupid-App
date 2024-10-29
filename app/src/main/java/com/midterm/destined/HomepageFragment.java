@@ -74,7 +74,7 @@ public class HomepageFragment extends Fragment {
         btnRefresh.setOnClickListener(v -> {
             cf = (CardFragment) getChildFragmentManager().findFragmentById(R.id.card_container);
             if (cf != null) {
-                cf.fetchAllUsersExceptCurrentAndFavorited();
+               // cf.fetchAllUsersExceptCurrentAndFavorited();
             } else {
                 Log.d("Refresh", "CardFragment not found in container");
             }

@@ -61,9 +61,17 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        if (binding.toolbar.findViewById(R.id.nav_heart) != null) {
-            binding.toolbar.findViewById(R.id.nav_heart).setOnClickListener(view -> {
-                // Xử lý sự kiện cho Heart
+        if (binding.toolbar.findViewById(R.id.nav_profile) != null) {
+            binding.toolbar.findViewById(R.id.nav_profile).setOnClickListener(view -> {
+                if (navController.getCurrentDestination() != null) {
+                    if (navController.getCurrentDestination().getId() == R.id.fragment_homepage) {
+                        navController.navigate(R.id.action_MyProfileFragment_to_HomepageFragment);
+                    } else if (navController.getCurrentDestination().getId() != R.id.MyProfileFragment) {
+                        navController.navigate(R.id.action_global_MyProfileFragment);
+                    } else {
+                        Log.d("Navigation", "Already on MyProfileFragment");
+                    }
+                }
             });
         }
 

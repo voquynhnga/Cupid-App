@@ -135,32 +135,33 @@ public class CardFragment extends Fragment {
     public SwipeFlingAdapterView getFlingContainer() {
         return flingContainer;
     }
-    public void fetchAllUsersExceptCurrentAndFavorited() {
-        cardList.clear();
-        db.collection("users").get().addOnCompleteListener(userTask -> {
-            if (userTask.isSuccessful()) {
-                for (QueryDocumentSnapshot userDocument : userTask.getResult()) {
-                    if (userDocument.getId().equals(currentUserId) || savedCardList.contains(userDocument.getId())) {
-                        continue;
-                    }
-
-                    userId = userDocument.getId();
-                     userName = userDocument.getString("fullName");
-                     avatarUser = userDocument.getString("profilePicture");
-                     bio = userDocument.getString("bio");
-                     dateOfBirth = userDocument.getString("dateOfBirth");
-                        Card card = new Card(userName, avatarUser, bio, String.valueOf(calculateAge(dateOfBirth)), userId);
-                        cardList.add(card);
-
-                }
-                cardAdapter.notifyDataSetChanged();
-            } else {
-                Log.d("Firestore Error", "Error getting documents: ", userTask.getException());
-            }
-        }).addOnFailureListener(e -> {
-            Log.d("Firestore Error", "Error getting documents: ", e);
-        });
-    }
+//    public void fetchAllUsersExceptCurrentAndFavorited() {
+//        cardList.clear();
+//        db.collection("users").get().addOnCompleteListener(userTask -> {
+//            if (userTask.isSuccessful()) {
+//                for (QueryDocumentSnapshot userDocument : userTask.getResult()) {
+//                    if (userDocument.getId().equals(currentUserId) || savedCardList.contains(userDocument.getId())) {
+//                        continue;
+//                    }
+//
+//                    userId = userDocument.getId();
+//                     userName = userDocument.getString("fullName");
+//                     avatarUser = userDocument.getString("profilePicture");
+//                     bio = userDocument.getString("bio");
+//                     dateOfBirth = userDocument.getString("dateOfBirth");
+//                      = userDocument.getString("dateOfBirth");
+//                        Card card = new Card(userName, avatarUser, bio, String.valueOf(calculateAge(dateOfBirth)), userId);
+//                        cardList.add(card);
+//
+//                }
+//                cardAdapter.notifyDataSetChanged();
+//            } else {
+//                Log.d("Firestore Error", "Error getting documents: ", userTask.getException());
+//            }
+//        }).addOnFailureListener(e -> {
+//            Log.d("Firestore Error", "Error getting documents: ", e);
+//        });
+//    }
 
 
 
@@ -206,7 +207,8 @@ public class CardFragment extends Fragment {
                             UserReal user = userDocument.toObject(UserReal.class);
                             List<String> imageUrls = user.getImageUrls();
                             String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
-                            Card card = new Card(user.getFullName(), firstImageUrl, user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                            Card card = null;
+                            card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),user.getDetailAddress(),user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
                             cardList.add(card);
                         }
                     }
@@ -230,7 +232,8 @@ public class CardFragment extends Fragment {
                     if (!user.getUid().equals(currentUserId)) {
                         List<String> imageUrls = user.getImageUrls();
                         String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
-                        Card card = new Card(user.getFullName(), firstImageUrl, user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                        Card card = null;
+                        card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),user.getDetailAddress(),user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
                         cardList.add(card);
                     }
                 }
