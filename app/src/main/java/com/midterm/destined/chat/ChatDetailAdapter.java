@@ -3,36 +3,35 @@ package com.midterm.destined.chat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.midterm.destined.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ChatDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int VIEW_TYPE_LEFT = 1;
     private static final int VIEW_TYPE_RIGHT = 2;
     private ArrayList<Message> messageList;
-    private String currentUser;
+    private FirebaseUser currentUser;
 
-    public ChatDetailAdapter(ArrayList<Message> messageList) {
+    public ChatDetailAdapter(ArrayList<Message> messageList, FirebaseUser currentUser) {
         this.messageList = messageList;
-//        this.currentUser = currentUser;
+        this.currentUser = currentUser;
     }
 
     @Override
     public int getItemViewType(int position) {
         Message message = messageList.get(position);
-        if (message.getSender().equals("me")) {
-            return VIEW_TYPE_RIGHT;
-        } else {
-            return VIEW_TYPE_LEFT;
-        }
+        return message.getSender().equals(currentUser.getUid()) ? VIEW_TYPE_RIGHT : VIEW_TYPE_LEFT;
     }
 
     @NonNull
@@ -64,16 +63,31 @@ public class ChatDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     class LeftMessageViewHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText;
+        ImageView avatar;
 
         LeftMessageViewHolder(View itemView) {
             super(itemView);
             messageText = itemView.findViewById(R.id.tv_message_left);
             timeText = itemView.findViewById(R.id.tv_time_left);
+            avatar = itemView.findViewById(R.id.avatar_chat_left);
         }
 
         void bind(Message message) {
             messageText.setText(message.getContent());
             timeText.setText(message.getTime());
+            FirebaseFirestore.getInstance().collection("users").document(message.getSender())
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String avatarUrl = documentSnapshot.getString("profilePicture");
+                            Glide.with(avatar.getContext())
+                                    .load(avatarUrl)
+                                    .placeholder(R.drawable.avatardefault)
+                                    .into(avatar);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                    });
         }
     }
 
@@ -91,5 +105,4 @@ public class ChatDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             timeText.setText(message.getTime());
         }
     }
-
 }

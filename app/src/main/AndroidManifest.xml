@@ -39,6 +39,9 @@
             android:name=".Login"
             android:exported="false" />
         <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".GetStarted"
             android:exported="true" >
         <intent-filter>
@@ -48,10 +51,7 @@
         </intent-filter>
         </activity>
 
-        <activity
-            android:name=".MainActivity"
-            android:exported="false">
-        </activity>
+
 
 
     </application>

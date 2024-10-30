@@ -174,6 +174,16 @@ public class MyProfileFragment extends Fragment {
             }
         });
 
+        binding.imLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getActivity(), GetStarted.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+
         return view;
     }
 

@@ -1,6 +1,7 @@
 package com.midterm.destined;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -26,34 +30,71 @@ public class HomepageFragment extends Fragment {
 
     private FragmentHomepageBinding binding;
     private ImageView btnRefresh;
+    private ImageView btnLike;
+    private ImageView btndisLike;
     private String currentUserId ;
-
+    private CardFragment cf;
+    private SearchFragment sf;
 
     @Override
-    public View onCreateView( @NonNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(
+            @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
         binding = FragmentHomepageBinding.inflate(inflater, container, false);
         currentUserId = Card.fetchCurrentUserID();
+        cf = new CardFragment();
 
         if (savedInstanceState == null) {
+            CardFragment cf = new CardFragment();
             getChildFragmentManager().beginTransaction()
-                    .replace(R.id.card_container, new CardFragment())
+                    .replace(R.id.card_container, cf, "CARD_FRAGMENT")
                     .commit();
         }
         return binding.getRoot();
 
     }
-
+//    private void displayCardFragment() {
+//
+//        CardFragment cardFragment = new CardFragment();
+//
+//        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+//        transaction.replace(R.id.fragment_card, cardFragment);
+//        transaction.commit();
+//    }
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         btnRefresh = view.findViewById(R.id.refreshButton);
+        btnLike = view.findViewById(R.id.likeButton);
+        btndisLike = view.findViewById(R.id.dislikeButton);
+
+        //FIXXXX
         btnRefresh.setOnClickListener(v -> {
-            CardFragment cf = (CardFragment) getChildFragmentManager().findFragmentById(R.id.card_container);
-            cf.fetchAllUsersExceptCurrentAndFavorited(currentUserId);
+            cf = CardFragment.getInstance();
+            if (cf != null) {
+                cf.fetchAllUsersExceptCurrentAndFavorited();
+            } else {
+                Log.d("Refresh", "CardFragment not found in container");
+            }
+        });
+
+        btnLike.setOnClickListener(v -> {
+            cf = (CardFragment) getChildFragmentManager().findFragmentById(R.id.card_container);
+            if (cf != null) {
+                cf.getFlingContainer().getTopCardListener().selectRight();
+            }
+
+        });
+        btndisLike.setOnClickListener(v -> {
+            cf = (CardFragment) getChildFragmentManager().findFragmentById(R.id.card_container);
+            if (cf != null) {
+                cf.getFlingContainer().getTopCardListener().selectLeft();
+            }
+
         });
 
         binding.filterhp.setOnClickListener(v -> {
@@ -70,7 +111,6 @@ public class HomepageFragment extends Fragment {
                     .navigate(R.id.action_global_AddStoryFragment);
         });
     }
-
 
     @Override
     public void onDestroyView() {

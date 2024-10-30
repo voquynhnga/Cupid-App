@@ -155,7 +155,7 @@ public class MySettingFragment extends Fragment {
                     updatedUser.setUserName(myUserName);
                     updatedUser.setEmail(mAuth.getCurrentUser().getEmail());
                     //updatedUser.setPassword(myPasswordInternal);
-                    updatedUser.setDetailAdrress(myDetailAddress);
+                    updatedUser.setDetailAddress(myDetailAddress);
                     updatedUser.setProfilePicture(myProfilePicture);
                     updatedUser.setInterests(myInterestInternal);
                     updatedUser.setLocation(myLocationGPS);
@@ -213,7 +213,7 @@ public class MySettingFragment extends Fragment {
                     myInterestInternal = user.getInterests();
                     myLocationGPS = user.getLocation();
                     myUserName = user.getUserName();
-                    myDetailAddress = user.getDetailAdrress();
+                    myDetailAddress = user.getDetailAddress();
                     myProfilePicture = user.getProfilePicture();
                     binding.edBio.setText(user.getBio());
                     binding.edFullName.setText(user.getFullName());

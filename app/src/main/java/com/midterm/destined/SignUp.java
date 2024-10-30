@@ -79,7 +79,7 @@ public class SignUp extends AppCompatActivity {
             String genderInput = getSelectedGender();
             String userNameInput = userName.getText().toString().trim();
 
-            if (passwordInput.equals(confirmPasswordInput)) {
+            if (passwordInput.equals(confirmPasswordInput.trim().toString())) {
                 checkUsernameExists(userNameInput, emailInput, passwordInput, fullNameInput, phoneInput, dobInput, genderInput);
             } else {
                 Toast.makeText(SignUp.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
@@ -145,7 +145,7 @@ public class SignUp extends AppCompatActivity {
                             finish();
                         }
                     } else {
-                        Toast.makeText(SignUp.this, "Đăng nhập không thành công: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignUp.this,  task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

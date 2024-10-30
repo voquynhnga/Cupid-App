@@ -62,26 +62,9 @@ public class Interests extends AppCompatActivity {
         setupToggleButton(fashion);
         setupToggleButton(sport);
 
-//        continueButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(Interests.this, UploadPhoto.class);
-//                startActivity(intent);
-//            }
-//        });
 
         UserReal user = (UserReal) getIntent().getSerializableExtra("user");
 
-//        continueButton.setOnClickListener(v -> {
-//            List<String> selectedInterests = new ArrayList<>();
-//            for (ToggleButton toggleButton : selectedButtons) {
-//                selectedInterests.add(toggleButton.getText().toString());
-//            }
-//
-//            Intent intent = new Intent(Interests.this, UploadPhoto.class);
-//            intent.putStringArrayListExtra("selectedInterests", (ArrayList<String>) selectedInterests);
-//            startActivity(intent);
-//        });
 
         continueButton.setOnClickListener(v -> {
             List<String> selectedInterests = new ArrayList<>();
@@ -110,15 +93,13 @@ public class Interests extends AppCompatActivity {
 
                 }
                 else {
-                    buttonView.setBackgroundColor(Color.RED);
-                    buttonView.setTextColor(Color.WHITE);
+
                     selectedCount++;
                     selectedButtons.add(tgBtn);
                 }
             }
             else {
-                buttonView.setBackgroundColor(Color.WHITE);
-                buttonView.setTextColor(Color.RED);
+
                 selectedCount--;
                 selectedButtons.remove(tgBtn);
             }

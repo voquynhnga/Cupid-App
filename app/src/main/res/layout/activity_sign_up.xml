@@ -29,7 +29,8 @@
             android:inputType="textPersonName"
             android:layout_marginBottom="12dp"
             android:layout_below="@+id/signupIcon"
-            android:textColorHint="@color/signup_text"/>
+            android:textColorHint="@color/signup_text"
+            android:textColor="@color/black"/>
 
         <EditText
             android:id="@+id/etUserName"
@@ -42,7 +43,8 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
             android:layout_below="@+id/etFullName"
-            android:textColorHint="@color/signup_text"/>
+            android:textColorHint="@color/signup_text"
+            android:textColor="@color/black"/>
 
         <EditText
             android:id="@+id/etEmail"
@@ -55,7 +57,8 @@
             android:layout_below="@id/etUserName"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            android:textColorHint="@color/signup_text"/>
+            android:textColorHint="@color/signup_text"
+            android:textColor="@color/black"/>
 
         <EditText
             android:id="@+id/etPassword"
@@ -68,7 +71,8 @@
             android:layout_below="@id/etEmail"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            android:textColorHint="@color/signup_text"/>
+            android:textColorHint="@color/signup_text"
+            android:textColor="@color/black"/>
 
         <EditText
             android:id="@+id/etConfirmPassword"
@@ -81,7 +85,8 @@
             android:layout_below="@id/etPassword"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            android:textColorHint="@color/signup_text"/>
+            android:textColorHint="@color/signup_text"
+            android:textColor="@color/black"/>
 
         <EditText
             android:id="@+id/etPhone"
@@ -94,7 +99,8 @@
             android:layout_below="@id/etConfirmPassword"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            android:textColorHint="@color/signup_text"/>
+            android:textColorHint="@color/signup_text"
+            android:textColor="@color/black"/>
 
         <EditText
             android:id="@+id/etDob"
@@ -108,7 +114,8 @@
             android:layout_marginBottom="12dp"
             android:focusable="false"
             android:clickable="true"
-            android:textColorHint="@color/signup_text"/>
+            android:textColorHint="@color/signup_text"
+            android:textColor="@color/black"/>
 
         <RadioGroup
             android:id="@+id/rgGender"
@@ -155,6 +162,7 @@
             android:layout_below="@id/btnSignUp"/>
 
         <TextView
+
             android:id="@+id/orText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -166,39 +174,14 @@
             android:textColor="@android:color/darker_gray"
             />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnContinueWithFb"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/orText"
-            android:layout_marginTop="16dp"
-            android:text="Continue with Facebook"
-            android:drawablePadding="12dp"
-            android:textColor="@color/fb"
-            android:background="@drawable/rounded_button_facebook"
-            android:drawableStart="@drawable/fb"
-            android:padding="10dp"
-            android:textAllCaps="false"/>
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnContinueWithGoogle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/btnContinueWithFb"
-            android:layout_marginTop="16dp"
-            android:text="Continue with Google"
-            android:drawablePadding="12dp"
-            android:textAllCaps="false"
-            android:background="@drawable/rounded_button_google"
-            android:textColor="@color/gg"
-            android:drawableStart="@drawable/googleg_standard_color_18"
-            android:padding="10dp"/>
+
 
 
         <TextView
             android:id="@+id/alreadyHaveAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/btnContinueWithGoogle"
+            android:layout_below="@id/o"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="24dp"
             android:text="Already have an account? Log in"

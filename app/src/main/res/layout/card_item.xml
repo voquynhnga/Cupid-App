@@ -11,13 +11,14 @@
     <ImageView
         android:id="@+id/profileImage"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/sample_person"
+        android:layout_height="match_parent"
+        android:padding="2dp"
         android:background="@drawable/rounded_conner_layout"
+        android:scaleType="fitCenter"
+        android:src="@drawable/sample_person"
         app:layout_constraintDimensionRatio="h,3:4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.662"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,114 +26,113 @@
         android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="124dp"
-        android:text="Kalvin"
-        android:textColor="@color/text"
-        android:textSize="22sp"
-        android:textStyle="bold"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="108dp"
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="1"
-        app:layout_constraintBottom_toBottomOf="@id/profileImage"
-        app:layout_constraintStart_toStartOf="@id/profileImage" />
+        android:text="Name"
+        android:textColor="@color/text"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="23"
-        android:textColor="@color/text"
-        android:textSize="22sp"
+        android:layout_marginStart="64dp"
+        android:layout_marginBottom="64dp"
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="1"
-        app:layout_constraintBottom_toBottomOf="@id/userName"
-        app:layout_constraintStart_toEndOf="@id/userName" />
+        android:text="23"
+        android:textColor="@color/text"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <ImageView
+        android:id="@+id/genderIcon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="64dp"
+        android:src="@drawable/picsize"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="28dp"
-        android:text="Malibu - Mumbail"
-        android:textColor="@color/text"
-        android:textSize="16sp"
+        android:layout_marginStart="24dp"
+        android:padding="1dp"
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="1"
-        app:layout_constraintStart_toStartOf="@id/userName"
-        app:layout_constraintTop_toBottomOf="@id/userName" />
-
-    <TextView
-        android:id="@+id/gender"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Gender: Male"
+        android:text="Location"
         android:textColor="@color/text"
         android:textSize="16sp"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="1"
-        app:layout_constraintBottom_toBottomOf="@+id/profileImage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.063"
-        app:layout_constraintStart_toStartOf="@+id/profileImage"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.981" />
-
-    <TextView
-        android:id="@+id/bio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="HAHHAHA"
-        android:textColor="@color/text"
-        android:textSize="16sp"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/hobby" />
+        app:layout_constraintTop_toBottomOf="@+id/distance" />
 
     <TextView
         android:id="@+id/hobby"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sở thích : Đọc sách , ngủ"
-        android:textColor="@color/text"
-        android:textSize="16sp"
+        android:background="@drawable/rounded_conner_layout"
+        android:padding="4dp"
+        android:shadowColor="@color/sign"
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="1"
+        android:text="Hobby"
+        android:textColor="@color/text"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/profileImage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.084"
+        app:layout_constraintHorizontal_bias="0.069"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/profileImage"
-        app:layout_constraintVertical_bias="0.865" />
+        app:layout_constraintVertical_bias="0.979" />
+
+    <TextView
+        android:id="@+id/bio"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="64dp"
+        android:padding="2dp"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        android:text="Bio to introduce myself"
+
+        android:textColor="@color/text"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/distance"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
-        android:text="20KM AWAYS"
-        android:textColor="@color/text"
-        android:textSize="16sp"
+        android:layout_marginLeft="24dp"
+        android:padding="1dp"
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="1"
+        android:text="Distance"
+        android:textColor="@color/text"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/profileImage"
         app:layout_constraintEnd_toEndOf="@+id/profileImage"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.981" />
-
+        app:layout_constraintVertical_bias="0.002" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
