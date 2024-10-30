@@ -1,6 +1,7 @@
 package com.midterm.destined.card;
 
 import android.app.AlertDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
@@ -168,7 +169,9 @@ public class CardFragment extends Fragment {
                         String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
                         String detailAddress = userDocument.getString("detailAdrress");
                         Card card = null;
-                        card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),detailAddress,user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),detailAddress,user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                        }
                         cardList.add(card);
                     }
 
@@ -245,7 +248,9 @@ public class CardFragment extends Fragment {
                             String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
                             String detailAddress = userDocument.getString("detailAdrress");
                             Card card = null;
-                            card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),detailAddress,user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),detailAddress,user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                            }
                             cardList.add(card);
                         }
                     }
@@ -271,7 +276,9 @@ public class CardFragment extends Fragment {
                         String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
                         String detailAddress = userDocument.getString("detailAdrress");
                         Card card = null;
-                        card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),detailAddress,user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),detailAddress,user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                        }
                         cardList.add(card);
                     }
                 }
@@ -409,6 +416,7 @@ public class CardFragment extends Fragment {
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static int calculateAge(String dateOfBirth) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
         LocalDate birthDate = LocalDate.parse(dateOfBirth, formatter);

@@ -181,7 +181,7 @@
             android:id="@+id/alreadyHaveAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/o"
+            android:layout_below="@id/orText"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="24dp"
             android:text="Already have an account? Log in"

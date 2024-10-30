@@ -73,55 +73,55 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         holder.btn_unfollow.setOnClickListener(v -> {
             if (cf != null) {
 
-                    String favoritedUserId = user.getUid();
-                    Log.d("DEBUG", "CardList1: " + favoritedUserId);
-                    String currentUserId = firebaseUser.getUid();
-                    Log.d("DEBUG", "CardList2: " + currentUserId);
+                String favoritedUserId = user.getUid();
+                Log.d("DEBUG", "CardList1: " + favoritedUserId);
+                String currentUserId = firebaseUser.getUid();
+                Log.d("DEBUG", "CardList2: " + currentUserId);
 
-                    if (db != null) {
-                        db.collection("users").document(currentUserId)
-                                .update("cardList", FieldValue.arrayRemove(favoritedUserId))
-                                .addOnSuccessListener(aVoid -> {
+                if (db != null) {
+                    db.collection("users").document(currentUserId)
+                            .update("cardList", FieldValue.arrayRemove(favoritedUserId))
+                            .addOnSuccessListener(aVoid -> {
 //                                    cf.cardList.add(user);
 //                                    cf.favoritedCardList.remove(user);
-                                    //cf.cardAdapter.notifyDataSetChanged();
+                                //cf.cardAdapter.notifyDataSetChanged();
 
 
-                                    cf.saveCardListToFirestore(currentUserId);
+                                cf.saveCardListToFirestore(currentUserId);
 
-                                    cf.saveFavoritedCardListToFirestore(currentUserId);
-                                    cf.checkIfMatched(favoritedUserId, currentUserId);
+                                cf.saveFavoritedCardListToFirestore(currentUserId);
+                                cf.checkIfMatched(favoritedUserId, currentUserId);
 
-                                    holder.btn_follow.setVisibility(View.VISIBLE);
-                                    holder.btn_unfollow.setVisibility(View.GONE);
-                                });
-                    }
-
-                    db.collection("matches").whereEqualTo("userId1", currentUserId)
-                            .get()
-                            .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot matchDocument : task.getResult()) {
-                                        matchDocument.getReference().delete();
-
-                                    }
-                                } else {
-                                    Log.e("MATCH_CHECK_ERROR", "Error checking matches", task.getException());
-                                }
+                                holder.btn_follow.setVisibility(View.VISIBLE);
+                                holder.btn_unfollow.setVisibility(View.GONE);
                             });
-                    db.collection("matches").whereEqualTo("userId2", currentUserId)
-                            .get()
-                            .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot matchDocument : task.getResult()) {
-                                        matchDocument.getReference().delete();
+                }
 
+                db.collection("matches").whereEqualTo("userId1", currentUserId)
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot matchDocument : task.getResult()) {
+                                    matchDocument.getReference().delete();
 
-                                    }
-                                } else {
-                                    Log.e("MATCH_CHECK_ERROR", "Error checking matches", task.getException());
                                 }
-                            });
+                            } else {
+                                Log.e("MATCH_CHECK_ERROR", "Error checking matches", task.getException());
+                            }
+                        });
+                db.collection("matches").whereEqualTo("userId2", currentUserId)
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot matchDocument : task.getResult()) {
+                                    matchDocument.getReference().delete();
+
+
+                                }
+                            } else {
+                                Log.e("MATCH_CHECK_ERROR", "Error checking matches", task.getException());
+                            }
+                        });
             }
         });
 

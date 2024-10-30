@@ -79,9 +79,9 @@ public class CardAdapter extends BaseAdapter {
         hobby.setText(card.getAllInterest());
 
         if ("Male".equals(card.getGender())) {
-            genderIcon.setImageResource(R.drawable.anh1);
+            genderIcon.setImageResource(R.drawable.male_picture);
         } else {
-            genderIcon.setImageResource(R.drawable.anh3);
+            genderIcon.setImageResource(R.drawable.female_picture);
         }
 
         // Gán ảnh profile với Glide
