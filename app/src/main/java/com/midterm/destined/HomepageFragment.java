@@ -34,6 +34,7 @@ public class HomepageFragment extends Fragment {
     private ImageView btndisLike;
     private String currentUserId ;
     private CardFragment cf;
+    private SearchFragment sf;
 
     @Override
     public View onCreateView(
@@ -42,11 +43,12 @@ public class HomepageFragment extends Fragment {
     ) {
         binding = FragmentHomepageBinding.inflate(inflater, container, false);
         currentUserId = Card.fetchCurrentUserID();
-
+        cf = new CardFragment();
 
         if (savedInstanceState == null) {
+            CardFragment cf = new CardFragment();
             getChildFragmentManager().beginTransaction()
-                    .replace(R.id.card_container, new CardFragment())
+                    .replace(R.id.card_container, cf, "CARD_FRAGMENT")
                     .commit();
         }
         return binding.getRoot();
@@ -72,9 +74,9 @@ public class HomepageFragment extends Fragment {
 
         //FIXXXX
         btnRefresh.setOnClickListener(v -> {
-            cf = (CardFragment) getChildFragmentManager().findFragmentById(R.id.card_container);
+            cf = CardFragment.getInstance();
             if (cf != null) {
-               // cf.fetchAllUsersExceptCurrentAndFavorited();
+                cf.fetchAllUsersExceptCurrentAndFavorited();
             } else {
                 Log.d("Refresh", "CardFragment not found in container");
             }

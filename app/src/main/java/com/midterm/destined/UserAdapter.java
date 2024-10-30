@@ -1,7 +1,6 @@
 package com.midterm.destined;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,24 +14,32 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.midterm.destined.card.Card;
+import com.midterm.destined.card.CardFragment;
 import com.midterm.destined.model.UserReal;
 
 import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolder> {
 
     private Context mContext;
-    private List<UserReal> mUsers; // Danh sách UserReal
+    private List<UserReal> mUsers;
     private boolean isFragment;
     private FirebaseUser firebaseUser;
+    private CardFragment cf;
+    private FirebaseFirestore db;
 
     public UserAdapter(Context context, List<UserReal> users, boolean isFragment) {
         this.mContext = context;
         this.mUsers = users;
         this.isFragment = isFragment;
         this.firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        this.cf = CardFragment.getInstance();
+        this.db = FirebaseFirestore.getInstance();
     }
 
     @NonNull
@@ -49,19 +56,103 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         holder.username.setText(user.getUserName());
         holder.fullname.setText(user.getFullName());
 
-        // Log giá trị URL để kiểm tra
-        String imageUrl = user.getProfilePicture();
-        Log.d("UserAdapter", "Image URL: " + imageUrl);
-
-        // Tải ảnh vào CircleImageView với xử lý lỗi
         Glide.with(mContext)
-                .load(imageUrl)
-                .error(R.drawable.avatardefault) // Hình mặc định nếu có lỗi
+                .load(user.getProfilePicture())
+                .error(R.drawable.avatardefault)
                 .into(holder.image_profile);
 
-        holder.btn_follow.setVisibility(user.getUid().equals(firebaseUser.getUid()) ? View.GONE : View.VISIBLE);
+        // Set button visibility based on UID
+        if (user.getUid().equals(firebaseUser.getUid())) {
+            holder.btn_follow.setVisibility(View.GONE);
+            holder.btn_unfollow.setVisibility(View.GONE);
+        } else {
+            holder.btn_follow.setVisibility(View.VISIBLE);
+            holder.btn_unfollow.setVisibility(View.GONE);
+        }
 
-        // Xử lý sự kiện nhấp vào item và các logic khác...
+        holder.btn_unfollow.setOnClickListener(v -> {
+            if (cf != null) {
+
+                    String favoritedUserId = user.getUid();
+                    Log.d("DEBUG", "CardList1: " + favoritedUserId);
+                    String currentUserId = firebaseUser.getUid();
+                    Log.d("DEBUG", "CardList2: " + currentUserId);
+
+                    if (db != null) {
+                        db.collection("users").document(currentUserId)
+                                .update("cardList", FieldValue.arrayRemove(favoritedUserId))
+                                .addOnSuccessListener(aVoid -> {
+//                                    cf.cardList.add(user);
+//                                    cf.favoritedCardList.remove(user);
+                                    //cf.cardAdapter.notifyDataSetChanged();
+
+
+                                    cf.saveCardListToFirestore(currentUserId);
+
+                                    cf.saveFavoritedCardListToFirestore(currentUserId);
+                                    cf.checkIfMatched(favoritedUserId, currentUserId);
+
+                                    holder.btn_follow.setVisibility(View.VISIBLE);
+                                    holder.btn_unfollow.setVisibility(View.GONE);
+                                });
+                    }
+
+                    db.collection("matches").whereEqualTo("userId1", currentUserId)
+                            .get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot matchDocument : task.getResult()) {
+                                        matchDocument.getReference().delete();
+
+                                    }
+                                } else {
+                                    Log.e("MATCH_CHECK_ERROR", "Error checking matches", task.getException());
+                                }
+                            });
+                    db.collection("matches").whereEqualTo("userId2", currentUserId)
+                            .get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot matchDocument : task.getResult()) {
+                                        matchDocument.getReference().delete();
+
+
+                                    }
+                                } else {
+                                    Log.e("MATCH_CHECK_ERROR", "Error checking matches", task.getException());
+                                }
+                            });
+            }
+        });
+
+        holder.btn_follow.setOnClickListener(v -> {
+            if (cf != null) {
+
+                String favoritedUserId = user.getUid();
+                Log.d("DEBUG", "CardList1: " + favoritedUserId);
+                String currentUserId = firebaseUser.getUid();
+                Log.d("DEBUG", "CardList2: " + currentUserId);
+
+                if (db != null) {
+                    db.collection("users").document(currentUserId)
+                            .update("cardList", FieldValue.arrayRemove(favoritedUserId))
+                            .addOnSuccessListener(aVoid -> {
+//                                cf.favoritedCardList.add(user);
+//                                cf.cardList.remove(user);
+                                //cf.cardAdapter.notifyDataSetChanged();
+
+
+                                cf.saveCardListToFirestore(currentUserId);
+
+                                cf.saveFavoritedCardListToFirestore(currentUserId);
+                                cf.checkIfMatched(favoritedUserId, currentUserId);
+
+                                holder.btn_follow.setVisibility(View.GONE);
+                                holder.btn_unfollow.setVisibility(View.VISIBLE);
+                            });
+                }
+            }
+        });
     }
 
     @Override
@@ -74,6 +165,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         public TextView fullname;
         public CircleImageView image_profile;
         public Button btn_follow;
+        public Button btn_unfollow;
 
         public ImageViewHolder(View itemView) {
             super(itemView);
@@ -81,8 +173,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
             fullname = itemView.findViewById(R.id.fullname);
             image_profile = itemView.findViewById(R.id.image_profile);
             btn_follow = itemView.findViewById(R.id.btn_follow);
+            btn_unfollow = itemView.findViewById(R.id.btn_unfollow);
         }
     }
-
-    // Các phương thức khác cho việc theo dõi/không theo dõi...
 }

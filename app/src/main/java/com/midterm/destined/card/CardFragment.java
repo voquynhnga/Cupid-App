@@ -35,10 +35,10 @@ import java.util.Map;
 public class CardFragment extends Fragment {
 
     private SwipeFlingAdapterView flingContainer;
-    private CardAdapter cardAdapter;
-    private List<Card> cardList = new ArrayList<>();
-    private List<Card> favoritedCardList = new ArrayList<>();
-    private List<String> savedCardList = new ArrayList<>();
+    public CardAdapter cardAdapter;
+    public List<Card> cardList = new ArrayList<>();
+    public List<Card> favoritedCardList = new ArrayList<>();
+    public List<String> savedCardList = new ArrayList<>();
     private String currentUserId = Card.fetchCurrentUserID();
     private ChatFragment chatFragment = new ChatFragment();
     private String userId;
@@ -47,8 +47,18 @@ public class CardFragment extends Fragment {
     private String bio;
     private String dateOfBirth;
 
-    private FirebaseFirestore db;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+
+
+    private static CardFragment instance;
+
+    public static CardFragment getInstance() {
+        if (instance == null) {
+            instance = new CardFragment();
+        }
+        return instance;
+    }
 
 
     @Nullable
@@ -56,7 +66,8 @@ public class CardFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_card, container, false);
 
-        db = FirebaseFirestore.getInstance();
+
+        cardAdapter = new CardAdapter(getContext(), cardList);
 
         if (currentUserId != null) {
             fetchUsersFromFirebase(currentUserId);
@@ -73,7 +84,7 @@ public class CardFragment extends Fragment {
 
 
         flingContainer = view.findViewById(R.id.frame);
-        cardAdapter = new CardAdapter(getContext(), cardList);
+
         flingContainer.setAdapter(cardAdapter);
 
 
@@ -106,16 +117,21 @@ public class CardFragment extends Fragment {
                 Card card = (Card) dataObject;
                 String favoritedUserId = card.getCurrentUserID();
 
-                db.collection("users").document(card.fetchCurrentUserID())
-                        .update("cardList", FieldValue.arrayRemove(favoritedUserId))
-                        .addOnSuccessListener(aVoid -> {
-                            favoritedCardList.add(card);
-                            cardList.remove(card);
-                            cardAdapter.notifyDataSetChanged();
 
-                            saveCardListToFirestore(card.fetchCurrentUserID());
-                            saveFavoritedCardListToFirestore(card.fetchCurrentUserID());
-                            checkIfMatched(favoritedUserId, card.fetchCurrentUserID());
+
+                db.collection("users").document(currentUserId)
+                        .update("cardList", FieldValue.arrayRemove(favoritedUserId),
+                                "favoritedCardList", FieldValue.arrayUnion(favoritedUserId))
+
+                        .addOnSuccessListener(aVoid -> {
+
+                            cardList.remove(card);
+
+                            favoritedCardList.add(card);
+
+                            cardAdapter.notifyDataSetChanged();
+                            saveCardListToFirestore(currentUserId);
+                            checkIfMatched(favoritedUserId, currentUserId);
                         });
 
 
@@ -137,34 +153,50 @@ public class CardFragment extends Fragment {
     public SwipeFlingAdapterView getFlingContainer() {
         return flingContainer;
     }
-//    public void fetchAllUsersExceptCurrentAndFavorited() {
-//        cardList.clear();
-//        db.collection("users").get().addOnCompleteListener(userTask -> {
-//            if (userTask.isSuccessful()) {
-//                for (QueryDocumentSnapshot userDocument : userTask.getResult()) {
-//                    if (userDocument.getId().equals(currentUserId) || savedCardList.contains(userDocument.getId())) {
-//                        continue;
-//                    }
-//
+    public void fetchAllUsersExceptCurrentAndFavorited() {
+        cardList.clear();
+        db.collection("users").get().addOnCompleteListener(userTask -> {
+            if (userTask.isSuccessful()) {
+                for (QueryDocumentSnapshot userDocument : userTask.getResult()) {
+                    if (userDocument.getId().equals(currentUserId) || savedCardList.contains(userDocument.getId())) {
+                        continue;
+                    }
+
+                    if (userDocument.exists()) {
+                        UserReal user = userDocument.toObject(UserReal.class);
+                        List<String> imageUrls = user.getImageUrls();
+                        String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
+                        String detailAddress = userDocument.getString("detailAdrress");
+                        Card card = null;
+                        card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),detailAddress,user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                        cardList.add(card);
+                    }
+
 //                    userId = userDocument.getId();
 //                     userName = userDocument.getString("fullName");
 //                     avatarUser = userDocument.getString("profilePicture");
 //                     bio = userDocument.getString("bio");
 //                     dateOfBirth = userDocument.getString("dateOfBirth");
-//                      = userDocument.getString("dateOfBirth");
 //                        Card card = new Card(userName, avatarUser, bio, String.valueOf(calculateAge(dateOfBirth)), userId);
 //                        cardList.add(card);
-//
-//                }
-//                cardAdapter.notifyDataSetChanged();
-//            } else {
-//                Log.d("Firestore Error", "Error getting documents: ", userTask.getException());
-//            }
-//        }).addOnFailureListener(e -> {
-//            Log.d("Firestore Error", "Error getting documents: ", e);
-//        });
-//    }
 
+                }
+                cardAdapter.notifyDataSetChanged();
+            } else {
+                Log.d("Firestore Error", "Error getting documents: ", userTask.getException());
+            }
+        }).addOnFailureListener(e -> {
+            Log.d("Firestore Error", "Error getting documents: ", e);
+        });
+    }
+
+
+    private void updateUserLists(String userId, List<String> cardList, List<String> favoritedCardList) {
+        db.collection("users").document(userId)
+                .update("cardList", cardList, "favoritedCardList", favoritedCardList)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "User lists updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating user lists", e));
+    }
 
 
 
@@ -175,8 +207,10 @@ public class CardFragment extends Fragment {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
                     savedCardList = (List<String>) document.get("cardList");
+
                     if (savedCardList != null) {
                         cardList.clear();
+//                        favoritedCardList.clear();
                         fetchUsersByIds(savedCardList);
                     }
                     else {
@@ -248,7 +282,8 @@ public class CardFragment extends Fragment {
 
 
 
-    private void saveCardListToFirestore(String currentUserId) {
+
+    public void saveCardListToFirestore(String currentUserId) {
         List<String> userIds = new ArrayList<>();
         for (Card card : cardList) {
             userIds.add(card.getCurrentUserID());
@@ -258,7 +293,7 @@ public class CardFragment extends Fragment {
                 .update("cardList", userIds);
     }
 
-    private void saveFavoritedCardListToFirestore(String currentUserId) {
+    public void saveFavoritedCardListToFirestore(String currentUserId) {
         List<String> userIds = new ArrayList<>();
         for (Card card : favoritedCardList) {
             userIds.add(card.getCurrentUserID());
@@ -269,7 +304,7 @@ public class CardFragment extends Fragment {
     }
 
 
-    private void checkIfMatched(String favoritedUserId, String currentUserId) {
+    public void checkIfMatched(String favoritedUserId, String currentUserId) {
         db.collection("users").document(favoritedUserId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();

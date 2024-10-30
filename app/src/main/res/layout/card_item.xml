@@ -31,7 +31,7 @@
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="1"
-        android:text="Kalvin"
+        android:text="Name"
         android:textColor="@color/text"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -42,25 +42,26 @@
         android:id="@+id/age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="24dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginBottom="64dp"
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="1"
         android:text="23"
         android:textColor="@color/text"
         android:textSize="22sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userName" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/genderIcon"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="64dp"
         android:src="@drawable/picsize"
-        app:layout_constraintBottom_toBottomOf="@id/age"
-        app:layout_constraintStart_toEndOf="@id/age" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/location"

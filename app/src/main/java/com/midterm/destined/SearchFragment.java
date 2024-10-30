@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.midterm.destined.card.Card;
+import com.midterm.destined.card.CardFragment;
 import com.midterm.destined.model.UserReal;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,9 @@ public class SearchFragment extends Fragment {
     private List<UserReal> userList;
     private String selectedFilter;
     private Spinner filterSpinner;
+    public CardFragment cf ;
+
+
 
     @Nullable
     @Override
@@ -43,6 +48,7 @@ public class SearchFragment extends Fragment {
         filterSpinner = view.findViewById(R.id.filterSpinner);
 
         userList = new ArrayList<>();
+        cf = CardFragment.getInstance();
         userAdapter = new UserAdapter(getContext(), userList, true);
         resultsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         resultsRecyclerView.setAdapter(userAdapter);
@@ -83,7 +89,7 @@ public class SearchFragment extends Fragment {
     }
 
     private void performSearch() {
-        String detail = detailInput.getText().toString().trim(); // Trim input
+        String detail = detailInput.getText().toString().toLowerCase().trim(); // Trim input
 
         if (selectedFilter == null) {
             Toast.makeText(getContext(), "Vui lòng chọn tiêu chí lọc", Toast.LENGTH_SHORT).show();
@@ -95,7 +101,6 @@ public class SearchFragment extends Fragment {
             return;
         }
 
-        // Lấy ID người dùng đang đăng nhập
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Query query = FirebaseFirestore.getInstance().collection("users");
 
@@ -109,7 +114,7 @@ public class SearchFragment extends Fragment {
                 query = query.whereArrayContains("interests", detail);
                 break;
             case "Location":
-                query = query.orderBy("detailAdrress").startAt(detail).endAt(detail + "\uf8ff");
+                query = query.orderBy("detailAddress").startAt(detail).endAt(detail + "\uf8ff");
                 break;
         }
 
@@ -118,8 +123,7 @@ public class SearchFragment extends Fragment {
                 userList.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     UserReal user = document.toObject(UserReal.class);
-                    // Kiểm tra ID người dùng
-                    if (!user.getUid().equals(currentUserId)) { // Giả sử UserReal có phương thức getId() để lấy ID
+                    if (!user.getUid().equals(currentUserId)) {
                         userList.add(user);
                     }
                 }
