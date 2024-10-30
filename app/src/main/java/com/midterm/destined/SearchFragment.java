@@ -114,7 +114,7 @@ public class SearchFragment extends Fragment {
                 query = query.whereArrayContains("interests", detail);
                 break;
             case "Location":
-                query = query.orderBy("detailAddress").startAt(detail).endAt(detail + "\uf8ff");
+                query = query.orderBy("detailAdrress").startAt(detail).endAt(detail + "\uf8ff");
                 break;
         }
 
@@ -123,7 +123,10 @@ public class SearchFragment extends Fragment {
                 userList.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     UserReal user = document.toObject(UserReal.class);
-                    if (!user.getUid().equals(currentUserId)) {
+                    List<String> favoritedCardList = (List<String>) document.get("favoritedCardList");
+                    if (!user.getUid().equals(currentUserId) &&
+                            (favoritedCardList == null || !favoritedCardList.contains(user.getUid()))) {
+                        Log.d("DEBUG", "search" + user.getFullName());
                         userList.add(user);
                     }
                 }

@@ -87,14 +87,25 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
     }
 
     private void searchMessages(String query) {
+        String normalizedQuery = removeVietnameseDiacritics(query.toLowerCase().trim());
         ArrayList<ChatObject> filteredMessages = new ArrayList<>();
+
         for (ChatObject chatObject : chatObjects) {
-            if (chatObject.getUserName1().toLowerCase().contains(query.toLowerCase().trim()) || chatObject.getUserName2().toLowerCase().contains(query.toLowerCase().trim())) {
+            String userName1 = removeVietnameseDiacritics(chatObject.getUserName1().toLowerCase());
+            String userName2 = removeVietnameseDiacritics(chatObject.getUserName2().toLowerCase());
+
+            if (userName1.contains(normalizedQuery) || userName2.contains(normalizedQuery)) {
                 filteredMessages.add(chatObject);
             }
         }
         chatAdapter.updateMessages(filteredMessages);
     }
+
+    private String removeVietnameseDiacritics(String input) {
+        String normalized = java.text.Normalizer.normalize(input, java.text.Normalizer.Form.NFD);
+        return normalized.replaceAll("\\p{M}", "");
+    }
+
 
     @Override
     public void onMessageClick(ChatObject selectedChat) {
