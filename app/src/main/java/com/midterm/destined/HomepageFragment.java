@@ -85,11 +85,11 @@ public class HomepageFragment extends Fragment {
 
 
 
-        binding.story.setOnClickListener(v -> {
-
-            NavHostFragment.findNavController(HomepageFragment.this)
-                    .navigate(R.id.action_global_AddStoryFragment);
-        });
+//        binding.story.setOnClickListener(v -> {
+//
+//            NavHostFragment.findNavController(HomepageFragment.this)
+//                    .navigate(R.id.action_global_AddStoryFragment);
+//        });
     }
 
     @Override

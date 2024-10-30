@@ -123,28 +123,9 @@ public class SearchFragment extends Fragment {
                 break;
 
             case "Location":
-                String normalizedSearch = normalizeText(detail); // Chuẩn hóa từ khóa tìm kiếm
-                db.collection("users").whereArrayContains("detailAdrress", normalizedSearch).get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        userList.clear();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            UserReal user = document.toObject(UserReal.class);
-                            if (!user.getUid().equals(currentUserId)) {
-                                String detailAddress = user.getDetailAddress();
-                                if (detailAddress != null) { // Kiểm tra địa chỉ không null
-                                    String normalizedAddress = normalizeText(detailAddress); // Chuẩn hóa địa chỉ
-
-                                    if (normalizedAddress.contains(normalizedSearch)) {
-                                        userList.add(user);
-                                    }
-                                }
-                            }
-                        }
-                        userAdapter.notifyDataSetChanged();
-                    } else {
-                        Toast.makeText(getContext(), "Lỗi khi tìm kiếm dữ liệu", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                detail = normalizeText(detail);
+                detail = capitalizeEachWord(detail);
+                searchLocation(db, detail, currentUserId);
                 break;
 
 
@@ -179,6 +160,30 @@ public class SearchFragment extends Fragment {
                 break;
         }
     }
+
+
+    private void searchLocation(FirebaseFirestore db, String detail, String currentUserId) {
+        String startText = detail;
+        String endText = detail + "\uf8ff"; // Phạm vi chuỗi kết thúc
+
+        db.collection("users")
+                .whereGreaterThanOrEqualTo("detailAdrress", startText)
+                .whereLessThan("detailAdrress", endText)
+                .get()
+                .addOnCompleteListener(task -> updateUserList(task, currentUserId));
+    }
+
+    private String capitalizeEachWord(String input) {
+        String[] words = input.split("\\s+");
+        StringBuilder capitalized = new StringBuilder();
+
+        for (String word : words) {
+            capitalized.append(capitalizeDetail(word)).append(" ");
+        }
+
+        return capitalized.toString().trim();
+    }
+
 
     private void updateUserList(@NonNull Task<QuerySnapshot> task, String currentUserId) {
         if (task.isSuccessful()) {
