@@ -1,6 +1,9 @@
 package com.midterm.destined;
 
 import android.os.Bundle;
+
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.QuerySnapshot;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -12,6 +15,7 @@ import android.view.KeyEvent;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,7 +26,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.midterm.destined.card.Card;
 import com.midterm.destined.card.CardFragment;
 import com.midterm.destined.model.UserReal;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -46,6 +54,7 @@ public class SearchFragment extends Fragment {
         detailInput = view.findViewById(R.id.editTextInput);
         resultsRecyclerView = view.findViewById(R.id.resultsRecyclerView);
         filterSpinner = view.findViewById(R.id.filterSpinner);
+        searchButton = view.findViewById(R.id.ok);
 
         userList = new ArrayList<>();
         cf = CardFragment.getInstance();
@@ -70,13 +79,7 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        detailInput.setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                performSearch();
-                return true;
-            }
-            return false;
-        });
+        searchButton.setOnClickListener(v -> performSearch());
 
         return view;
     }
@@ -102,39 +105,120 @@ public class SearchFragment extends Fragment {
         }
 
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Query query = FirebaseFirestore.getInstance().collection("users");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        //final String normalizedSearch = normalizeText(detail);
 
         switch (selectedFilter) {
             case "Gender":
                 detail = capitalizeDetail(detail);
-                query = query.whereEqualTo("gender", detail);
+                db.collection("users").whereEqualTo("gender", detail)
+                        .get().addOnCompleteListener(task -> updateUserList(task, currentUserId));
                 break;
+
             case "Interests":
                 detail = capitalizeDetail(detail);
-                query = query.whereArrayContains("interests", detail);
+                db.collection("users").whereArrayContains("interests", detail)
+                        .get().addOnCompleteListener(task -> updateUserList(task, currentUserId));
                 break;
+
             case "Location":
-                query = query.orderBy("detailAdrress").startAt(detail).endAt(detail + "\uf8ff");
+                String normalizedSearch = normalizeText(detail); // Chuẩn hóa từ khóa tìm kiếm
+                db.collection("users").whereArrayContains("detailAdrress", normalizedSearch).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        userList.clear();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            UserReal user = document.toObject(UserReal.class);
+                            if (!user.getUid().equals(currentUserId)) {
+                                String detailAddress = user.getDetailAddress();
+                                if (detailAddress != null) { // Kiểm tra địa chỉ không null
+                                    String normalizedAddress = normalizeText(detailAddress); // Chuẩn hóa địa chỉ
+
+                                    if (normalizedAddress.contains(normalizedSearch)) {
+                                        userList.add(user);
+                                    }
+                                }
+                            }
+                        }
+                        userAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getContext(), "Lỗi khi tìm kiếm dữ liệu", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                break;
+
+
+            case "Age":
+                int targetAge;
+                try {
+                    targetAge = Integer.parseInt(detail);
+                } catch (NumberFormatException e) {
+                    Toast.makeText(getContext(), "Tuổi không hợp lệ", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+                db.collection("users").get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        userList.clear();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            UserReal user = document.toObject(UserReal.class);
+                            if (!user.getUid().equals(currentUserId)) {
+                                String dob = user.getDateOfBirth();
+                                int birthYear = getBirthYear(dob);
+                                if (birthYear != -1 && currentYear - birthYear == targetAge) {
+                                    userList.add(user);
+                                }
+                            }
+                        }
+                        userAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getContext(), "Lỗi khi tìm kiếm dữ liệu", Toast.LENGTH_SHORT).show();
+                    }
+                });
                 break;
         }
+    }
 
-        query.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                userList.clear();
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    UserReal user = document.toObject(UserReal.class);
-                    List<String> favoritedCardList = (List<String>) document.get("favoritedCardList");
-                    if (!user.getUid().equals(currentUserId) &&
-                            (favoritedCardList == null || !favoritedCardList.contains(user.getUid()))) {
-                        Log.d("DEBUG", "search" + user.getFullName());
-                        userList.add(user);
-                    }
+    private void updateUserList(@NonNull Task<QuerySnapshot> task, String currentUserId) {
+        if (task.isSuccessful()) {
+            userList.clear();
+            for (QueryDocumentSnapshot document : task.getResult()) {
+                UserReal user = document.toObject(UserReal.class);
+                if (!user.getUid().equals(currentUserId)) {
+                    userList.add(user);
                 }
-                userAdapter.notifyDataSetChanged();
-            } else {
-                Toast.makeText(getContext(), "Lỗi khi tìm kiếm dữ liệu", Toast.LENGTH_SHORT).show();
             }
-        });
+            userAdapter.notifyDataSetChanged();
+        } else {
+            Toast.makeText(getContext(), "Lỗi khi tìm kiếm dữ liệu", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Hàm chuẩn hóa chuỗi, chuyển thành chữ thường và loại bỏ dấu tiếng Việt
+    private String normalizeText(String input) {
+        input = input.toLowerCase();
+        input = input.replaceAll("[àáạảãâầấậẩẫăằắặẳẵ]", "a");
+        input = input.replaceAll("[èéẹẻẽêềếệểễ]", "e");
+        input = input.replaceAll("[ìíịỉĩ]", "i");
+        input = input.replaceAll("[òóọỏõôồốộổỗơờớợởỡ]", "o");
+        input = input.replaceAll("[ùúụủũưừứựửữ]", "u");
+        input = input.replaceAll("[ỳýỵỷỹ]", "y");
+        input = input.replaceAll("[đ]", "d");
+        return input;
+    }
+
+
+    // Helper function to parse birth year from date string
+    private int getBirthYear(String dob) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Calendar dobCal = Calendar.getInstance();
+            dobCal.setTime(sdf.parse(dob));
+            return dobCal.get(Calendar.YEAR);
+        } catch (ParseException e) {
+            Log.e("SearchFragment", "Invalid date format: " + dob);
+            return -1; // Error indicator
+        }
     }
 
 }
