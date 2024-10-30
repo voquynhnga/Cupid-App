@@ -38,6 +38,7 @@ public class SearchFragment extends Fragment {
 
     private EditText detailInput;
     private RecyclerView resultsRecyclerView;
+    private ImageView searchButton;
     private UserAdapter userAdapter;
     private List<UserReal> userList;
     private String selectedFilter;
