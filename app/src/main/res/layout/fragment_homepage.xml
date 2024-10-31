@@ -117,7 +117,7 @@
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="58dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -126,8 +126,8 @@
 
         <ImageView
             android:id="@+id/story"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
+            android:layout_width="76dp"
+            android:layout_height="74dp"
             android:src="@drawable/add_story"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
