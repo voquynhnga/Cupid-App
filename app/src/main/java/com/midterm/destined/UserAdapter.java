@@ -1,5 +1,7 @@
 package com.midterm.destined;
 
+import static java.security.AccessController.getContext;
+
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -80,18 +82,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
 
                     if (db != null) {
                         db.collection("users").document(currentUserId)
-                                .update("cardList", FieldValue.arrayRemove(favoritedUserId))
+                                .update("favoritedCardList", FieldValue.arrayRemove(favoritedUserId),
+                                        "cardList", FieldValue.arrayUnion(favoritedUserId))
                                 .addOnSuccessListener(aVoid -> {
-//                                    cf.cardList.add(user);
-//                                    cf.favoritedCardList.remove(user);
-                                    //cf.cardAdapter.notifyDataSetChanged();
-
-
-                                    cf.saveCardListToFirestore(currentUserId);
-
-                                    cf.saveFavoritedCardListToFirestore(currentUserId);
-                                    cf.checkIfMatched(favoritedUserId, currentUserId);
-
                                     holder.btn_follow.setVisibility(View.VISIBLE);
                                     holder.btn_unfollow.setVisibility(View.GONE);
                                 });
@@ -135,17 +128,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
 
                 if (db != null) {
                     db.collection("users").document(currentUserId)
-                            .update("cardList", FieldValue.arrayRemove(favoritedUserId))
+                            .update("cardList", FieldValue.arrayRemove(favoritedUserId),
+                                    "favoritedCardList", FieldValue.arrayUnion(favoritedUserId))
                             .addOnSuccessListener(aVoid -> {
-//                                cf.favoritedCardList.add(user);
-//                                cf.cardList.remove(user);
-                                //cf.cardAdapter.notifyDataSetChanged();
-
-
-                                cf.saveCardListToFirestore(currentUserId);
-
-                                cf.saveFavoritedCardListToFirestore(currentUserId);
-                                cf.checkIfMatched(favoritedUserId, currentUserId);
+                                cf.checkIfMatched(favoritedUserId, currentUserId, mContext);
 
                                 holder.btn_follow.setVisibility(View.GONE);
                                 holder.btn_unfollow.setVisibility(View.VISIBLE);
