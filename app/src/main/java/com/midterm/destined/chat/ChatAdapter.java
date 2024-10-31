@@ -47,11 +47,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         ChatObject chatObject = chatObjects.get(position);
         if (chatObject.getUser1().equals(Card.fetchCurrentUserID())) {
             senderId = chatObject.getUser2();
-
-
-        } else {
+        } else if (chatObject.getUser2().equals(Card.fetchCurrentUserID())){
             senderId = chatObject.getUser1();
         }
+        Log.d("DEBUG", "sender" + senderId);
 
         fetchSenderName(senderId, holder.tvSender);
         fetchSenderAvatar(senderId, holder.avatarChat);

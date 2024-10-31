@@ -44,7 +44,7 @@ public class SearchFragment extends Fragment {
     private String selectedFilter;
     private Spinner filterSpinner;
     public CardFragment cf ;
-
+    private List<String> favoritedCardList;
 
 
     @Nullable
@@ -190,8 +190,17 @@ public class SearchFragment extends Fragment {
             userList.clear();
             for (QueryDocumentSnapshot document : task.getResult()) {
                 UserReal user = document.toObject(UserReal.class);
-                if (!user.getUid().equals(currentUserId)) {
-                    userList.add(user);
+                favoritedCardList = (List<String>) document.get("favoritedCardList");
+
+                if(favoritedCardList == null){
+                    if (!user.getUid().equals(currentUserId) ){
+                        userList.add(user);
+                    }
+                }
+                else if (!favoritedCardList.contains(currentUserId)) {
+                    if (!user.getUid().equals(currentUserId) ){
+                        userList.add(user);
+                    }
                 }
             }
             userAdapter.notifyDataSetChanged();
