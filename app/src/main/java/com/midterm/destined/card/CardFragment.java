@@ -200,8 +200,8 @@ public class CardFragment extends Fragment {
                             UserReal user = userDocument.toObject(UserReal.class);
                             List<String> imageUrls = user.getImageUrls();
                             String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
-                            String detailAddress = userDocument.getString("detailAdrress");
-
+                         //   String detailAddress = userDocument.getString("detailAdrress");
+                            String detailAddress = userDocument.getString("detailAddress");
                             Card card = null;
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                                 card = new Card(user.getFullName(), firstImageUrl, user.displayInterest(), detailAddress, user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
@@ -251,7 +251,8 @@ public class CardFragment extends Fragment {
 
                                         List<String> imageUrls = user.getImageUrls();
                                         String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
-                                        String detailAddress = userDocument.getString("detailAdrress");
+                                      //  String detailAddress = userDocument.getString("detailAdrress");
+                                        String detailAddress = userDocument.getString("detailAddress");
                                         Card card = null;
                                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                                             card = new Card(user.getFullName(), firstImageUrl, user.displayInterest(),

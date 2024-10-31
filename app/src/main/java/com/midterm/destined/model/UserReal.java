@@ -120,12 +120,12 @@ public class UserReal implements Serializable {
         this.imageURL = imageURL;
     }
 
-    @PropertyName("detailAdrress") // Sửa tên trường Firestore tại đây
+    @PropertyName("detailAddress") // Sửa tên trường Firestore tại đây
     public String getDetailAddress() {
         return detailAddress;
     }
 
-    @PropertyName("detailAdrress") // Sửa tên trường Firestore tại đây
+    @PropertyName("detailAddress") // Sửa tên trường Firestore tại đây
     public void setDetailAddress(String detailAddress) {
         this.detailAddress = detailAddress;
     }

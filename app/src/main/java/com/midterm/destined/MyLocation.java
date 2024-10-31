@@ -108,12 +108,14 @@ public class MyLocation extends AppCompatActivity {
                                 List<Address> addresses = geocoder.getFromLocation(user.getLocation().getLatitude(), user.getLocation().getLongitude(), 1);
                                 if (addresses != null && !addresses.isEmpty()) {
                                     Address address = addresses.get(0);
-                                    String district = address.getSubAdminArea(); // Quận/Huyện
+//                                    String district = address.getSubAdminArea(); // Quận/Huyện
                                     String city = address.getAdminArea(); // Thành phố/Tỉnh
 
                                     // Gán địa chỉ vào UserReal
-                                    String detailAddress = (district != null ? district : "") + ", " +
-                                            (city != null ? city : "");
+//                                    String detailAddress = (district != null ? district : "") + ", " +
+//                                            (city != null ? city : "");
+                                    String detailAddress = (city != null ? city : "Unknow");
+
                                     user.setDetailAddress(detailAddress);
 
                                     Log.d("Location", "Latitude: " + user.getLocation().getLatitude() + ", Longitude: " + user.getLocation().getLongitude());
