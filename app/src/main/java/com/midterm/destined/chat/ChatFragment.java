@@ -180,7 +180,7 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
     private void loadChatsToApp(String currentUserID) {
         chatObjects.clear();
 
-        chatsRef.addValueEventListener(new ValueEventListener() {
+        chatsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 chatObjects.clear();
@@ -198,7 +198,9 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
                                             userId1, userId2, lastMessage, chatId, userName1, userName2, avatarUser1, avatarUser2
                                     );
                                     chatObjects.add(chatObject);
+                                    Log.d("DEBUG", "chato" + chatObject);
                                     chatAdapter.notifyDataSetChanged();
+
                                 });
                             });
                         } else {
@@ -206,6 +208,7 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
                         }
                     }
                 }
+
             }
 
             @Override
@@ -214,6 +217,7 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
             }
         });
     }
+
 
 
 
