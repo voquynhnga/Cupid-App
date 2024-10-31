@@ -114,7 +114,12 @@ public class SearchFragment extends Fragment {
                 query = query.whereArrayContains("interests", detail);
                 break;
             case "Location":
-                query = query.orderBy("detailAddress").startAt(detail).endAt(detail + "\uf8ff");
+               detail = capitalizeDetail(detail);
+               // query = query.orderBy("detailAddress").startAt(detail).endAt(detail + "\uf8ff");
+               // query = query.orderBy("detailAdrress").startAt(detail).endAt(detail + "\uf8ff");
+                query = query.whereGreaterThanOrEqualTo("detailAdrress", detail)
+                        .whereLessThanOrEqualTo("detailAdrress", detail + "\uf8ff");
+                Toast.makeText(getContext(), "Filter: "+ selectedFilter +"  Detail: "+detail, Toast.LENGTH_SHORT).show();
                 break;
         }
 
