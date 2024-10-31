@@ -186,18 +186,27 @@ public class SearchFragment extends Fragment {
 
 
     private void updateUserList(@NonNull Task<QuerySnapshot> task, String currentUserId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(currentUserId)
+                .get()
+                .addOnCompleteListener(favTask -> {
+                    List<String> favoritedCardList = null;
+                    if (favTask.isSuccessful() && favTask.getResult() != null) {
+                        favoritedCardList = (List<String>) favTask.getResult().get("favoritedCardList");
+                    }
+                });
         if (task.isSuccessful()) {
             userList.clear();
             for (QueryDocumentSnapshot document : task.getResult()) {
                 UserReal user = document.toObject(UserReal.class);
-                favoritedCardList = (List<String>) document.get("favoritedCardList");
+
 
                 if(favoritedCardList == null){
                     if (!user.getUid().equals(currentUserId) ){
                         userList.add(user);
                     }
                 }
-                else if (!favoritedCardList.contains(currentUserId)) {
+                else if (!favoritedCardList.contains(user.getUid())) {
                     if (!user.getUid().equals(currentUserId) ){
                         userList.add(user);
                     }
