@@ -1,6 +1,7 @@
 package com.midterm.destined.card;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,8 +14,11 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,6 +43,7 @@ public class CardFragment extends Fragment {
     public CardAdapter cardAdapter;
     public List<Card> cardList = new ArrayList<>();
     public List<Card> favoritedCardList = new ArrayList<>();
+    public List<String> savedFavoritedCardList = new ArrayList<>();
     public List<String> savedCardList = new ArrayList<>();
     private String currentUserId = Card.fetchCurrentUserID();
     private ChatFragment chatFragment = new ChatFragment();
@@ -73,6 +78,7 @@ public class CardFragment extends Fragment {
         if (currentUserId != null) {
             fetchUsersFromFirebase(currentUserId);
 //            checkForMatches(currentUserId);
+
         }
 
         return view;
@@ -117,9 +123,6 @@ public class CardFragment extends Fragment {
             public void onRightCardExit(Object dataObject) {
                 Card card = (Card) dataObject;
                 String favoritedUserId = card.getCurrentUserID();
-
-
-
                 db.collection("users").document(currentUserId)
                         .update("cardList", FieldValue.arrayRemove(favoritedUserId),
                                 "favoritedCardList", FieldValue.arrayUnion(favoritedUserId))
@@ -132,7 +135,7 @@ public class CardFragment extends Fragment {
 
                             cardAdapter.notifyDataSetChanged();
                             saveCardListToFirestore(currentUserId);
-                            checkIfMatched(favoritedUserId, currentUserId);
+                            checkIfMatched(favoritedUserId, currentUserId, getContext());
                         });
 
 
@@ -154,70 +157,21 @@ public class CardFragment extends Fragment {
     public SwipeFlingAdapterView getFlingContainer() {
         return flingContainer;
     }
-    public void fetchAllUsersExceptCurrentAndFavorited() {
-        cardList.clear();
-        db.collection("users").get().addOnCompleteListener(userTask -> {
-            if (userTask.isSuccessful()) {
-                for (QueryDocumentSnapshot userDocument : userTask.getResult()) {
-                    if (userDocument.getId().equals(currentUserId) || savedCardList.contains(userDocument.getId())) {
-                        continue;
-                    }
 
-                    if (userDocument.exists()) {
-                        UserReal user = userDocument.toObject(UserReal.class);
-                        List<String> imageUrls = user.getImageUrls();
-                        String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
-                        String detailAddress = userDocument.getString("detailAdrress");
-                        Card card = null;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),detailAddress,user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
-                        }
-                        cardList.add(card);
-                    }
-
-//                    userId = userDocument.getId();
-//                     userName = userDocument.getString("fullName");
-//                     avatarUser = userDocument.getString("profilePicture");
-//                     bio = userDocument.getString("bio");
-//                     dateOfBirth = userDocument.getString("dateOfBirth");
-//                        Card card = new Card(userName, avatarUser, bio, String.valueOf(calculateAge(dateOfBirth)), userId);
-//                        cardList.add(card);
-
-                }
-                cardAdapter.notifyDataSetChanged();
-            } else {
-                Log.d("Firestore Error", "Error getting documents: ", userTask.getException());
-            }
-        }).addOnFailureListener(e -> {
-            Log.d("Firestore Error", "Error getting documents: ", e);
-        });
-    }
-
-
-    private void updateUserLists(String userId, List<String> cardList, List<String> favoritedCardList) {
-        db.collection("users").document(userId)
-                .update("cardList", cardList, "favoritedCardList", favoritedCardList)
-                .addOnSuccessListener(aVoid -> Log.d("Firestore", "User lists updated successfully"))
-                .addOnFailureListener(e -> Log.e("Firestore", "Error updating user lists", e));
-    }
-
-
-
-
-    private void fetchUsersFromFirebase(String currentUserId) {
+    public void fetchUsersFromFirebase(String currentUserId) {
         db.collection("users").document(currentUserId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
                     savedCardList = (List<String>) document.get("cardList");
 
-                    if (savedCardList != null) {
-                        cardList.clear();
-//                        favoritedCardList.clear();
-                        fetchUsersByIds(savedCardList);
-                    }
-                    else {
+                    if (savedCardList == null || savedCardList.isEmpty()) {
                         fetchAllUsers(currentUserId);
+                        Log.d("DEBUG", "1");
+                    } else {
+                        Log.d("DEBUG", "Saved card list: " + savedCardList.toString());
+                        cardList.clear();
+                        fetchUsersByIds(savedCardList);
                     }
 
                 }
@@ -230,7 +184,7 @@ public class CardFragment extends Fragment {
             }
         });
     }
-    private void fetchUsersByIds(List<String> userIds) {
+    public void fetchUsersByIds(List<String> userIds) {
         List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
 
         for (String userId : userIds) {
@@ -247,45 +201,81 @@ public class CardFragment extends Fragment {
                             List<String> imageUrls = user.getImageUrls();
                             String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
                             String detailAddress = userDocument.getString("detailAdrress");
+
                             Card card = null;
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),detailAddress,user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                card = new Card(user.getFullName(), firstImageUrl, user.displayInterest(), detailAddress, user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
                             }
                             cardList.add(card);
+
+
                         }
                     }
                 }
                 cardAdapter.notifyDataSetChanged();
+                Log.d("DEBUG", cardList.toString());
             } else {
                 Log.e("DEBUG", "Error fetching users by IDs", task.getException());
             }
         });
+        Log.d("DEBUG", "Fetched users by IDs");
     }
 
 
 
 
-    private void fetchAllUsers(String currentUserId){
-        db.collection("users").get().addOnCompleteListener(userTask -> {
-            if (userTask.isSuccessful()) {
-                for (QueryDocumentSnapshot userDocument : userTask.getResult()) {
-                    UserReal user = userDocument.toObject(UserReal.class);
-
-                    if (!user.getUid().equals(currentUserId)) {
-                        List<String> imageUrls = user.getImageUrls();
-                        String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
-                        String detailAddress = userDocument.getString("detailAdrress");
-                        Card card = null;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            card = new Card(user.getFullName(), firstImageUrl,user.displayInterest(),detailAddress,user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
-                        }
-                        cardList.add(card);
+    public void fetchAllUsers(String currentUserId) {
+        db.collection("users")
+                .document(currentUserId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        savedFavoritedCardList = (List<String>) documentSnapshot.get("favoritedCardList");
                     }
-                }
-                cardAdapter.notifyDataSetChanged();
-            }
-        });
+                    else{
+                        savedFavoritedCardList = new ArrayList<>();
+                    }
+
+                    Log.d("DEBUG", "hd1");
+                    db.collection("users").get().addOnCompleteListener(userTask -> {
+                        if (userTask.isSuccessful()) {
+                            Log.d("DEBUG", "hd2");
+                            for (QueryDocumentSnapshot userDocument : userTask.getResult()) {
+                                UserReal user = userDocument.toObject(UserReal.class);
+                                if(user != null) {
+                                    Log.d("DEBUG", "hd3");
+
+                                    if (!user.getUid().equals(currentUserId) &&
+                                            (savedFavoritedCardList == null || !savedFavoritedCardList.contains(user.getUid()))) {
+                                        Log.d("DEBUG", "hd4");
+
+                                        List<String> imageUrls = user.getImageUrls();
+                                        String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
+                                        String detailAddress = userDocument.getString("detailAdrress");
+                                        Card card = null;
+                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                            card = new Card(user.getFullName(), firstImageUrl, user.displayInterest(),
+                                                    detailAddress, user.getGender(), user.getBio(),
+                                                    String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                                        }
+
+                                        cardList.add(card);
+                                    }
+                                }
+
+                            }
+                            cardAdapter.notifyDataSetChanged();
+                        } else {
+                            Log.e("DEBUG", "Error fetching users: ", userTask.getException());
+                        }
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("DEBUG", "Error getting favoritedCardList for current user", e);
+                });
     }
+
+
 
 
 
@@ -311,7 +301,7 @@ public class CardFragment extends Fragment {
     }
 
 
-    public void checkIfMatched(String favoritedUserId, String currentUserId) {
+    public void checkIfMatched(String favoritedUserId, String currentUserId, Context context) {
         db.collection("users").document(favoritedUserId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
@@ -319,18 +309,20 @@ public class CardFragment extends Fragment {
                 if (document.exists()) {
                     List<String> favoritedCardListOfA = (List<String>) document.get("favoritedCardList");
                     if (favoritedCardListOfA != null && favoritedCardListOfA.contains(currentUserId)) {
+                        String matchId = currentUserId.compareTo(favoritedUserId) < 0 ? currentUserId + "" + favoritedUserId : favoritedUserId+ "" + currentUserId;
 
-                        if (db.collection("matches").document(currentUserId) == null && db.collection("matches").document(favoritedUserId) == null ){
-                            saveMatchToDatabase(currentUserId, favoritedUserId);
-                            addChatList(currentUserId, favoritedUserId);
 
-                        }
-                        else if(db.collection("matches").document(currentUserId) != null && db.collection("matches").document(favoritedUserId) != null ){
-
-                                showMatchPopup(fullNameUser2);
-
-                        }
-
+                        db.collection("matches").document(matchId).get().addOnCompleteListener(matchTask -> {
+                            if (matchTask.isSuccessful() && !matchTask.getResult().exists()) {
+                                saveMatchToDatabase(currentUserId, favoritedUserId, fullNameUser2);
+                                checkAndAddChatList(currentUserId, favoritedUserId);
+                                showMatchPopup(fullNameUser2, context);
+                            } else if (matchTask.isSuccessful() && matchTask.getResult().exists()) {
+                                showMatchPopup(fullNameUser2, context);
+                            } else {
+                                Log.e("ERROR", "Failed to check match existence", matchTask.getException());
+                            }
+                        });
                     }
                 } else {
                     Log.d("NO_DOCUMENT", "No document found for user " + favoritedUserId);
@@ -341,77 +333,60 @@ public class CardFragment extends Fragment {
         });
     }
 
-    private void saveMatchToDatabase(String userId1, String userId2) {
+    private void checkAndAddChatList(String userID1, String userID2) {
+        DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chats");
+        String chatID = userID1.compareTo(userID2) < 0 ? userID1 + "" + userID2 : userID2 + "" + userID1;
+
+        chatRef.child(chatID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    // If chat does not exist, create it
+                    Map<String, Object> chatData = new HashMap<>();
+                    chatData.put("userID1", userID1);
+                    chatData.put("userID2", userID2);
+                    chatData.put("lastMessage", "Let's start chat!");
+
+                    chatRef.child(chatID).setValue(chatData).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Log.d("RealtimeDB", "Chat created successfully between " + userID1 + " and " + userID2);
+                        } else {
+                            Log.e("RealtimeDB", "Failed to create chat", task.getException());
+                        }
+                    });
+                } else {
+                    Log.d("RealtimeDB", "Chat between " + userID1 + " and " + userID2 + " already exists, skipping creation.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("RealtimeDB", "Failed to check for existing chat", error.toException());
+            }
+        });
+    }
 
 
+    private void saveMatchToDatabase(String userId1, String userId2, String fullNameUser2) {
         Map<String, Object> match = new HashMap<>();
         match.put("userId1", userId1);
         match.put("userId2", userId2);
         match.put("timestamp", FieldValue.serverTimestamp());
 
-        db.collection("matches").add(match)
-                .addOnSuccessListener(documentReference -> {
-                    Log.d("Firestore", "Match saved with ID: " + documentReference.getId());
-                })
-                .addOnFailureListener(e -> {
-                    Log.w("Firestore", "Error adding match", e);
-                });
+        String matchId = userId1 + "_" + userId2;
+        db.collection("matches").document(matchId).set(match)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Match saved with " + fullNameUser2))
+                .addOnFailureListener(e -> Log.w("Firestore", "Error adding match", e));
     }
 
-    private void checkForMatches(String currentUserId) {
-        db.collection("matches").whereEqualTo("userId1", currentUserId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot matchDocument : task.getResult()) {
-                            String fullNameUser2 = matchDocument.getString("fullName");
-                            showMatchPopup(fullNameUser2);
-
-                        }
-                    } else {
-                        Log.e("MATCH_CHECK_ERROR", "Error checking matches", task.getException());
-                    }
-                });
-    }
-
-
-    private void showMatchPopup(String fullNameUser2) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+    private void showMatchPopup(String fullNameUser2, Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("It's a Match!");
-
         String message = "You and " + fullNameUser2 + " have liked each other!";
         builder.setMessage(message);
-
-        builder.setPositiveButton("OK", (dialog, which) -> {
-            dialog.dismiss();
-        });
-
+        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
-
-    public void addChatList(String userID1, String userID2){
-        DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chats");
-
-        String chatID = chatRef.push().getKey();
-        Map<String, Object> chatData = new HashMap<>();
-        chatData.put("userID1", userID1);
-        chatData.put("userID2", userID2);
-        chatData.put("lastMessage", "");
-
-
-        if(chatID != null){
-            chatRef.child(chatID).setValue(chatData)
-                    .addOnCompleteListener(aVoid -> {
-                        Log.d("RealtimeDB", "Chat added with ID: " + chatID);
-
-                    })
-                    .addOnFailureListener(e -> Log.w("RealtimeDB", "Error adding chat", e));
-
-
-        }
-
-
     }
 
 
@@ -429,5 +404,20 @@ public class CardFragment extends Fragment {
             return 0;
         }
     }
+    // private void checkForMatches(String currentUserId) {
+//        db.collection("matches").whereEqualTo("userId1", currentUserId)
+//                .get()
+//                .addOnCompleteListener(task -> {
+//                    if (task.isSuccessful()) {
+//                        for (QueryDocumentSnapshot matchDocument : task.getResult()) {
+//                            String fullNameUser2 = matchDocument.getString("fullName");
+//                            showMatchPopup(fullNameUser2);
+//
+//                        }
+//                    } else {
+//                        Log.e("MATCH_CHECK_ERROR", "Error checking matches", task.getException());
+//                    }
+//                });
+//    }
 
 }

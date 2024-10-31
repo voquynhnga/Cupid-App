@@ -45,22 +45,31 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
         ChatObject chatObject = chatObjects.get(position);
+
+        String senderName, senderAvatar;
         if (chatObject.getUser1().equals(Card.fetchCurrentUserID())) {
-            senderId = chatObject.getUser2();
-
-
+            senderName = chatObject.getUserName2();
+            senderAvatar = chatObject.getAvatarUser2();
         } else {
-            senderId = chatObject.getUser1();
+            senderName = chatObject.getUserName1();
+            senderAvatar = chatObject.getAvatarUser1();
         }
 
-        fetchSenderName(senderId, holder.tvSender);
-        fetchSenderAvatar(senderId, holder.avatarChat);
-
+        holder.tvSender.setText(senderName);
+        if (senderAvatar != null) {
+            Glide.with(holder.avatarChat.getContext())
+                    .load(senderAvatar)
+                    .placeholder(R.drawable.avatardefault)
+                    .into(holder.avatarChat);
+        } else {
+            holder.avatarChat.setImageResource(R.drawable.avatardefault);
+        }
 
         holder.tvContent.setText(chatObject.getLastMessage());
 
         holder.itemView.setOnClickListener(v -> listener.onMessageClick(chatObject));
     }
+
 
     public void fetchSenderAvatar(String userId, ImageView avatar) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();

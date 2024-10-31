@@ -87,14 +87,25 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
     }
 
     private void searchMessages(String query) {
+        String normalizedQuery = removeVietnameseDiacritics(query.toLowerCase().trim());
         ArrayList<ChatObject> filteredMessages = new ArrayList<>();
+
         for (ChatObject chatObject : chatObjects) {
-            if (chatObject.getUserName1().toLowerCase().contains(query.toLowerCase().trim()) || chatObject.getUserName2().toLowerCase().contains(query.toLowerCase().trim())) {
+            String userName1 = removeVietnameseDiacritics(chatObject.getUserName1().toLowerCase());
+            String userName2 = removeVietnameseDiacritics(chatObject.getUserName2().toLowerCase());
+
+            if (userName1.contains(normalizedQuery) || userName2.contains(normalizedQuery)) {
                 filteredMessages.add(chatObject);
             }
         }
         chatAdapter.updateMessages(filteredMessages);
     }
+
+    private String removeVietnameseDiacritics(String input) {
+        String normalized = java.text.Normalizer.normalize(input, java.text.Normalizer.Form.NFD);
+        return normalized.replaceAll("\\p{M}", "");
+    }
+
 
     @Override
     public void onMessageClick(ChatObject selectedChat) {
@@ -113,55 +124,51 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
     }
 
     public void loadChatfromMatches() {
-
         db.collection("matches")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Log.d("DEBUG", "ok");
+                        Log.d("DEBUG", "Matches retrieved successfully");
+
                         for (DocumentSnapshot document : task.getResult()) {
                             userId1 = document.getString("userId1");
                             userId2 = document.getString("userId2");
-                            Log.d("DEBUG", userId1 + " " + userId2);
-                            Log.d("DEBUG", currentUser);
 
                             if (currentUser.equals(userId1) || currentUser.equals(userId2)) {
-                                if (currentUser.equals(userId1) && userId2 != null) {
-                                    matchedUserIds.add(userId2);
-                                }
-                                if (currentUser.equals(userId2) && userId1 != null) {
-                                    matchedUserIds.add(userId1);
+                                String matchedUserId = currentUser.equals(userId1) ? userId2 : userId1;
+                                if (matchedUserId != null) {
+                                    matchedUserIds.add(matchedUserId);
                                 }
                             }
                         }
 
                         chatsRef = FirebaseDatabase.getInstance().getReference("chats");
+
                         for (String matchedUserId : matchedUserIds) {
-                            Log.d("DEBUG", "matched " + matchedUserId);
-                            String chatId = generateChatId(currentUser, matchedUserId);
-                            chatsRef.child(chatId).addValueEventListener(new ValueEventListener() {
+                            String uniqueChatId = currentUser.compareTo(matchedUserId) < 0 ? currentUser + "_" + matchedUserId : matchedUserId + "_" + currentUser;
+
+                            DatabaseReference chatReference = chatsRef.child(uniqueChatId);
+                            chatReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (!snapshot.exists()) {
                                         Map<String, Object> chatData = new HashMap<>();
                                         chatData.put("userID1", currentUser);
                                         chatData.put("userID2", matchedUserId);
-                                        chatData.put("lastMessage", "Let's start chat with " + matchedUserId + "!");
-
-                                        chatsRef.child(chatId).setValue(chatData)
-                                                .addOnSuccessListener(aVoid -> Log.d("Chat", "Added chat between " + currentUser + " and " + matchedUserId))
-                                                .addOnFailureListener(e -> Log.e("Chat", "Failed to add chat", e));
+                                        chatData.put("lastMessage", "Let's start chat!");
+                                        chatReference.setValue(chatData)
+                                                .addOnSuccessListener(aVoid -> Log.d("Chat", "Chat created between " + currentUser + " and " + matchedUserId))
+                                                .addOnFailureListener(e -> Log.e("Chat", "Failed to create chat", e));
                                     }
-
                                 }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-                                    Log.w("ChatFragment1", "loadChatfromMatches:onCancelled", error.toException());
+                                    Log.w("ChatFragment", "loadChatfromMatches:onCancelled", error.toException());
                                 }
                             });
-
                         }
+
                         loadChatsToApp(currentUser);
 
                     } else {
@@ -172,41 +179,36 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
 
     private void loadChatsToApp(String currentUserID) {
         chatObjects.clear();
-        chatsRef.addValueEventListener(new ValueEventListener() {
-            private String userName1;
-            private String userName2;
-            private String avatarUser1;
-            private String avatarUser2;
 
+        chatsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 chatObjects.clear();
                 for (DataSnapshot chatSnapshot : snapshot.getChildren()) {
-                    chatId = chatSnapshot.getKey();
-                    lastMessage = chatSnapshot.child("lastMessage").getValue(String.class);
-                    userId1 = chatSnapshot.child("userID1").getValue(String.class);
-                    userId2 = chatSnapshot.child("userID2").getValue(String.class);
+                    String chatId = chatSnapshot.getKey();
+                    String lastMessage = chatSnapshot.child("lastMessage").getValue(String.class);
+                    String userId1 = chatSnapshot.child("userID1").getValue(String.class);
+                    String userId2 = chatSnapshot.child("userID2").getValue(String.class);
 
                     if ((userId1 != null && userId1.equals(currentUserID)) || (userId2 != null && userId2.equals(currentUserID))) {
                         if (chatId != null && userId1 != null && userId2 != null) {
                             loadUserInfo(userId1, (userName1, avatarUser1) -> {
-                                this.userName1 = userName1;
-                                this.avatarUser1 = avatarUser1;
-
                                 loadUserInfo(userId2, (userName2, avatarUser2) -> {
-                                    this.userName2 = userName2;
-                                    this.avatarUser2 = avatarUser2;
-
-                                    ChatObject chatObject = new ChatObject(userId1, userId2, lastMessage, chatId, userName1, userName2, avatarUser1, avatarUser2);
+                                    ChatObject chatObject = new ChatObject(
+                                            userId1, userId2, lastMessage, chatId, userName1, userName2, avatarUser1, avatarUser2
+                                    );
                                     chatObjects.add(chatObject);
+                                    Log.d("DEBUG", "chato" + chatObject);
                                     chatAdapter.notifyDataSetChanged();
+
                                 });
                             });
                         } else {
-                            Log.w("ChatFragment", "Chat data is missing some values, skipping this chat entry.");
+                            Log.w("ChatFragment", "Some chat data is missing, skipping entry.");
                         }
                     }
                 }
+
             }
 
             @Override
@@ -217,9 +219,9 @@ public class ChatFragment extends Fragment implements ChatAdapter.OnMessageClick
     }
 
 
-    private String generateChatId(String userId1, String userId2) {
-        return userId1.compareTo(userId2) < 0 ? userId1 + "_" + userId2 : userId2 + "_" + userId1;
-    }
+
+
+
 
 
     private void loadUserInfo(String userId, UserInfoCallback callback) {

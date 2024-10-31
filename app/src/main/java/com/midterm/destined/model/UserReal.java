@@ -1,5 +1,7 @@
 package com.midterm.destined.model;
 
+import com.google.firebase.firestore.PropertyName;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -118,11 +120,13 @@ public class UserReal implements Serializable {
         this.imageURL = imageURL;
     }
 
+    @PropertyName("detailAdrress") // Sửa tên trường Firestore tại đây
     public String getDetailAddress() {
         return detailAddress;
     }
 
-    public void setDetailAddress(String detailAddress) { // Cập nhật ở đây
+    @PropertyName("detailAdrress") // Sửa tên trường Firestore tại đây
+    public void setDetailAddress(String detailAddress) {
         this.detailAddress = detailAddress;
     }
 
