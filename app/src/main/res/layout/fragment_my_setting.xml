@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
 
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".MySettingFragment"
+    tools:context=".Views.Profile.Setting.MySettingFragment"
     android:id="@+id/fragment_my_setting"
     android:background="@drawable/gradient_bg">
 

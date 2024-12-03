@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".chat.ChatDetailFragment">
+    tools:context=".Views.Chat.ChatDetailFragment">
 
     <LinearLayout
         android:id="@+id/chat_header"

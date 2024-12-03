@@ -49,7 +49,7 @@
         android:layout_below="@id/story_progress"
         android:layout_margin="10dp">
 
-        <!-- Replaced CircleImageView with ImageView for user photo -->
+        <!-- Replaced CircleImageView with ImageView for cardInfo photo -->
         <ImageView
             android:id="@+id/story_photo"
             android:layout_width="30dp"

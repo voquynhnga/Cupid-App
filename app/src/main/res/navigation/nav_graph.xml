@@ -8,7 +8,7 @@
     <!-- HomepageFragment -->
     <fragment
         android:id="@+id/HomepageFragment"
-        android:name="com.midterm.destined.HomepageFragment"
+        android:name="com.midterm.destined.Views.Homepage.HomepageFragment"
         tools:layout="@layout/fragment_homepage">
         <action
             android:id="@+id/action_HomepageFragment_to_ChatFragment"
@@ -24,7 +24,7 @@
     <!-- ChatFragment -->
     <fragment
         android:id="@+id/ChatFragment"
-        android:name="com.midterm.destined.chat.ChatFragment"
+        android:name="com.midterm.destined.Views.Chat.ChatFragment"
         tools:layout="@layout/fragment_chat">
         <action
             android:id="@+id/action_ChatFragment_to_HomepageFragment"
@@ -39,7 +39,7 @@
 
     <fragment
         android:id="@+id/chatDetailFragment"
-        android:name="com.midterm.destined.chat.ChatDetailFragment"
+        android:name="com.midterm.destined.Views.Chat.ChatDetailFragment"
         tools:layout="@layout/fragment_chat_detail" >
         <action
             android:id="@+id/action_chatDetailFragment_to_chatFragment"
@@ -58,7 +58,7 @@
 
     <fragment
         android:id="@+id/MySettingFragment"
-        android:name="com.midterm.destined.MySettingFragment"
+        android:name="com.midterm.destined.Views.Profile.Setting.MySettingFragment"
         tools:layout="@layout/fragment_my_setting" >
 
     <action
@@ -68,7 +68,7 @@
 
     <fragment
         android:id="@+id/MyProfileFragment"
-        android:name="com.midterm.destined.MyProfileFragment"
+        android:name="com.midterm.destined.Views.Profile.MyProfileFragment"
         tools:layout="@layout/fragment_my_profile">
         <action
             android:id="@+id/action_MyProfileFragment_to_HomepageFragment"
@@ -84,7 +84,7 @@
 
     <fragment
         android:id="@+id/SearchFragment"
-        android:name="com.midterm.destined.SearchFragment"
+        android:name="com.midterm.destined.Views.Homepage.Search.SearchFragment"
         tools:layout="@layout/search" />
 
     <fragment
