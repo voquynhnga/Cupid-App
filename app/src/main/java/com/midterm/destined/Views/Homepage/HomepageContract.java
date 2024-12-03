@@ -15,7 +15,6 @@ public interface HomepageContract {
     }
 
     interface Presenter {
-        void fetchCards(String userId);
         void likeCard(CardFragment cardFragment);
         void dislikeCard(CardFragment cardFragment);
     }

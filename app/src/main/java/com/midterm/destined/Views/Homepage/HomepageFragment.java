@@ -33,6 +33,15 @@ public class HomepageFragment extends Fragment implements HomepageContract.View 
     ) {
         binding = FragmentHomepageBinding.inflate(inflater, container, false);
         presenter = new HomepagePresenter(this);
+
+        if (savedInstanceState == null) {
+            cf = new CardFragment();
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.card_container, cf, "CARD_FRAGMENT")
+                    .commit();
+        }else {
+            cf = (CardFragment) getChildFragmentManager().findFragmentByTag("CARD_FRAGMENT");
+        }
         return binding.getRoot();
     }
 
@@ -42,11 +51,9 @@ public class HomepageFragment extends Fragment implements HomepageContract.View 
 
         btnLike = view.findViewById(R.id.likeButton);
         btnDislike = view.findViewById(R.id.dislikeButton);
-        cf = (CardFragment) getChildFragmentManager().findFragmentById(R.id.card_container);
 
 
-        // Gọi presenter để load dữ liệu
-        presenter.fetchCards("currentUserId");
+
 
         btnLike.setOnClickListener(v -> {
             presenter.likeCard(cf);

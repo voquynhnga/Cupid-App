@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.midterm.destined.Presenters.CardPresenter;
 import com.midterm.destined.R;
 import com.midterm.destined.Adapters.UserAdapter;
 import com.midterm.destined.Views.Homepage.Card.CardFragment;
@@ -44,6 +45,7 @@ public class SearchFragment extends Fragment {
     private Spinner filterSpinner;
     public CardFragment cf ;
     private List<String> favoritedCardList;
+    public CardPresenter cp;
 
 
     @Nullable
@@ -58,7 +60,8 @@ public class SearchFragment extends Fragment {
 
         userList = new ArrayList<>();
         cf = CardFragment.getInstance();
-        userAdapter = new UserAdapter(getContext(), userList, true);
+        cp = new CardPresenter(cf);
+        userAdapter = new UserAdapter(getContext(), userList, cp);
         resultsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         resultsRecyclerView.setAdapter(userAdapter);
 

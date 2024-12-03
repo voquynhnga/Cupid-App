@@ -1,5 +1,7 @@
 package com.midterm.destined.Presenters;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.midterm.destined.Models.Card;
@@ -19,29 +21,6 @@ public class HomepagePresenter implements HomepageContract.Presenter {
         this.db = FirebaseFirestore.getInstance();
     }
 
-    @Override
-    public void fetchCards(String userId) {
-        view.showLoading();
-        db.collection("cards")
-                .whereNotEqualTo("userId", userId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    view.hideLoading();
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        List<Card> cards = new ArrayList<>();
-                        for (QueryDocumentSnapshot doc : task.getResult()) {
-                            cards.add(doc.toObject(Card.class));
-                        }
-                        view.showCards(cards);
-                    } else {
-                        view.showError("Failed to load cards.");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    view.hideLoading();
-                    view.showError("Error: " + e.getMessage());
-                });
-    }
 
     @Override
     public void likeCard(CardFragment cf) {
@@ -59,7 +38,8 @@ public class HomepagePresenter implements HomepageContract.Presenter {
 //                .add(card)
 //                .addOnSuccessListener(docRef -> view.showMessage("Disliked successfully!"))
 //                .addOnFailureListener(e -> view.showError("Failed to dislike card: " + e.getMessage()));
-        cf.getFlingContainer().getTopCardListener().selectLeft();
+                cf.getFlingContainer().getTopCardListener().selectLeft();
+
 
     }
 }
