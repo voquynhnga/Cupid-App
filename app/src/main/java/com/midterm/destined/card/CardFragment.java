@@ -2,6 +2,7 @@ package com.midterm.destined.card;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
@@ -201,8 +202,11 @@ public class CardFragment extends Fragment {
                             String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
                             String detailAddress = userDocument.getString("detailAdrress");
 
-                                Card card = new Card(user.getFullName(), firstImageUrl, user.displayInterest(), detailAddress, user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
-                                cardList.add(card);
+                            Card card = null;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                card = new Card(user.getFullName(), firstImageUrl, user.displayInterest(), detailAddress, user.getGender(), user.getBio(), String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                            }
+                            cardList.add(card);
 
 
                         }
@@ -241,16 +245,19 @@ public class CardFragment extends Fragment {
                                 if(user != null) {
                                     Log.d("DEBUG", "hd3");
 
-                                        if (!user.getUid().equals(currentUserId) &&
-                                                (savedFavoritedCardList == null || !savedFavoritedCardList.contains(user.getUid()))) {
+                                    if (!user.getUid().equals(currentUserId) &&
+                                            (savedFavoritedCardList == null || !savedFavoritedCardList.contains(user.getUid()))) {
                                         Log.d("DEBUG", "hd4");
 
                                         List<String> imageUrls = user.getImageUrls();
                                         String firstImageUrl = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0) : null;
                                         String detailAddress = userDocument.getString("detailAdrress");
-                                        Card card = new Card(user.getFullName(), firstImageUrl, user.displayInterest(),
-                                                detailAddress, user.getGender(), user.getBio(),
-                                                String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                                        Card card = null;
+                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                            card = new Card(user.getFullName(), firstImageUrl, user.displayInterest(),
+                                                    detailAddress, user.getGender(), user.getBio(),
+                                                    String.valueOf(calculateAge(user.getDateOfBirth())), user.getUid());
+                                        }
 
                                         cardList.add(card);
                                     }
@@ -302,7 +309,7 @@ public class CardFragment extends Fragment {
                 if (document.exists()) {
                     List<String> favoritedCardListOfA = (List<String>) document.get("favoritedCardList");
                     if (favoritedCardListOfA != null && favoritedCardListOfA.contains(currentUserId)) {
-                        String matchId = currentUserId.compareTo(favoritedUserId) < 0 ? currentUserId + "_" + favoritedUserId : favoritedUserId+ "_" + currentUserId;
+                        String matchId = currentUserId.compareTo(favoritedUserId) < 0 ? currentUserId + "" + favoritedUserId : favoritedUserId+ "" + currentUserId;
 
 
                         db.collection("matches").document(matchId).get().addOnCompleteListener(matchTask -> {
@@ -328,7 +335,7 @@ public class CardFragment extends Fragment {
 
     private void checkAndAddChatList(String userID1, String userID2) {
         DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chats");
-        String chatID = userID1.compareTo(userID2) < 0 ? userID1 + "_" + userID2 : userID2 + "_" + userID1;
+        String chatID = userID1.compareTo(userID2) < 0 ? userID1 + "" + userID2 : userID2 + "" + userID1;
 
         chatRef.child(chatID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -384,6 +391,7 @@ public class CardFragment extends Fragment {
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static int calculateAge(String dateOfBirth) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
         LocalDate birthDate = LocalDate.parse(dateOfBirth, formatter);
@@ -396,7 +404,7 @@ public class CardFragment extends Fragment {
             return 0;
         }
     }
-   // private void checkForMatches(String currentUserId) {
+    // private void checkForMatches(String currentUserId) {
 //        db.collection("matches").whereEqualTo("userId1", currentUserId)
 //                .get()
 //                .addOnCompleteListener(task -> {
