@@ -54,7 +54,7 @@ public class StoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_story);
+        setContentView(R.layout.story_activity);
 
         // Initialize UI elements
         image = findViewById(R.id.image);

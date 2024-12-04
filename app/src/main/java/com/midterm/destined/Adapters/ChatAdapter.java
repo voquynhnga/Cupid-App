@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -15,8 +16,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.midterm.destined.R;
 import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.ChatObject;
+import com.midterm.destined.Utils.ChatDiffCallback;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
 
@@ -60,7 +63,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             holder.avatarChat.setImageResource(R.drawable.avatardefault);
         }
 
-        holder.tvContent.setText(chatObject.getLastMessage());
+        holder.tvContent.setText((chatObject.getLastMessage()).getContent());
 
         holder.itemView.setOnClickListener(v -> listener.onMessageClick(chatObject));
     }
@@ -114,10 +117,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         return chatObjects.size();
     }
 
-    public void updateMessages(ArrayList<ChatObject> newMessages) {
-        chatObjects = newMessages;
-        notifyDataSetChanged();
-    }
 
     public interface OnMessageClickListener {
         void onMessageClick(ChatObject chatObject);
@@ -135,5 +134,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             tvContent = itemView.findViewById(R.id.tv_content);
             avatarChat = itemView.findViewById(R.id.avatar_chat);
         }
+    }
+    public void updateMessages(ArrayList<ChatObject> newMessages) {
+        ChatDiffCallback diffCallback = new ChatDiffCallback(this.chatObjects, newMessages);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+
+        this.chatObjects.clear();
+        this.chatObjects.addAll(newMessages);
+
+        diffResult.dispatchUpdatesTo(this);
     }
 }

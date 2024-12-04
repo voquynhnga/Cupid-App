@@ -1,5 +1,6 @@
 package com.midterm.destined.Adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.UserReal;
 import com.midterm.destined.Presenters.CardPresenter;
 import com.midterm.destined.R;
@@ -31,7 +33,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
     private final List<UserReal> mUsers;
     private final FirebaseUser firebaseUser;
     private final FirebaseFirestore db;
-    private final CardPresenter cardPresenter; // Sử dụng CardPresenter cho logic check match
+    private final CardPresenter cardPresenter;
+
 
     public UserAdapter(Context context, List<UserReal> users, CardPresenter presenter) {
         this.mContext = context;
@@ -99,46 +102,48 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
     }
 
     private void handleMatchAction(UserReal user, ImageViewHolder holder) {
-        String currentUserId = firebaseUser.getUid();
         String favoritedUserId = user.getUid();
 
-        db.collection("users").document(currentUserId)
-                .update(
-                        "cardList", FieldValue.arrayRemove(favoritedUserId),
-                        "favoritedCardList", FieldValue.arrayUnion(favoritedUserId)
-                )
-                .addOnSuccessListener(aVoid -> {
-                    // Kiểm tra match thông qua CardPresenter
-                    cardPresenter.checkIfMatched(user, currentUserId);
+        try {
+            Card.addToFavoritedList(favoritedUserId);
+            cardPresenter.checkIfMatched(user, firebaseUser.getUid());
 
-                    // Cập nhật nút
-                    holder.btn_match.setVisibility(View.GONE);
-                    holder.btn_unmatch.setVisibility(View.VISIBLE);
-                })
-                .addOnFailureListener(e -> Log.e("FirestoreError", "Failed to update follow action", e));
+            holder.btn_match.setVisibility(View.GONE);
+            holder.btn_unmatch.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            Log.e("FirestoreError", "Failed to update follow action", e);
+        }
     }
+
 
     private void handleUnMatchAction(UserReal user, ImageViewHolder holder) {
-        String currentUserId = firebaseUser.getUid();
-        String favoritedUserId = user.getUid();
+        new AlertDialog.Builder(mContext)
+                .setTitle("Confirm Unmatch")
+                .setMessage("Are you sure you want to unmatch this user? Your conversation will be permanently deleted.")
+                .setPositiveButton("Confirm", (dialog, which) -> {
+                    String currentUserId = firebaseUser.getUid();
+                    String favoritedUserId = user.getUid();
 
-        db.collection("users").document(currentUserId)
-                .update(
-                        "favoritedCardList", FieldValue.arrayRemove(favoritedUserId),
-                        "cardList", FieldValue.arrayUnion(favoritedUserId)
-                )
-                .addOnSuccessListener(aVoid -> {
-                    // Xóa match từ Firestore
-                    deleteMatch(currentUserId, favoritedUserId);
+                    try {
+                        Card.removeToFavoritedList(favoritedUserId);
 
-                    // Cập nhật nút
-                    holder.btn_match.setVisibility(View.VISIBLE);
-                    holder.btn_unmatch.setVisibility(View.GONE);
+                        deleteMatch(currentUserId, favoritedUserId);
+
+                        holder.btn_match.setVisibility(View.VISIBLE);
+                        holder.btn_unmatch.setVisibility(View.GONE);
+
+                    } catch (Exception e) {
+                        Log.e("FirestoreError", "Failed to update unfollow action", e);
+                    }
                 })
-                .addOnFailureListener(e -> Log.e("FirestoreError", "Failed to update unfollow action", e));
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .create()
+                .show();
     }
 
-    // Xóa match từ Firestore
+
     private void deleteMatch(String currentUserId, String favoritedUserId) {
         db.collection("matches")
                 .whereIn("userId1", List.of(currentUserId, favoritedUserId))

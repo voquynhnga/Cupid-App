@@ -14,9 +14,6 @@
             android:id="@+id/action_HomepageFragment_to_ChatFragment"
             app:destination="@id/ChatFragment" />
         <action
-            android:id="@+id/action_HomepageFragment_to_MyFavouriteFragment"
-            app:destination="@id/MyFavouriteFragment" />
-        <action
             android:id="@+id/action_global_SearchFragment"
             app:destination="@id/SearchFragment" />
     </fragment>
@@ -46,15 +43,6 @@
             app:destination="@id/ChatFragment" />
     </fragment>
 
-    <!-- MyFavouriteFragment -->
-    <fragment
-        android:id="@+id/MyFavouriteFragment"
-        android:name="com.midterm.destined.MyFavouriteFragment"
-        tools:layout="@layout/fragment_my_favourite">
-        <action
-            android:id="@+id/action_MyFavouriteFragment_to_HomepageFragment"
-            app:destination="@id/HomepageFragment" />
-    </fragment>
 
     <fragment
         android:id="@+id/MySettingFragment"
@@ -90,7 +78,7 @@
     <fragment
         android:id="@+id/AddStoryFragment"
         android:name="com.midterm.destined.AddStoryFragment"
-        tools:layout="@layout/add_story" />
+        tools:layout="@layout/story_add" />
 
 
 
@@ -107,9 +95,6 @@
     <action
         android:id="@+id/action_global_ChatFragment"
         app:destination="@id/ChatFragment" />
-    <action
-        android:id="@+id/action_global_MyFavouriteFragment"
-        app:destination="@id/MyFavouriteFragment" />
     <action
         android:id="@+id/action_global_MySettingFragment"
         app:destination="@id/MySettingFragment" />

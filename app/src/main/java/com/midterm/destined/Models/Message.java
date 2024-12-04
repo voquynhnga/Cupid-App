@@ -5,7 +5,7 @@ public class Message {
     private String sender;
     private String content;
     private String time;
-    private String chatId;
+//    private String chatId;
 
     public Message(){}
 
@@ -17,19 +17,19 @@ public class Message {
         this.time = time;
     }
 
-    public String getChatId() {
-        return chatId;
-    }
+//    public String getChatId() {
+//        return chatId;
+//    }
+//
+//    public void setChatId(String chatId) {
+//        this.chatId = chatId;
+//    }
 
-    public void setChatId(String chatId) {
-        this.chatId = chatId;
-    }
-
-    public Message(String sender, String content, String time, String chatId) {
+    public Message(String sender, String content, String time) {
         this.sender = sender;
         this.content = content;
         this.time = time;
-        this.chatId = chatId;
+//        this.chatId = chatId;
 
     }
 

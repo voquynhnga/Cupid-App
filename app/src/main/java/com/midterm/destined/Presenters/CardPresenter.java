@@ -1,10 +1,13 @@
 package com.midterm.destined.Presenters;
 
+import static com.midterm.destined.Models.ChatObject.checkAndAddChatList;
+import static com.midterm.destined.Utils.TimeExtensions.getCurrentTime;
+
 import com.midterm.destined.Models.Card;
-import com.midterm.destined.Models.OnMatchSaveListener;
+import com.midterm.destined.Models.Match;
 import com.midterm.destined.Models.UserReal;
 import com.midterm.destined.Views.Homepage.Card.cardView;
-import java.util.ArrayList;
+
 import java.util.List;
 
 public class CardPresenter {
@@ -36,7 +39,7 @@ public class CardPresenter {
         model.updateCardList(cardID);
     }
     public void handleRightSwipe(String cardID){
-        model.updateFavoritedCardList(cardID);
+        model.addToFavoritedList(cardID);
     }
 
     public void checkIfMatched(UserReal user, String currentUserId) {
@@ -51,19 +54,13 @@ public class CardPresenter {
                             ? currentUserId + "_" + favoritedUserId
                             : favoritedUserId + "_" + currentUserId;
 
-                    model.saveMatch(matchId, currentUserId, favoritedUserId,user.getFullName(), new OnMatchSaveListener() {
-                        @Override
-                        public void onSuccess(String matchedUserName) {
-                            view.hideLoading();
-                            view.showMatchPopup(matchedUserName);
-                        }
+                    Match match = new Match(matchId, currentUserId, favoritedUserId, getCurrentTime());
 
-                        @Override
-                        public void onError(String errorMessage) {
-                            view.hideLoading();
-                            view.showError(errorMessage);
-                        }
-                    });
+                    model.saveMatchToDB(match,user.getFullName());
+//                            view.hideLoading();
+                            view.showMatchPopup(user.getFullName());
+
+                    checkAndAddChatList(currentUserId, favoritedUserId, match.getTimestamp());
                 } else {
                     view.hideLoading();
                 }

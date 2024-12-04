@@ -1,7 +1,10 @@
 package com.midterm.destined.Views.Chat;
 
+
+
+import static com.midterm.destined.Utils.TimeExtensions.getCurrentTime;
+
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,34 +12,30 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.midterm.destined.R;
-import com.midterm.destined.Models.Message;
 import com.midterm.destined.Adapters.ChatDetailAdapter;
+import com.midterm.destined.Models.Message;
+import com.midterm.destined.Presenters.ChatDetailPresenter;
+import com.midterm.destined.R;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-public class ChatDetailFragment extends Fragment {
 
+
+public class ChatDetailFragment extends Fragment implements chatDetailView {
     private TextView senderTextView;
     private ImageView btnBack;
     private RecyclerView recyclerView;
@@ -48,14 +47,9 @@ public class ChatDetailFragment extends Fragment {
     private String chatId;
     private FirebaseUser currentUser;
     LinearLayoutManager layoutManager;
-
-
-
     private String userName;
+    private ChatDetailPresenter presenter;
 
-
-
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat_detail, container, false);
@@ -63,7 +57,6 @@ public class ChatDetailFragment extends Fragment {
         if (getActivity() instanceof AppCompatActivity) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
         }
-
 
         senderTextView = view.findViewById(R.id.tv_nameChat);
 
@@ -73,41 +66,45 @@ public class ChatDetailFragment extends Fragment {
         editText = view.findViewById(R.id.et_message);
         recyclerView = view.findViewById(R.id.rv_chat_messages);
 
+        messageList = new ArrayList<>();
         layoutManager = new LinearLayoutManager(getContext());
+        adapter = new ChatDetailAdapter(messageList, FirebaseAuth.getInstance().getCurrentUser());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
-        messageList = new ArrayList<>();
+
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        presenter = new ChatDetailPresenter(this);
 
 
-        if (getArguments() != null ) {
-            chatId = requireArguments().getString("chatId");
-            userName = getArguments().getString("userName");
+        return view;
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
+        if (getArguments() != null) {
+            chatId = getArguments().getString("chatId", "");
+            userName = getArguments().getString("userName", "Unknown");
             senderTextView.setText(userName);
-
-            chatRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
-            loadMessage();
-
+        } else {
+            Toast.makeText(getContext(), "Chat data is missing", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        adapter = new ChatDetailAdapter(messageList, currentUser);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
+        if (!chatId.isEmpty()) {
+            presenter.loadMessages(chatId);
+        }
 
-        btnBack.setOnClickListener(v -> {
-            Navigation.findNavController(requireView()).navigate(R.id.action_chatDetailFragment_to_chatFragment);
-        });
+        btnBack.setOnClickListener(v -> Navigation.findNavController(requireView())
+                .navigate(R.id.action_chatDetailFragment_to_chatFragment));
 
         btnSend.setOnClickListener(v -> {
-            String messageContent = editText.getText() != null ? editText.getText().toString().trim() : "";
+            String messageContent = editText.getText().toString().trim();
             if (!messageContent.isEmpty()) {
-                Message message = new Message(currentUser.getUid(), messageContent, getTime(), chatId);
-                addMessageToChat(chatId, message);
-                editText.setText("");
-                scrollToBottom();
+                Message message = new Message(currentUser.getUid(), messageContent, getCurrentTime());
+                presenter.sendMessage(chatId, message);
+                clearInputField();
             }
         });
 
@@ -118,67 +115,30 @@ public class ChatDetailFragment extends Fragment {
             }
             return false;
         });
-
-        return view;
     }
 
-
-    private void loadMessage() {
-        chatRef.child("messages").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                messageList.clear();
-                for (DataSnapshot messageSnapshot : snapshot.getChildren()) {
-                    Message message = messageSnapshot.getValue(Message.class);
-                    if (message != null) {
-                        messageList.add(message);
-                    }
-                }
-                scrollToBottom();
-                adapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.w("ChatDetailFragment", "loadMessages:onCancelled", error.toException());
-            }
-        });
+    @Override
+    public void displayMessages(List<Message> messages) {
+        messageList.clear();
+        messageList.addAll(messages);
+        adapter.notifyDataSetChanged();
+        scrollToBottom();
     }
 
-    private void addMessageToChat(String chatId, Message message) {
-        DatabaseReference messagesRef = FirebaseDatabase.getInstance().getReference("chats")
-                .child(chatId)
-                .child("messages");
-
-        String messageId = messagesRef.push().getKey();
-        if (messageId != null) {
-            messagesRef.child(messageId).setValue(message)
-                    .addOnSuccessListener(aVoid -> {
-                        updateLastMessage(chatId, message.getContent());
-                    })
-                    .addOnFailureListener(e -> Log.w("RealtimeDB", "Error adding message", e));
-        }
-    }
-
-    private void updateLastMessage(String chatId, String lastMessage) {
-        DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
-
-        Map<String, Object> updateData = new HashMap<>();
-        updateData.put("lastMessage", lastMessage);
-
-        chatRef.updateChildren(updateData)
-                .addOnSuccessListener(aVoid -> Log.d("RealtimeDB", "Last message updated"))
-                .addOnFailureListener(e -> Log.w("RealtimeDB", "Error updating last message", e));
-    }
-    public String getTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        return sdf.format(new Date());
-    }
     private void scrollToBottom() {
         if (layoutManager != null && adapter.getItemCount() > 0) {
             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
         }
     }
 
+
+    @Override
+    public void showError(String error) {
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void clearInputField() {
+        editText.setText("");
+    }
 }

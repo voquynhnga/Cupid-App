@@ -7,6 +7,7 @@ public class CardInfo {
     private String imageurl;
     private String bio;
 
+
     public CardInfo(String id, String username, String fullname, String imageurl, String bio) {
         this.id = id;
         this.username = username;

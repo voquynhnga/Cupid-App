@@ -18,8 +18,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.midterm.destined.Adapters.UserAdapter;
 import com.midterm.destined.Models.UserReal;
+import com.midterm.destined.Presenters.CardPresenter;
 import com.midterm.destined.Presenters.SearchPresenter;
 import com.midterm.destined.R;
+import com.midterm.destined.Views.Homepage.Card.CardFragment;
 
 import java.util.List;
 
@@ -29,6 +31,8 @@ public class SearchFragment extends Fragment implements searchView {
     private UserAdapter userAdapter;
     private Spinner filterSpinner;
     private SearchPresenter searchPresenter;
+    private CardPresenter cardPresenter;
+    private CardFragment cardFragment;
 
     @Nullable
     @Override
@@ -39,7 +43,9 @@ public class SearchFragment extends Fragment implements searchView {
         resultsRecyclerView = view.findViewById(R.id.resultsRecyclerView);
         filterSpinner = view.findViewById(R.id.filterSpinner);
 
+        cardFragment = CardFragment.getInstance();
         searchPresenter = new SearchPresenter(this);
+        cardPresenter = new CardPresenter(cardFragment);
         resultsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
@@ -57,7 +63,7 @@ public class SearchFragment extends Fragment implements searchView {
 
     @Override
     public void updateSearchResults(List<UserReal> users) {
-        userAdapter = new UserAdapter(getContext(), users, null);
+        userAdapter = new UserAdapter(getContext(), users, cardPresenter);
         resultsRecyclerView.setAdapter(userAdapter);
     }
 

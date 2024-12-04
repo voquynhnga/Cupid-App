@@ -1,18 +1,19 @@
 package com.midterm.destined.Models;
 
 import android.util.Log;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.midterm.destined.Utils.Calculate;
+import com.midterm.destined.Utils.TimeExtensions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Card {
 
@@ -24,7 +25,7 @@ public class Card {
     private String currentUserID;
     private String allInterest;
     private String gender;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private static FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public Card() {}
 
@@ -148,12 +149,11 @@ public class Card {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             UserReal user = document.toObject(UserReal.class);
                             String firstImageUrl = (user.getImageUrls() != null && !user.getImageUrls().isEmpty()) ? user.getImageUrls().get(0) : null;
-                            if (user != null) {
                                 cards.add(new Card(user.getFullName(), firstImageUrl,
                                         user.displayInterest(), document.getString("detailAddress"),
                                         user.getGender(), user.getBio(),
-                                        String.valueOf(Calculate.calculateAge(user.getDateOfBirth())), user.getUid()));
-                            }
+                                        String.valueOf(TimeExtensions.calculateAge(user.getDateOfBirth())), user.getUid()));
+
                         }
                         listener.onSuccess(cards);
                     } else {
@@ -168,8 +168,9 @@ public class Card {
                 List<Card> cards = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     UserReal user = document.toObject(UserReal.class);
+                    String firstImageUrl = (user.getImageUrls() != null && !user.getImageUrls().isEmpty()) ? user.getImageUrls().get(0) : null;
                     if (user != null && !user.getUid().equals(currentUserId)) {
-                        cards.add(new Card(user.getFullName(), user.getImageUrls().get(0),
+                        cards.add(new Card(user.getFullName(), firstImageUrl,
                                 user.displayInterest(), document.getString("detailAddress"),
                                 user.getGender(), user.getBio(),
                                 String.valueOf(user.getDateOfBirth()), user.getUid()));
@@ -182,26 +183,48 @@ public class Card {
         });
     }
 
-    public void saveMatch(String matchId, String currentUserId, String otherUserId, String fullName, OnMatchSaveListener listener) {
-        db.collection("matches").document(matchId).set(new Match(currentUserId, otherUserId))
-                .addOnSuccessListener(aVoid -> listener.onSuccess(fullName))
-                .addOnFailureListener(e -> listener.onError("Failed to save match: " + e.getMessage()));
+    public void saveMatchToDB(Match match, String fullNameUser2) {
+        Map<String, Object> matchData = new HashMap<>();
+        matchData.put("userId1", match.getUserId1());
+        matchData.put("userId2", match.getUserId2());
+        matchData.put("timestamp", match.getTimestamp());
+
+        db.collection("matches").document(match.getMatchId()).set(matchData)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Match saved with " + fullNameUser2);
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error adding match", e);
+                });
     }
 
-    public void updateCardList(String removedUserId) {
+
+
+
+    public static void updateCardList(String removedUserId) {
         db.collection("users").document(fetchCurrentUserID())
                 .update("cardList", FieldValue.arrayRemove(removedUserId))
                 .addOnSuccessListener(aVoid -> Log.d("DEBUG", "User removed from card list"))
                 .addOnFailureListener(e -> Log.e("DEBUG", "Error removing user from card list", e));
     }
 
-    public void updateFavoritedCardList(String favoritedUserId) {
+    public static void addToFavoritedList(String favoritedUserId) {
         db.collection("users").document(fetchCurrentUserID())
                 .update("cardList", FieldValue.arrayRemove(favoritedUserId),
                         "favoritedCardList", FieldValue.arrayUnion(favoritedUserId))
                 .addOnSuccessListener(aVoid -> Log.d("DEBUG", "Card list updated successfully"))
                 .addOnFailureListener(e -> Log.e("DEBUG", "Error updating favorited card list", e));
     }
+    public static void removeToFavoritedList(String favoritedUserId) {
+        db.collection("users").document(fetchCurrentUserID())
+                .update("favoritedCardList", FieldValue.arrayRemove(favoritedUserId),
+                        "cardList", FieldValue.arrayUnion(favoritedUserId)
+                )
+                .addOnSuccessListener(aVoid -> Log.d("DEBUG", "Card list updated successfully"))
+                .addOnFailureListener(e -> Log.e("DEBUG", "Error updating favorited card list", e));
+    }
+
+
 
     public void getFavoritedCardList(String userId, OnCardFetchListener listener) {
         db.collection("users").document(userId).get().addOnCompleteListener(task -> {
