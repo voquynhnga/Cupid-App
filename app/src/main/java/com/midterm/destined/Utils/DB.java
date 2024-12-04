@@ -7,6 +7,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 
 
 public class DB {
@@ -14,6 +15,7 @@ public class DB {
     private static FirebaseFirestore firestore;
     private static DatabaseReference chatsRef;
     private static DatabaseReference storyRef;
+    private static FirebaseStorage storage;
 
     // Firebase Realtime Database instance
     public static FirebaseDatabase getDatabaseInstance() {
@@ -29,6 +31,13 @@ public class DB {
             firestore = FirebaseFirestore.getInstance();
         }
         return firestore;
+    }
+
+    public static FirebaseStorage getStorageInstance(){
+        if(storage== null){
+            storage =  FirebaseStorage.getInstance();
+        }
+        return storage;
     }
 
     // Firestore Collections

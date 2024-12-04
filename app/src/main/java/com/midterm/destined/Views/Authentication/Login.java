@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.midterm.destined.Utils.DB;
 import com.midterm.destined.Views.Main.MainActivity;
 import com.midterm.destined.databinding.ActivityLoginBinding;
 
@@ -26,7 +27,7 @@ public class Login extends AppCompatActivity {
     private TextView tvSignUp;
     private ActivityLoginBinding binding;
 
-    private FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,28 +39,18 @@ public class Login extends AppCompatActivity {
         btLogin = binding.continueButton;
         tvSignUp = binding.signupText;
 
-
-        mAuth = FirebaseAuth.getInstance();
-
-
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String user = userEmail.getText().toString().trim();
                 String pass = password.getText().toString().trim();
 
-//                if(user.equals("user") && pass.equals("12345")) {
-//                    Intent intent = new Intent(Login.this, MainActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                }
-
                 if (user.isEmpty() || pass.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Please enter email and password", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                mAuth.signInWithEmailAndPassword(user,pass)
+                FirebaseAuth.getInstance().signInWithEmailAndPassword(user,pass)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                              public void onComplete(@NonNull Task<AuthResult> task) {
@@ -94,7 +85,7 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = DB.getCurrentUser();
 
     }
 }

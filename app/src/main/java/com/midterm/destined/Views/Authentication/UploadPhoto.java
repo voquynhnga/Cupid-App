@@ -83,17 +83,6 @@ public class UploadPhoto extends AppCompatActivity {
             });
         }
 
-//        btn.setOnClickListener(v -> {
-//            Intent intent = new Intent(UploadPhoto.this, MyLocation.class);
-//            intent.putStringArrayListExtra("selectedInterests", (ArrayList<String>) selectedInterests);
-//            startActivity(intent);
-//        });
-//        btn.setOnClickListener(v -> {
-//            Intent intent = new Intent(UploadPhoto.this, MyLocation.class);
-//            intent.putExtra("user", user); // Chuyển đối tượng UserReal đã cập nhật
-//            startActivity(intent);
-//        });
-
         btn.setOnClickListener(v -> {
             if(noImageSelected()) {
                 user.setProfilePicture("https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_def.jpg?alt=media&token=a96937d6-84c3-4ef3-b0d2-aba2f7affc26");

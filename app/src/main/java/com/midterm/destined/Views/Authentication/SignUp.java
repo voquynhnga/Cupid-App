@@ -143,18 +143,4 @@ public class SignUp extends AppCompatActivity {
                 });
     }
 
-    private void saveUserToFirestore(UserReal user) {
-        db.collection("users").document(user.getUid())
-                .set(user)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(SignUp.this, "User registered successfully", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(SignUp.this, LookingFor.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Toast.makeText(SignUp.this, "Error saving user: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
 }

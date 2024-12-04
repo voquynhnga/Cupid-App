@@ -73,21 +73,21 @@ public class GetStarted extends AppCompatActivity {
     }
 
 
-    public void downloadImageToInternalStorage(Context context, String fileName, String storagePath) {
-        // Firebase Storage reference
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference().child(storagePath);
-
-        // Đường dẫn nơi file sẽ được lưu trong bộ nhớ cục bộ của thiết bị
-        File localFile = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName);
-
-        // Bắt đầu tải xuống
-        storageRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
-            // Tải xuống thành công
-            Toast.makeText(context, "Tải ảnh thành công!", Toast.LENGTH_SHORT).show();
-        }).addOnFailureListener(e -> {
-            // Xử lý lỗi
-            Toast.makeText(context, "Lỗi khi tải ảnh: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
-    }
+//    public void downloadImageToInternalStorage(Context context, String fileName, String storagePath) {
+//        // Firebase Storage reference
+//        FirebaseStorage storage = FirebaseStorage.getInstance();
+//        StorageReference storageRef = storage.getReference().child(storagePath);
+//
+//        // Đường dẫn nơi file sẽ được lưu trong bộ nhớ cục bộ của thiết bị
+//        File localFile = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName);
+//
+//        // Bắt đầu tải xuống
+//        storageRef.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
+//            // Tải xuống thành công
+//            Toast.makeText(context, "Tải ảnh thành công!", Toast.LENGTH_SHORT).show();
+//        }).addOnFailureListener(e -> {
+//            // Xử lý lỗi
+//            Toast.makeText(context, "Lỗi khi tải ảnh: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//        });
+//    }
 }

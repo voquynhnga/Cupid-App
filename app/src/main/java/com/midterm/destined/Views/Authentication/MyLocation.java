@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.midterm.destined.Utils.DB;
 import com.midterm.destined.Views.Main.MainActivity;
 import com.midterm.destined.databinding.ActivityMyLocationBinding;
 import com.midterm.destined.Models.GPSAddress;
@@ -32,7 +33,6 @@ public class MyLocation extends AppCompatActivity {
     private ActivityMyLocationBinding binding;
     private FusedLocationProviderClient fusedLocationClient; // Khai báo FusedLocationProviderClient
     private UserReal user; // Thêm biến UserReal để lưu thông tin người dùng
-    private FirebaseFirestore db; // Khai báo Firestore
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +44,7 @@ public class MyLocation extends AppCompatActivity {
         // Nhận thông tin UserReal từ Intent
         user = (UserReal) getIntent().getSerializableExtra("user");
 
-        // Khởi tạo Firestore và FusedLocationProviderClient
-        db = FirebaseFirestore.getInstance();
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         btnAllow.setOnClickListener(v -> {
@@ -136,8 +135,7 @@ public class MyLocation extends AppCompatActivity {
 
 
     private void saveUserToFirestore(UserReal user) {
-        db.collection("users").document(user.getUid())
-                .set(user)
+        DB.getUserDocument(user.getUid()).set(user)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(MyLocation.this, "User location saved successfully.", Toast.LENGTH_SHORT).show();

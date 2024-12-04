@@ -66,10 +66,10 @@ public class Interests extends AppCompatActivity {
                 selectedInterests.add(toggleButton.getText().toString());
             }
 
-            user.setInterests(selectedInterests); // Cập nhật sở thích trong UserReal
+            user.setInterests(selectedInterests);
 
             Intent intent = new Intent(Interests.this, UploadPhoto.class);
-            intent.putExtra("user", user); // Chuyển đối tượng UserReal đã cập nhật
+            intent.putExtra("user", user);
             startActivity(intent);
         });
 
@@ -82,7 +82,7 @@ public class Interests extends AppCompatActivity {
         tgBtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(isChecked) {
                 if(selectedCount >= MAX_SELECTION) {
-                    Toast.makeText(Interests.this, "Chỉ có thể chọn tối đa 3 sở thích", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Interests.this, "You can select up to 3 hobbies", Toast.LENGTH_SHORT).show();
                     buttonView.setChecked(false);
 
                 }
