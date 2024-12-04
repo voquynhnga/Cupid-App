@@ -64,9 +64,9 @@ public class MySettingFragment extends Fragment {
             loadUserData(uid);
         }
 
-//        binding.edFullName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//        binding.edFullName.setOnFocusChangeListener(new view.OnFocusChangeListener() {
 //            @Override
-//            public void onFocusChange(View view, boolean hasFocus) {
+//            public void onFocusChange(view view, boolean hasFocus) {
 //                if(hasFocus){
 //                    binding.edFullName.setHint("");
 //                }
@@ -76,9 +76,9 @@ public class MySettingFragment extends Fragment {
 //            }
 //        });
 //
-//        binding.edFullName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//        binding.edFullName.setOnFocusChangeListener(new view.OnFocusChangeListener() {
 //            @Override
-//            public void onFocusChange(View view, boolean hasFocus) {
+//            public void onFocusChange(view view, boolean hasFocus) {
 //                if(hasFocus){
 //                    binding.edFullName.setHint("");
 //                }
@@ -88,9 +88,9 @@ public class MySettingFragment extends Fragment {
 //            }
 //        });
 //
-//        binding.edDayOfBirth.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//        binding.edDayOfBirth.setOnFocusChangeListener(new view.OnFocusChangeListener() {
 //            @Override
-//            public void onFocusChange(View view, boolean hasFocus) {
+//            public void onFocusChange(view view, boolean hasFocus) {
 //                if(hasFocus){
 //                    binding.edDayOfBirth.setHint("");
 //                }

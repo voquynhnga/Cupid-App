@@ -22,9 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.auth.User;
-import com.midterm.destined.AddStoryFragment;
-import com.midterm.destined.Models.Card;
+import com.midterm.destined.Views.Homepage.Story.AddStoryFragment;
 import com.midterm.destined.Models.Story;
 import com.midterm.destined.Models.UserReal;
 import com.midterm.destined.R;
@@ -156,7 +154,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
                 if (click) {
                     if (count > 0) {
                         AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "View Story",
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "view Story",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         //TODO: go to story

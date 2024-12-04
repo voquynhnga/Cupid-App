@@ -1,4 +1,4 @@
-package com.midterm.destined;
+package com.midterm.destined.Views.Homepage.Story;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -34,6 +34,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.midterm.destined.R;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -77,7 +77,7 @@
 
     <fragment
         android:id="@+id/AddStoryFragment"
-        android:name="com.midterm.destined.AddStoryFragment"
+        android:name="com.midterm.destined.Views.Homepage.Story.AddStoryFragment"
         tools:layout="@layout/story_add" />
 
 
