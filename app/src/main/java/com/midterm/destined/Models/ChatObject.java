@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.midterm.destined.Utils.DB;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -119,10 +120,9 @@ public class ChatObject {
     }
 
     public static void checkAndAddChatList(String userID1, String userID2, String timestamp) {
-        DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chats");
         String chatID = userID1.compareTo(userID2) < 0 ? userID1 + "_" + userID2 : userID2 + "_" + userID1;
 
-        chatRef.child(chatID).addListenerForSingleValueEvent(new ValueEventListener() {
+        DB.getChatsRef().child(chatID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
@@ -133,7 +133,7 @@ public class ChatObject {
                     chatData.put("lastMessage", lastMessage);
 
 
-                    chatRef.child(chatID).setValue(chatData).addOnCompleteListener(task -> {
+                    DB.getChatsRef().child(chatID).setValue(chatData).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Log.d("RealtimeDB", "Chat created successfully between " + userID1 + " and " + userID2);
                         } else {
@@ -151,5 +151,28 @@ public class ChatObject {
             }
         });
     }
+    public static void deleteChat(String currentUserId, String favoritedUserId) {
+        DB.getChatsRef().get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                for (DataSnapshot snapshot : task.getResult().getChildren()) {
+                    String chatId = snapshot.getKey();
+
+                    if (chatId != null && (chatId.equals(currentUserId + "_" + favoritedUserId) ||
+                                    chatId.equals(favoritedUserId + "_" + currentUserId))) {
+
+                        snapshot.getRef().removeValue()
+                                .addOnSuccessListener(aVoid ->
+                                        Log.d("DeleteChat", "Chat deleted successfully: " + chatId))
+                                .addOnFailureListener(e ->
+                                        Log.e("DeleteChat", "Failed to delete chat: " + chatId, e));
+                        break;
+                    }
+                }
+            } else {
+                Log.e("DeleteChat", "Failed to fetch chats", task.getException());
+            }
+        });
+    }
+
 
 }

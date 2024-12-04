@@ -17,6 +17,7 @@ import com.midterm.destined.R;
 import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.ChatObject;
 import com.midterm.destined.Utils.ChatDiffCallback;
+import com.midterm.destined.Utils.DB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         ChatObject chatObject = chatObjects.get(position);
 
         String senderName, senderAvatar;
-        if (chatObject.getUser1().equals(Card.fetchCurrentUserID())) {
+        if (chatObject.getUser1().equals(DB.getCurrentUser().getUid())) {
             senderName = chatObject.getUserName2();
             senderAvatar = chatObject.getAvatarUser2();
         } else {
@@ -70,9 +71,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
 
     public void fetchSenderAvatar(String userId, ImageView avatar) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection("users").document(userId).get().addOnCompleteListener(task -> {
+        DB.getCurrentUserDocument().get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
@@ -94,9 +93,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
     public void fetchSenderName(String userId, TextView tvSender) {
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection("users").document(userId).get().addOnCompleteListener(task -> {
+        DB.getCurrentUserDocument().get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {

@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.ChatObject;
 import com.midterm.destined.Models.Message;
+import com.midterm.destined.Utils.DB;
 import com.midterm.destined.Views.Chat.ChatContract;
 
 import java.util.ArrayList;
@@ -35,9 +36,9 @@ public class ChatPresenter implements ChatContract.Presenter {
 
     public ChatPresenter(ChatContract.View view) {
         this.view = view;
-        this.db = FirebaseFirestore.getInstance();
-        this.chatsRef = FirebaseDatabase.getInstance().getReference("chats");
-        this.currentUserId = Card.fetchCurrentUserID();
+        this.db = DB.getFirestoreInstance();
+        this.chatsRef = DB.getChatsRef();
+        this.currentUserId = DB.getCurrentUser().getUid();
     }
 
 

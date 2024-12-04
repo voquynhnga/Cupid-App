@@ -28,6 +28,7 @@ import com.midterm.destined.R;
 import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.ChatObject;
 import com.midterm.destined.Adapters.ChatAdapter;
+import com.midterm.destined.Utils.DB;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,7 +102,7 @@ public class ChatFragment extends Fragment implements ChatContract.View, ChatAda
     public void onMessageClick(ChatObject selectedChat) {
         Bundle bundle = new Bundle();
         bundle.putString("chatId", selectedChat.getChatId());
-        if (selectedChat.getUser1().equals(Card.fetchCurrentUserID())) {
+        if (selectedChat.getUser1().equals(DB.getCurrentUser().getUid())) {
             bundle.putString("userId", selectedChat.getUser2());
             bundle.putString("userName", selectedChat.getUserName2());
         } else {

@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import androidx.annotation.NonNull; // Sử dụng androidx.annotation
 import androidx.recyclerview.widget.RecyclerView; // Sử dụng androidx.recyclerview
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +21,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.auth.User;
 import com.midterm.destined.AddStoryFragment;
-import com.midterm.destined.Models.CardInfo;
+import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.Story;
+import com.midterm.destined.Models.UserReal;
 import com.midterm.destined.R;
+import com.midterm.destined.Utils.DB;
 import com.midterm.destined.Views.Homepage.Story.StoryActivity;
 
 import java.util.List;
@@ -59,14 +65,14 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
             seenStory(viewHolder, story.getUserid());
         }
 
-        if (viewHolder.getAdapterPosition() == 0){
+        if (viewHolder.getAdapterPosition() == 0) {
             myStory(viewHolder.addstory_text, viewHolder.story_plus, false);
         }
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (viewHolder.getAdapterPosition() == 0){
+                if (viewHolder.getAdapterPosition() == 0) {
                     myStory(viewHolder.addstory_text, viewHolder.story_photo, true);
                 } else {
                     // TODO: go to story
@@ -83,7 +89,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
         return mStory.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView story_photo, story_plus, story_photo_seen;
         public TextView story_username, addstory_text;
@@ -101,32 +107,37 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0){
+        if (position == 0) {
             return 0;
         }
         return 1;
     }
 
-    private void userInfo(final ViewHolder viewHolder, String userid, final int pos){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                CardInfo cardInfo = dataSnapshot.getValue(CardInfo.class);
-                Glide.with(mContext).load(cardInfo.getImageurl()).into(viewHolder.story_photo);
-                if (pos != 0) {
-                    Glide.with(mContext).load(cardInfo.getImageurl()).into(viewHolder.story_photo_seen);
-                    viewHolder.story_username.setText(cardInfo.getUsername());
+    private void userInfo(final ViewHolder viewHolder, String userid, final int pos) {
+        DB.getUserDocument(userid).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    UserReal cardInfo = document.toObject(UserReal.class);
+
+                    if (cardInfo != null) {
+                        if (cardInfo.getImageUrls() != null && !cardInfo.getImageUrls().isEmpty()) {
+                            Glide.with(mContext).load(cardInfo.getImageUrls().get(0)).into(viewHolder.story_photo);
+                        } else {
+                            Glide.with(mContext).load(R.drawable.avatardefault).into(viewHolder.story_photo);
+                        }
+
+                        if (pos != 0) {
+                            Glide.with(mContext).load(cardInfo.getImageUrls().get(0)).into(viewHolder.story_photo_seen);
+                            viewHolder.story_username.setText(cardInfo.getUserName());
+                        }
+                    }
                 }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            } else {
+                Log.e("FirestoreError", "Error getting user info", task.getException());
             }
         });
     }
-
     private void myStory(final TextView textView, final ImageView imageView, final boolean click){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Story")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());

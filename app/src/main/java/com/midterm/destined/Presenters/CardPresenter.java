@@ -6,6 +6,7 @@ import static com.midterm.destined.Utils.TimeExtensions.getCurrentTime;
 import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.Match;
 import com.midterm.destined.Models.UserReal;
+import com.midterm.destined.Utils.DB;
 import com.midterm.destined.Views.Homepage.Card.cardView;
 
 import java.util.List;
@@ -19,18 +20,18 @@ public class CardPresenter {
         this.model = new Card();
     }
 
-    public void loadCards(String currentUserId) {
+    public void loadCards() {
         view.showLoading();
-        model.fetchSavedCards(currentUserId, new Card.OnCardFetchListener() {
+        model.fetchSavedCards(new Card.OnCardFetchListener() {
             @Override
             public void onSuccess(List<Card> cards) {
-                view.hideLoading();
+//                view.hideLoading();
                 view.displayCards(cards);
             }
 
             @Override
             public void onError(String errorMessage) {
-                view.hideLoading();
+//                view.hideLoading();
                 view.showError(errorMessage);
             }
         });
@@ -42,34 +43,26 @@ public class CardPresenter {
         model.addToFavoritedList(cardID);
     }
 
-    public void checkIfMatched(UserReal user, String currentUserId) {
+    public void checkIfMatched(UserReal user) {
         view.showLoading();
         String favoritedUserId = user.getUid();
+        String currentUserId = DB.getCurrentUser().getUid();
 
-        model.getFavoritedCardList(favoritedUserId, new Card.OnCardFetchListener() {
-            @Override
-            public void onSuccess(List<Card> favoritedCardListOfA) {
-                if (favoritedCardListOfA.contains(currentUserId)) {
-                    String matchId = currentUserId.compareTo(favoritedUserId) < 0
-                            ? currentUserId + "_" + favoritedUserId
-                            : favoritedUserId + "_" + currentUserId;
+        model.getFavoritedCardList(favoritedUserId, favoritedCardList -> {
+            if (favoritedCardList.contains(currentUserId)) {
+                String matchId = currentUserId.compareTo(favoritedUserId) < 0
+                        ? currentUserId + "_" + favoritedUserId
+                        : favoritedUserId + "_" + currentUserId;
 
-                    Match match = new Match(matchId, currentUserId, favoritedUserId, getCurrentTime());
+                Match match = new Match(matchId, currentUserId, favoritedUserId, getCurrentTime());
 
-                    model.saveMatchToDB(match,user.getFullName());
+                model.saveMatchToDB(match,user.getFullName());
 //                            view.hideLoading();
-                            view.showMatchPopup(user.getFullName());
+                        view.showMatchPopup(user.getFullName());
 
-                    checkAndAddChatList(currentUserId, favoritedUserId, match.getTimestamp());
-                } else {
-                    view.hideLoading();
-                }
-            }
-
-            @Override
-            public void onError(String errorMessage) {
+                checkAndAddChatList(currentUserId, favoritedUserId, match.getTimestamp());
+            } else {
                 view.hideLoading();
-                view.showError(errorMessage);
             }
         });
     }

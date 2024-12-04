@@ -14,6 +14,7 @@ import com.midterm.destined.Adapters.CardAdapter;
 import com.midterm.destined.Presenters.CardPresenter;
 import com.midterm.destined.R;
 import com.midterm.destined.Models.Card;
+import com.midterm.destined.Utils.DB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
 public class CardFragment extends Fragment implements cardView {
 
     private CardPresenter presenter;
-    private List<Card> cardList = new ArrayList<>();
+    private final List<Card> cardList = new ArrayList<>();
     private CardAdapter adapter;
     private SwipeFlingAdapterView flingContainer;
     private static CardFragment instance;
@@ -82,7 +83,7 @@ public class CardFragment extends Fragment implements cardView {
             flingContainer.setAdapter(adapter);
         }
 
-        presenter.loadCards(Card.fetchCurrentUserID());
+        presenter.loadCards();
 
         return view;
     }
