@@ -2,6 +2,7 @@ package com.midterm.destined.Presenters;
 
 import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.OnMatchSaveListener;
+import com.midterm.destined.Models.UserReal;
 import com.midterm.destined.Views.Homepage.Card.cardView;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,15 +39,9 @@ public class CardPresenter {
         model.updateFavoritedCardList(cardID);
     }
 
-//    public void updateCardList(String currentUserId, List<Card> cards) {
-//        List<String> cardIds = new ArrayList<>();
-//        for (Card card : cards) {
-//            cardIds.add(card.getCurrentUserID());
-//        }
-//        model.updateCardList(currentUserId, cardIds);
-//    }
-    public void checkIfMatched(String favoritedUserId, String currentUserId) {
+    public void checkIfMatched(UserReal user, String currentUserId) {
         view.showLoading();
+        String favoritedUserId = user.getUid();
 
         model.getFavoritedCardList(favoritedUserId, new Card.OnCardFetchListener() {
             @Override
@@ -56,7 +51,7 @@ public class CardPresenter {
                             ? currentUserId + "_" + favoritedUserId
                             : favoritedUserId + "_" + currentUserId;
 
-                    model.saveMatch(matchId, currentUserId, favoritedUserId, "Matched User Name", new OnMatchSaveListener() {
+                    model.saveMatch(matchId, currentUserId, favoritedUserId,user.getFullName(), new OnMatchSaveListener() {
                         @Override
                         public void onSuccess(String matchedUserName) {
                             view.hideLoading();

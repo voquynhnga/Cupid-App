@@ -38,22 +38,17 @@ public class CardFragment extends Fragment implements cardView {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_card, container, false);
 
-        // Khởi tạo presenter và adapter
         presenter = new CardPresenter(this);
         adapter = new CardAdapter(getContext(), cardList);
 
-        // Lấy flingContainer từ layout
         flingContainer = view.findViewById(R.id.frame);
 
-        // Kiểm tra xem flingContainer có null không
         if (flingContainer == null) {
             Log.e("CardFragment", "flingContainer is null. Check the layout file.");
         } else {
-            // Nếu flingContainer không null, thiết lập các sự kiện
             flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
                 @Override
                 public void removeFirstObjectInAdapter() {
-                    // Xóa item đầu tiên trong danh sách
                     cardList.remove(0);
                     adapter.notifyDataSetChanged();
                 }
@@ -128,7 +123,6 @@ public class CardFragment extends Fragment implements cardView {
 
     @Override
     public SwipeFlingAdapterView getFlingContainer() {
-        // Trả về flingContainer nếu không null
         if (flingContainer != null) {
             return flingContainer;
         } else {

@@ -9,6 +9,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.midterm.destined.Utils.Calculate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,7 +152,7 @@ public class Card {
                                 cards.add(new Card(user.getFullName(), firstImageUrl,
                                         user.displayInterest(), document.getString("detailAddress"),
                                         user.getGender(), user.getBio(),
-                                        String.valueOf(user.getDateOfBirth()), user.getUid()));
+                                        String.valueOf(Calculate.calculateAge(user.getDateOfBirth())), user.getUid()));
                             }
                         }
                         listener.onSuccess(cards);

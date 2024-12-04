@@ -22,7 +22,6 @@ import com.midterm.destined.Presenters.CardPresenter;
 import com.midterm.destined.R;
 
 import java.util.List;
-import java.util.Queue;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -63,8 +62,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
 
         // Ẩn nút Follow/Unfollow nếu là chính người dùng
         if (user.getUid().equals(firebaseUser.getUid())) {
-            holder.btn_follow.setVisibility(View.GONE);
-            holder.btn_unfollow.setVisibility(View.GONE);
+            holder.btn_match.setVisibility(View.GONE);
+            holder.btn_unmatch.setVisibility(View.GONE);
             return;
         }
 
@@ -72,10 +71,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         updateButtonVisibility(user, holder);
 
         // Xử lý sự kiện nhấn nút Follow
-        holder.btn_follow.setOnClickListener(v -> handleFollowAction(user, holder));
+        holder.btn_match.setOnClickListener(v -> handleMatchAction(user, holder));
 
         // Xử lý sự kiện nhấn nút Unfollow
-        holder.btn_unfollow.setOnClickListener(v -> handleUnfollowAction(user, holder));
+        holder.btn_unmatch.setOnClickListener(v -> handleUnMatchAction(user, holder));
     }
 
     @Override
@@ -83,25 +82,23 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         return mUsers.size();
     }
 
-    // Cập nhật hiển thị nút Follow/Unfollow
     private void updateButtonVisibility(UserReal user, ImageViewHolder holder) {
         db.collection("users").document(firebaseUser.getUid())
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     List<String> favoritedCardList = (List<String>) documentSnapshot.get("favoritedCardList");
                     if (favoritedCardList != null && favoritedCardList.contains(user.getUid())) {
-                        holder.btn_follow.setVisibility(View.GONE);
-                        holder.btn_unfollow.setVisibility(View.VISIBLE);
+                        holder.btn_match.setVisibility(View.GONE);
+                        holder.btn_unmatch.setVisibility(View.VISIBLE);
                     } else {
-                        holder.btn_follow.setVisibility(View.VISIBLE);
-                        holder.btn_unfollow.setVisibility(View.GONE);
+                        holder.btn_match.setVisibility(View.VISIBLE);
+                        holder.btn_unmatch.setVisibility(View.GONE);
                     }
                 })
                 .addOnFailureListener(e -> Log.e("FirestoreError", "Failed to fetch user data", e));
     }
 
-    // Xử lý logic nhấn nút Follow
-    private void handleFollowAction(UserReal user, ImageViewHolder holder) {
+    private void handleMatchAction(UserReal user, ImageViewHolder holder) {
         String currentUserId = firebaseUser.getUid();
         String favoritedUserId = user.getUid();
 
@@ -112,17 +109,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
                 )
                 .addOnSuccessListener(aVoid -> {
                     // Kiểm tra match thông qua CardPresenter
-                    cardPresenter.checkIfMatched(favoritedUserId, currentUserId);
+                    cardPresenter.checkIfMatched(user, currentUserId);
 
                     // Cập nhật nút
-                    holder.btn_follow.setVisibility(View.GONE);
-                    holder.btn_unfollow.setVisibility(View.VISIBLE);
+                    holder.btn_match.setVisibility(View.GONE);
+                    holder.btn_unmatch.setVisibility(View.VISIBLE);
                 })
                 .addOnFailureListener(e -> Log.e("FirestoreError", "Failed to update follow action", e));
     }
 
-    // Xử lý logic nhấn nút Unfollow
-    private void handleUnfollowAction(UserReal user, ImageViewHolder holder) {
+    private void handleUnMatchAction(UserReal user, ImageViewHolder holder) {
         String currentUserId = firebaseUser.getUid();
         String favoritedUserId = user.getUid();
 
@@ -136,8 +132,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
                     deleteMatch(currentUserId, favoritedUserId);
 
                     // Cập nhật nút
-                    holder.btn_follow.setVisibility(View.VISIBLE);
-                    holder.btn_unfollow.setVisibility(View.GONE);
+                    holder.btn_match.setVisibility(View.VISIBLE);
+                    holder.btn_unmatch.setVisibility(View.GONE);
                 })
                 .addOnFailureListener(e -> Log.e("FirestoreError", "Failed to update unfollow action", e));
     }
@@ -160,16 +156,16 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         public final TextView username;
         public final TextView fullname;
         public final CircleImageView image_profile;
-        public final Button btn_follow;
-        public final Button btn_unfollow;
+        public final Button btn_match;
+        public final Button btn_unmatch;
 
         public ImageViewHolder(View itemView) {
             super(itemView);
             username = itemView.findViewById(R.id.username);
             fullname = itemView.findViewById(R.id.fullname);
             image_profile = itemView.findViewById(R.id.image_profile);
-            btn_follow = itemView.findViewById(R.id.btn_follow);
-            btn_unfollow = itemView.findViewById(R.id.btn_unfollow);
+            btn_match = itemView.findViewById(R.id.btn_match);
+            btn_unmatch = itemView.findViewById(R.id.btn_unmatch);
         }
     }
 }

@@ -1,52 +1,34 @@
 package com.midterm.destined.Views.Homepage.Search;
 
 import android.os.Bundle;
-
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.QuerySnapshot;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.midterm.destined.Presenters.CardPresenter;
-import com.midterm.destined.R;
+
 import com.midterm.destined.Adapters.UserAdapter;
-import com.midterm.destined.Views.Homepage.Card.CardFragment;
 import com.midterm.destined.Models.UserReal;
+import com.midterm.destined.Presenters.SearchPresenter;
+import com.midterm.destined.R;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import com.google.firebase.auth.FirebaseAuth;
 
-public class SearchFragment extends Fragment {
-
+public class SearchFragment extends Fragment implements searchView {
     private EditText detailInput;
     private RecyclerView resultsRecyclerView;
-    private ImageView searchButton;
     private UserAdapter userAdapter;
-    private List<UserReal> userList;
-    private String selectedFilter;
     private Spinner filterSpinner;
-    public CardFragment cf ;
-    private List<String> favoritedCardList;
-    public CardPresenter cp;
-
+    private SearchPresenter searchPresenter;
 
     @Nullable
     @Override
@@ -56,195 +38,36 @@ public class SearchFragment extends Fragment {
         detailInput = view.findViewById(R.id.editTextInput);
         resultsRecyclerView = view.findViewById(R.id.resultsRecyclerView);
         filterSpinner = view.findViewById(R.id.filterSpinner);
-        searchButton = view.findViewById(R.id.ok);
 
-        userList = new ArrayList<>();
-        cf = CardFragment.getInstance();
-        cp = new CardPresenter(cf);
-        userAdapter = new UserAdapter(getContext(), userList, cp);
+        searchPresenter = new SearchPresenter(this);
         resultsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        resultsRecyclerView.setAdapter(userAdapter);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.filter_options, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(adapter);
 
-        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedFilter = parent.getItemAtPosition(position).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                selectedFilter = null;
-            }
+        view.findViewById(R.id.ok).setOnClickListener(v -> {
+            String filter = filterSpinner.getSelectedItem().toString();
+            String detail = detailInput.getText().toString().trim();
+            searchPresenter.performSearch(filter, detail);
         });
-
-        searchButton.setOnClickListener(v -> performSearch());
 
         return view;
     }
 
-    private String capitalizeDetail(String detail) {
-        if (detail == null || detail.isEmpty()) {
-            return detail;
-        }
-        return detail.substring(0, 1).toUpperCase() + detail.substring(1).toLowerCase();
+    @Override
+    public void updateSearchResults(List<UserReal> users) {
+        userAdapter = new UserAdapter(getContext(), users, null);
+        resultsRecyclerView.setAdapter(userAdapter);
     }
 
-    private void performSearch() {
-        String detail = detailInput.getText().toString().toLowerCase().trim(); // Trim input
-
-        if (selectedFilter == null) {
-            Toast.makeText(getContext(), "Vui lòng chọn tiêu chí lọc", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (detail.isEmpty()) {
-            Toast.makeText(getContext(), "Vui lòng nhập chi tiết tìm kiếm", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        //final String normalizedSearch = normalizeText(detail);
-
-        switch (selectedFilter) {
-            case "Gender":
-                detail = capitalizeDetail(detail);
-                db.collection("users").whereEqualTo("gender", detail)
-                        .get().addOnCompleteListener(task -> updateUserList(task, currentUserId));
-                break;
-
-            case "Interests":
-                detail = capitalizeDetail(detail);
-                db.collection("users").whereArrayContains("interests", detail)
-                        .get().addOnCompleteListener(task -> updateUserList(task, currentUserId));
-                break;
-
-            case "Location":
-                detail = normalizeText(detail);
-                detail = capitalizeEachWord(detail);
-                searchLocation(db, detail, currentUserId);
-                break;
-
-
-            case "Age":
-                int targetAge;
-                try {
-                    targetAge = Integer.parseInt(detail);
-                } catch (NumberFormatException e) {
-                    Toast.makeText(getContext(), "Tuổi không hợp lệ", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-                db.collection("users").get().addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        userList.clear();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            UserReal user = document.toObject(UserReal.class);
-                            if (!user.getUid().equals(currentUserId)) {
-                                String dob = user.getDateOfBirth();
-                                int birthYear = getBirthYear(dob);
-                                if (birthYear != -1 && currentYear - birthYear == targetAge) {
-                                    userList.add(user);
-                                }
-                            }
-                        }
-                        userAdapter.notifyDataSetChanged();
-                    } else {
-                        Toast.makeText(getContext(), "Lỗi khi tìm kiếm dữ liệu", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                break;
-        }
+    @Override
+    public void showError(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void setLoading(boolean isLoading) {
 
-    private void searchLocation(FirebaseFirestore db, String detail, String currentUserId) {
-        String startText = detail;
-        String endText = detail + "\uf8ff"; // Phạm vi chuỗi kết thúc
-
-        db.collection("users")
-                .whereGreaterThanOrEqualTo("detailAdrress", startText)
-                .whereLessThan("detailAdrress", endText)
-                .get()
-                .addOnCompleteListener(task -> updateUserList(task, currentUserId));
     }
-
-    private String capitalizeEachWord(String input) {
-        String[] words = input.split("\\s+");
-        StringBuilder capitalized = new StringBuilder();
-
-        for (String word : words) {
-            capitalized.append(capitalizeDetail(word)).append(" ");
-        }
-
-        return capitalized.toString().trim();
-    }
-
-
-    private void updateUserList(@NonNull Task<QuerySnapshot> task, String currentUserId) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users").document(currentUserId)
-                .get()
-                .addOnCompleteListener(favTask -> {
-                    List<String> favoritedCardList = null;
-                    if (favTask.isSuccessful() && favTask.getResult() != null) {
-                        favoritedCardList = (List<String>) favTask.getResult().get("favoritedCardList");
-                    }
-                });
-        if (task.isSuccessful()) {
-            userList.clear();
-            for (QueryDocumentSnapshot document : task.getResult()) {
-                UserReal user = document.toObject(UserReal.class);
-
-
-                if(favoritedCardList == null){
-                    if (!user.getUid().equals(currentUserId) ){
-                        userList.add(user);
-                    }
-                }
-                else if (!favoritedCardList.contains(user.getUid())) {
-                    if (!user.getUid().equals(currentUserId) ){
-                        userList.add(user);
-                    }
-                }
-            }
-            userAdapter.notifyDataSetChanged();
-        } else {
-            Toast.makeText(getContext(), "Lỗi khi tìm kiếm dữ liệu", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    // Hàm chuẩn hóa chuỗi, chuyển thành chữ thường và loại bỏ dấu tiếng Việt
-    private String normalizeText(String input) {
-        input = input.toLowerCase();
-        input = input.replaceAll("[àáạảãâầấậẩẫăằắặẳẵ]", "a");
-        input = input.replaceAll("[èéẹẻẽêềếệểễ]", "e");
-        input = input.replaceAll("[ìíịỉĩ]", "i");
-        input = input.replaceAll("[òóọỏõôồốộổỗơờớợởỡ]", "o");
-        input = input.replaceAll("[ùúụủũưừứựửữ]", "u");
-        input = input.replaceAll("[ỳýỵỷỹ]", "y");
-        input = input.replaceAll("[đ]", "d");
-        return input;
-    }
-
-
-    // Helper function to parse birth year from date string
-    private int getBirthYear(String dob) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            Calendar dobCal = Calendar.getInstance();
-            dobCal.setTime(sdf.parse(dob));
-            return dobCal.get(Calendar.YEAR);
-        } catch (ParseException e) {
-            Log.e("SearchFragment", "Invalid date format: " + dob);
-            return -1; // Error indicator
-        }
-    }
-
 }

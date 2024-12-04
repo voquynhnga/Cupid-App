@@ -35,17 +35,49 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     public void setupNavigation(int currentDestinationId) {
-        // Logic to set up toolbar navigation
         if (binding.toolbar.findViewById(R.id.nav_home) != null) {
-            binding.toolbar.findViewById(R.id.nav_home).setOnClickListener(view -> presenter.navigateToHome(currentDestinationId));
+            binding.toolbar.findViewById(R.id.nav_home).setOnClickListener(view -> {
+                if (navController.getCurrentDestination() != null) {
+                    if (navController.getCurrentDestination().getId() == R.id.fragment_chat) {
+                        navController.navigate(R.id.action_ChatFragment_to_HomepageFragment);
+                    } else if (navController.getCurrentDestination().getId() != R.id.fragment_homepage) {
+                        navController.navigate(R.id.action_global_HomepageFragment);
+                    } else {
+                        Log.d("Navigation", "Already on HomepageFragment");
+                    }
+                }
+            });
         }
 
         if (binding.toolbar.findViewById(R.id.nav_message) != null) {
-            binding.toolbar.findViewById(R.id.nav_message).setOnClickListener(view -> presenter.navigateToMessages(currentDestinationId));
+            binding.toolbar.findViewById(R.id.nav_message).setOnClickListener(view -> {
+                if (navController.getCurrentDestination() != null) {
+                    if (navController.getCurrentDestination().getId() == R.id.fragment_homepage) {
+                        navController.navigate(R.id.action_HomepageFragment_to_ChatFragment);
+                    } else if (navController.getCurrentDestination().getId() != R.id.fragment_chat) {
+                        navController.navigate(R.id.action_global_ChatFragment); // Đảm bảo bạn đã định nghĩa action này trong nav_graph.xml
+                    } else {
+                        Log.d("Navigation", "Already on ChatFragment");
+                    }
+                }
+            });
         }
 
+
+
         if (binding.toolbar.findViewById(R.id.nav_profile) != null) {
-            binding.toolbar.findViewById(R.id.nav_profile).setOnClickListener(view -> presenter.navigateToProfile(currentDestinationId));
+            binding.toolbar.findViewById(R.id.nav_profile).setOnClickListener(view -> {
+                if (navController.getCurrentDestination() != null) {
+                    if (navController.getCurrentDestination().getId() == R.id.fragment_homepage) {
+                        navController.navigate(R.id.action_MyProfileFragment_to_HomepageFragment);
+                    } else if (navController.getCurrentDestination().getId() != R.id.MyProfileFragment) {
+                        navController.navigate(R.id.action_global_MyProfileFragment);
+                    } else {
+                        Log.d("Navigation", "Already on MyProfileFragment");
+                    }
+                }
+            });
         }
+
     }
 }

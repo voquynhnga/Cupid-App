@@ -1,21 +1,18 @@
 package com.midterm.destined.Views.Homepage;
 
-import com.midterm.destined.Models.Card;
 import com.midterm.destined.Views.Homepage.Card.CardFragment;
-
-import java.util.List;
 
 public interface HomepageContract {
     interface View {
-        void showLoading();
-        void hideLoading();
-        void showCards(List<Card> cards);
-        void showError(String error);
-        void showMessage(String message);
+        void showCards(); // Hiển thị CardFragment
+        void performLikeAction(); // Thực hiện hành động Like
+        void performDislikeAction(); // Thực hiện hành động Dislike
+        void navigateToSearch(); // Điều hướng tới SearchFragment
     }
 
     interface Presenter {
-        void likeCard(CardFragment cardFragment);
-        void dislikeCard(CardFragment cardFragment);
+        void onLikeButtonClicked(); // Xử lý khi nhấn nút Like
+        void onDislikeButtonClicked(); // Xử lý khi nhấn nút Dislike
+        void onSearchButtonClicked(); // Xử lý khi nhấn nút tìm kiếm
     }
 }
