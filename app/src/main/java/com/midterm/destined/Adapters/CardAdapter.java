@@ -60,7 +60,7 @@ public class CardAdapter extends BaseAdapter {
 
         String currentUserUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        CalculateCoordinates.calculateDistance(currentUserUID, card.getCurrentUserID(), distance -> {
+        CalculateCoordinates.calculateDistance(currentUserUID, card.getUserID(), distance -> {
 
             if (distance < 10) {
                 tvDistance.setText("📍 < 10Km");

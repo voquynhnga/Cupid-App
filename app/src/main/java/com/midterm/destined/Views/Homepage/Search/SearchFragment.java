@@ -49,8 +49,9 @@ public class SearchFragment extends Fragment implements searchView {
         cardPresenter = new CardPresenter(cardFragment);
         resultsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(Objects.requireNonNull(getContext()),
                 R.array.filter_options, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterSpinner.setAdapter(adapter);
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -95,7 +96,7 @@ public class SearchFragment extends Fragment implements searchView {
                     }
 
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    detailInput.setAdapter(adapter); // Đổi filterInfo thành detailInput (trong code bạn cung cấp).
+                    detailInput.setAdapter(adapter);
                 }
 
                 @Override

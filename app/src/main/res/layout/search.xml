@@ -24,16 +24,15 @@
 
         <Spinner
             android:id="@+id/filterSpinner"
-            android:layout_width="150dp"
+            android:layout_width="200dp"
             android:layout_height="38dp"
             android:textAlignment="center"
             android:background="@drawable/round"
-            android:entries="@array/filter_options"
             android:layout_marginEnd="8dp" />
 
         <Spinner
             android:id="@+id/filterInfo"
-            android:layout_width="200dp"
+            android:layout_width="150dp"
             android:layout_height="38dp"
             android:textAlignment="center"
             android:background="@drawable/round"

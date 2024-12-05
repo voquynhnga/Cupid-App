@@ -103,7 +103,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
 
         try {
             Card.addToFavoritedList(favoritedUserId);
-            cardPresenter.checkIfMatched(user);
+            cardPresenter.checkIfMatched(user.getUid(), user.getFullName());
             holder.btn_match.setVisibility(View.GONE);
             holder.btn_unmatch.setVisibility(View.VISIBLE);
         } catch (Exception e) {

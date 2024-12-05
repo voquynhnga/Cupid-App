@@ -40,7 +40,7 @@
             android:layout_marginHorizontal="-5dp"
             android:clickable="true"
             android:contentDescription="Filter here"
-            android:src="@drawable/search">
+            android:src="@drawable/filter">
 
         </ImageView>
 

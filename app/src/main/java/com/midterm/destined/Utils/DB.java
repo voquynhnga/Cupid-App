@@ -9,44 +9,54 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 
-
 public class DB {
-    private static FirebaseDatabase database;
-    private static FirebaseFirestore firestore;
+    private static FirebaseDatabase databaseInstance;
+    private static FirebaseFirestore firestoreInstance;
+    private static FirebaseStorage storageInstance;
+
+    private static CollectionReference usersCollection;
+    private static CollectionReference matchesCollection;
+
     private static DatabaseReference chatsRef;
     private static DatabaseReference storyRef;
-    private static FirebaseStorage storage;
 
-    // Firebase Realtime Database instance
+    // FirebaseDatabase Instance
     public static FirebaseDatabase getDatabaseInstance() {
-        if (database == null) {
-            database = FirebaseDatabase.getInstance();
+        if (databaseInstance == null) {
+            databaseInstance = FirebaseDatabase.getInstance();
         }
-        return database;
+        return databaseInstance;
     }
 
-    // Firestore instance
+    // FirebaseFirestore Instance
     public static FirebaseFirestore getFirestoreInstance() {
-        if (firestore == null) {
-            firestore = FirebaseFirestore.getInstance();
+        if (firestoreInstance == null) {
+            firestoreInstance = FirebaseFirestore.getInstance();
         }
-        return firestore;
+        return firestoreInstance;
     }
 
-    public static FirebaseStorage getStorageInstance(){
-        if(storage== null){
-            storage =  FirebaseStorage.getInstance();
+    // FirebaseStorage Instance
+    public static FirebaseStorage getStorageInstance() {
+        if (storageInstance == null) {
+            storageInstance = FirebaseStorage.getInstance();
         }
-        return storage;
+        return storageInstance;
     }
 
-    // Firestore Collections
+    // Firestore Collection References
     public static CollectionReference getUsersCollection() {
-        return getFirestoreInstance().collection("users");
+        if (usersCollection == null) {
+            usersCollection = getFirestoreInstance().collection("users");
+        }
+        return usersCollection;
     }
 
     public static CollectionReference getMatchesCollection() {
-        return getFirestoreInstance().collection("matches");
+        if (matchesCollection == null) {
+            matchesCollection = getFirestoreInstance().collection("matches");
+        }
+        return matchesCollection;
     }
 
     // Realtime Database References
@@ -73,19 +83,14 @@ public class DB {
     public static DocumentReference getCurrentUserDocument() {
         FirebaseUser currentUser = getCurrentUser();
         if (currentUser != null) {
-            return getFirestoreInstance().collection("users").document(currentUser.getUid());
+            return getUsersCollection().document(currentUser.getUid());
         } else {
             throw new IllegalStateException("No authenticated user found.");
         }
     }
 
+    // Firestore document for a specific user
     public static DocumentReference getUserDocument(String userID) {
-        FirebaseUser currentUser = getCurrentUser();
-        if (currentUser != null) {
-            return getFirestoreInstance().collection("users").document(userID);
-        } else {
-            throw new IllegalStateException("No user found.");
-        }
+        return getUsersCollection().document(userID);
     }
-
 }

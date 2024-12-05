@@ -1,9 +1,15 @@
 package com.midterm.destined.Views.Homepage.Card;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.midterm.destined.Models.Card;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 public interface cardView {
@@ -12,6 +18,11 @@ public interface cardView {
     void displayCards(List<Card> cards);
     void showError(String message);
     void showMatchPopup(String matchedUserName);
+    void saveCardListToSharedPreferences(String userId, List<String> savedCardList);
+
+
+
+    List<String> getSavedCardListFromSharedPreferences(String userId);
 
     SwipeFlingAdapterView getFlingContainer();
 }

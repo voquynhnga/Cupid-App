@@ -1,6 +1,8 @@
 package com.midterm.destined.Views.Homepage.Card;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
@@ -9,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.midterm.destined.Adapters.CardAdapter;
 import com.midterm.destined.Presenters.CardPresenter;
@@ -16,6 +20,7 @@ import com.midterm.destined.R;
 import com.midterm.destined.Models.Card;
 import com.midterm.destined.Utils.DB;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +31,7 @@ public class CardFragment extends Fragment implements cardView {
     private CardAdapter adapter;
     private SwipeFlingAdapterView flingContainer;
     private static CardFragment instance;
+    private List<String> savedCardList;
 
     public static CardFragment getInstance() {
         if (instance == null) {
@@ -44,6 +50,11 @@ public class CardFragment extends Fragment implements cardView {
 
         flingContainer = view.findViewById(R.id.frame);
 
+        savedCardList = getSavedCardListFromSharedPreferences(DB.getCurrentUser().getUid());
+        if (savedCardList == null) {
+            savedCardList = new ArrayList<>();
+        }
+
         if (flingContainer == null) {
             Log.e("CardFragment", "flingContainer is null. Check the layout file.");
         } else {
@@ -58,14 +69,20 @@ public class CardFragment extends Fragment implements cardView {
                 public void onLeftCardExit(Object dataObject) {
                     // Xử lý khi quẹt trái
                     Card card = (Card) dataObject;
-                    presenter.handleLeftSwipe(card.getCurrentUserID());
+                    presenter.handleLeftSwipe(card.getUserID());
+                    updateSavedCardList(card);
+
+
                 }
 
                 @Override
                 public void onRightCardExit(Object dataObject) {
                     // Xử lý khi quẹt phải
                     Card card = (Card) dataObject;
-                    presenter.handleRightSwipe(card.getCurrentUserID());
+                    presenter.handleRightSwipe(card);
+                    updateSavedCardList(card);
+
+
                 }
 
                 @Override
@@ -98,10 +115,12 @@ public class CardFragment extends Fragment implements cardView {
         // Ẩn loading
     }
 
+
     @Override
     public void displayCards(List<Card> cards) {
         cardList.clear();
         cardList.addAll(cards);
+
         adapter.notifyDataSetChanged();
     }
 
@@ -131,4 +150,54 @@ public class CardFragment extends Fragment implements cardView {
             return null;
         }
     }
+
+
+    private void updateSavedCardList(Card card) {
+
+        String userIDToRemove = card.getUserID();
+        // Lấy danh sách savedCardList từ SharedPreferences
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
+        String savedCardListJson = sharedPreferences.getString("savedCardList", "[]");
+
+        // Chuyển JSON thành danh sách bằng Gson
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<String>>(){}.getType();
+        List<String> savedCardList = gson.fromJson(savedCardListJson, listType);
+
+        // Xóa userID tương ứng trong savedCardList
+        savedCardList.remove(userIDToRemove);
+
+        // Lưu lại danh sách đã thay đổi vào SharedPreferences
+        String updatedSavedCardListJson = gson.toJson(savedCardList);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("savedCardList", updatedSavedCardListJson);
+        editor.apply();
+    }
+
+
+
+    @Override
+    public void saveCardListToSharedPreferences(String userId, List<String> savedCardList) {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("user_data", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(savedCardList);
+        editor.putString("savedCardList_" + userId, json); // Sử dụng userId để phân biệt danh sách
+        editor.apply();
+    }
+
+
+    @Override
+    public List<String> getSavedCardListFromSharedPreferences(String userId) {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("user_data", Context.MODE_PRIVATE);
+        String json = sharedPreferences.getString("savedCardList_" + userId, null); // Lấy danh sách theo userId
+        if (json == null) {
+            return new ArrayList<>(); // Trả về danh sách rỗng nếu chưa có danh sách nào được lưu
+        }
+        Type type = new TypeToken<List<String>>() {}.getType();
+        Gson gson = new Gson();
+        return gson.fromJson(json, type);
+    }
+
+
 }
