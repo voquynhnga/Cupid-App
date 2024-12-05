@@ -1,9 +1,45 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="filter_options">
         <item>Gender</item>
         <item>Age</item>
-        <item>Interests</item>
+        <item>Interest</item>
         <item>Location</item>
+    </string-array>
+
+    <string-array name="gender_options">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
+    <string-array name="age_options">
+        <item>&lt;18</item>
+        <item>18-25</item>
+        <item>26-35</item>
+        <item>36-45</item>
+        <item>46-55</item>
+        <item>56-65</item>
+        <item>66+</item>
+    </string-array>
+
+    <string-array name="interests_options">
+        <item>Reading</item>
+        <item>Music</item>
+        <item>Travel</item>
+        <item>Cook</item>
+        <item>Game</item>
+        <item>Photo</item>
+        <item>Chat</item>
+        <item>Shop</item>
+        <item>Paint</item>
+        <item>Pet</item>
+        <item>Fashion</item>
+        <item>Sport</item>
+    </string-array>
+
+    <string-array name="location_options">
+        <item>&lt;10km</item>
+        <item>&lt;100km</item>
+        <item>&lt;1000km</item>
+        <item>&gt;1000km</item>
     </string-array>
 </resources>

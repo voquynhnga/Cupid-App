@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg"
+    android:gravity="center"
     android:id="@+id/search"
     tools:context=".Views.Homepage.Search.SearchFragment">
 
@@ -12,7 +13,7 @@
         android:id="@+id/rjc0dai8y2q"
         android:layout_width="0dp"
         android:layout_height="75dp"
-        android:background="#A5DED9"
+        android:background="@drawable/gradient_bg"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="12dp"
@@ -25,20 +26,17 @@
             android:id="@+id/filterSpinner"
             android:layout_width="150dp"
             android:layout_height="38dp"
+            android:textAlignment="center"
             android:background="@drawable/round"
             android:entries="@array/filter_options"
             android:layout_marginEnd="8dp" />
 
-        <EditText
-            android:id="@+id/editTextInput"
-            android:layout_width="207dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/edittext"
-            android:hint="Search here"
-            android:padding="10dp"
-            android:textColor="#1D1B20"
-            android:textSize="16sp"
+        <Spinner
+            android:id="@+id/filterInfo"
+            android:layout_width="200dp"
+            android:layout_height="38dp"
+            android:textAlignment="center"
+            android:background="@drawable/round"
             android:layout_marginEnd="8dp" />
 
         <ImageView

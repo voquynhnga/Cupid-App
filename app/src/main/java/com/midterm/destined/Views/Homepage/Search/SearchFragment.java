@@ -24,9 +24,10 @@ import com.midterm.destined.R;
 import com.midterm.destined.Views.Homepage.Card.CardFragment;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SearchFragment extends Fragment implements searchView {
-    private EditText detailInput;
+    private Spinner detailInput;
     private RecyclerView resultsRecyclerView;
     private UserAdapter userAdapter;
     private Spinner filterSpinner;
@@ -39,7 +40,7 @@ public class SearchFragment extends Fragment implements searchView {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search, container, false);
 
-        detailInput = view.findViewById(R.id.editTextInput);
+        detailInput = view.findViewById(R.id.filterInfo);
         resultsRecyclerView = view.findViewById(R.id.resultsRecyclerView);
         filterSpinner = view.findViewById(R.id.filterSpinner);
 
@@ -51,10 +52,61 @@ public class SearchFragment extends Fragment implements searchView {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.filter_options, android.R.layout.simple_spinner_item);
         filterSpinner.setAdapter(adapter);
+        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    ArrayAdapter<CharSequence> adapter;
+
+                    switch (position) {
+                        case 0: // Gender
+                            adapter = ArrayAdapter.createFromResource(
+                                    Objects.requireNonNull(getContext()),
+                                    R.array.gender_options,
+                                    android.R.layout.simple_spinner_item
+                            );
+                            break;
+
+                        case 1: // Age
+                            adapter = ArrayAdapter.createFromResource(
+                                    Objects.requireNonNull(getContext()),
+                                    R.array.age_options,
+                                    android.R.layout.simple_spinner_item
+                            );
+                            break;
+
+                        case 2: // Interests
+                            adapter = ArrayAdapter.createFromResource(
+                                    Objects.requireNonNull(getContext()),
+                                    R.array.interests_options,
+                                    android.R.layout.simple_spinner_item
+                            );
+                            break;
+
+                        case 3: // Location
+                            adapter = ArrayAdapter.createFromResource(
+                                    Objects.requireNonNull(getContext()),
+                                    R.array.location_options,
+                                    android.R.layout.simple_spinner_item
+                            );
+                            break;
+
+                        default:
+                            return;
+                    }
+
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    detailInput.setAdapter(adapter); // Đổi filterInfo thành detailInput (trong code bạn cung cấp).
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // Do nothing
+                }
+            });
 
         view.findViewById(R.id.ok).setOnClickListener(v -> {
-            String filter = filterSpinner.getSelectedItem().toString();
-            String detail = detailInput.getText().toString().trim();
+            String filter = filterSpinner.getSelectedItem().toString().trim();
+            String detail = detailInput.getSelectedItem().toString().trim();
             searchPresenter.performSearch(filter, detail);
         });
 

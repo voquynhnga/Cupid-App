@@ -12,7 +12,6 @@ public class CalculateCoordinates {
         firestore.collection("users").document(uid1).get().addOnCompleteListener(task1 -> {
             if (task1.isSuccessful() && task1.getResult() != null) {
                 DocumentSnapshot user1Doc = task1.getResult();
-                // Lấy thông tin latitude và longitude từ field "location" của user 1
                 GPSAddress location1 = user1Doc.get("location", GPSAddress.class);
 
                 firestore.collection("users").document(uid2).get().addOnCompleteListener(task2 -> {

@@ -1,29 +1,32 @@
 package com.midterm.destined.Presenters;
 
-import static com.midterm.destined.Utils.TextExtensions.normalizeText;
 import static com.midterm.destined.Utils.TimeExtensions.getBirthYear;
+
+import android.util.Log;
+import android.util.Pair;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.midterm.destined.Models.UserReal;
-import com.midterm.destined.Utils.TextExtensions;
+import com.midterm.destined.Utils.CalculateCoordinates;
+import com.midterm.destined.Utils.DB;
+import com.midterm.destined.Utils.DistanceExtension;
+import com.midterm.destined.Utils.TimeExtensions;
 import com.midterm.destined.Views.Homepage.Search.searchView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class SearchPresenter {
     private final searchView searchView;
-    private final FirebaseFirestore db;
-    private final String currentUserId;
 
     public SearchPresenter(searchView searchView) {
         this.searchView = searchView;
-        this.db = FirebaseFirestore.getInstance();
-        this.currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     public void performSearch(String filter, String detail) {
@@ -36,7 +39,7 @@ public class SearchPresenter {
             case "Gender":
                 searchByGender(detail);
                 break;
-            case "Interests":
+            case "Interest":
                 searchByInterest(detail);
                 break;
             case "Location":
@@ -49,41 +52,79 @@ public class SearchPresenter {
     }
 
     private void searchByGender(String gender) {
-        db.collection("users")
+        DB.getUsersCollection()
                 .whereEqualTo("gender", capitalizeDetail(gender))
                 .get()
                 .addOnCompleteListener(task -> updateResults(task));
     }
 
     private void searchByInterest(String interest) {
-        db.collection("users")
+        DB.getUsersCollection()
                 .whereArrayContains("interests", capitalizeDetail(interest))
                 .get()
                 .addOnCompleteListener(task -> updateResults(task));
     }
 
-    private void searchByLocation(String location) {
-        String startText = normalizeText(location);
-        String endText = startText + "\uf8ff";
 
-        db.collection("users")
-                .whereGreaterThanOrEqualTo("detailAdrress", startText)
-                .whereLessThan("detailAdrress", endText)
+
+    private void searchByLocation(String location) {
+        Pair<String, Integer> parsed = DistanceExtension.parseDistance(location);
+        Log.d("DEBUG", location);
+
+        String operator = parsed.first;
+        int distanceLimit = parsed.second;
+        String currentUserId = DB.getCurrentUser().getUid();
+
+        DB.getUsersCollection()
                 .get()
-                .addOnCompleteListener(task -> updateResults(task));
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<UserReal> filteredUsers = new ArrayList<>();
+                        List<UserReal> usersToProcess = task.getResult().toObjects(UserReal.class).stream()
+                                .filter(user -> !user.getUid().equals(currentUserId))
+                                .collect(Collectors.toList());
+                        AtomicInteger pendingCallbacks = new AtomicInteger(usersToProcess.size());
+
+
+                        for (UserReal user : task.getResult().toObjects(UserReal.class)) {
+                            if (!user.getUid().equals(currentUserId)) {
+                                CalculateCoordinates.calculateDistance(currentUserId, user.getUid(), distance -> {
+                                    if ((operator.equals("<") && distance <= distanceLimit) ||
+                                            (operator.equals(">") && distance > distanceLimit)) {
+                                        synchronized (filteredUsers) {
+                                            filteredUsers.add(user);
+                                        }
+                                    }
+
+                                    if (pendingCallbacks.decrementAndGet() == 0) {
+                                        searchView.updateSearchResults(filteredUsers);
+                                    }
+                                });
+                            }
+                        }
+
+
+                        searchView.updateSearchResults(filteredUsers);
+                    } else {
+                        searchView.showError("Error!");
+                    }
+                });
     }
 
+
+
+
+
     private void searchByAge(String detail) {
-        int targetAge;
-        try {
-            targetAge = Integer.parseInt(detail);
-        } catch (NumberFormatException e) {
-            searchView.showError("Tuổi không hợp lệ.");
-            return;
-        }
+        Pair<Integer, Integer> ageRange = TimeExtensions.parseAgeRange(detail);
 
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        db.collection("users")
+        int minAge = ageRange.first;
+        int maxAge = ageRange.second;
+
+        String currentUserId = DB.getCurrentUser().getUid();
+
+        DB.getUsersCollection()
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -91,14 +132,17 @@ public class SearchPresenter {
                         for (UserReal user : task.getResult().toObjects(UserReal.class)) {
                             if (!user.getUid().equals(currentUserId)) {
                                 int birthYear = getBirthYear(user.getDateOfBirth());
-                                if (birthYear != -1 && currentYear - birthYear == targetAge) {
-                                    filteredUsers.add(user);
+                                if (birthYear != -1) {
+                                    int age = currentYear - birthYear;
+                                    if (age >= minAge && (maxAge == -1 || age <= maxAge)) {
+                                        filteredUsers.add(user);
+                                    }
                                 }
                             }
                         }
                         searchView.updateSearchResults(filteredUsers);
                     } else {
-                        searchView.showError("Lỗi khi tìm kiếm.");
+                        searchView.showError("Error");
                     }
                 });
     }
@@ -108,7 +152,7 @@ public class SearchPresenter {
             List<UserReal> users = task.getResult().toObjects(UserReal.class);
             searchView.updateSearchResults(users);
         } else {
-            searchView.showError("Lỗi khi tải dữ liệu.");
+            searchView.showError("Error");
         }
     }
 

@@ -1,6 +1,7 @@
 package com.midterm.destined.Utils;
 
 import android.util.Log;
+import android.util.Pair;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,6 +41,24 @@ public class TimeExtensions {
         SimpleDateFormat sdf = new SimpleDateFormat("d/M/yyyy HH:mm");
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
         return sdf.format(new Date());
+    }
+
+    public static Pair<Integer, Integer> parseAgeRange(String detail){
+        if (detail.startsWith("<")) {
+            int maxAge = Integer.parseInt(detail.substring(1).trim());
+            return new Pair<>(0, maxAge - 1);
+        } else if (detail.endsWith("+")) {
+            int minAge = Integer.parseInt(detail.substring(0, detail.length() - 1).trim());
+            return new Pair<>(minAge, -1);
+        } else if (detail.contains("-")) {
+            String[] parts = detail.split("-");
+            if (parts.length == 2) {
+                int minAge = Integer.parseInt(parts[0].trim());
+                int maxAge = Integer.parseInt(parts[1].trim());
+                return new Pair<>(minAge, maxAge);
+            }
+        }
+        return null;
     }
 
 }

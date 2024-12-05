@@ -62,9 +62,8 @@ public class CardAdapter extends BaseAdapter {
 
         CalculateCoordinates.calculateDistance(currentUserUID, card.getCurrentUserID(), distance -> {
 
-
-            if (distance < 5) {
-                tvDistance.setText("📍 < 5Km");
+            if (distance < 10) {
+                tvDistance.setText("📍 < 10Km");
             } else {
                 tvDistance.setText("📍 " + String.format("%d", (int) (distance)) + " Km");
 
