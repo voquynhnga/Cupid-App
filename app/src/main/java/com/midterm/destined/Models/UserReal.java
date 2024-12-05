@@ -21,7 +21,9 @@ public class UserReal implements Serializable {
     private String profilePicture;
     private List<String> imageUrls;
     private String userName;
-    private String detailAddress; // Sửa tên biến ở đây
+    private String detailAddress;
+    private boolean isMatched = false; // Trạng thái đã match
+    private boolean isFavorited = false; // Sửa tên biến ở đây
 
     public UserReal() {
         this.interests = new ArrayList<>();
@@ -164,5 +166,21 @@ public class UserReal implements Serializable {
 
     public String displayInterest() {
         return String.join(" - ", interests);
+    }
+
+    public boolean isMatched() {
+        return isMatched;
+    }
+
+    public void setMatched(boolean matched) {
+        isMatched = matched;
+    }
+
+    public boolean isFavorited() {
+        return isFavorited;
+    }
+
+    public void setFavorited(boolean favorited) {
+        isFavorited = favorited;
     }
 }

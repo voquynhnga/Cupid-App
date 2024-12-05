@@ -4,11 +4,16 @@ import static com.midterm.destined.Models.ChatObject.checkAndAddChatList;
 import static com.midterm.destined.Utils.TimeExtensions.getCurrentTime;
 
 import android.util.Log;
+import android.view.View;
+
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.Match;
 import com.midterm.destined.Utils.DB;
+import com.midterm.destined.Utils.Dialog;
 import com.midterm.destined.Views.Homepage.Card.cardView;
 
 import java.util.List;
@@ -23,57 +28,54 @@ public class CardPresenter {
     }
 
     public void loadCards() {
-        List<String> savedCardList = view.getSavedCardListFromSharedPreferences(DB.getCurrentUser().getUid());
+        DB.getCurrentUserDocument()
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        DocumentSnapshot document = task.getResult();
 
-        if (savedCardList != null && !savedCardList.isEmpty()) {
-            Log.d("DEBUG", savedCardList.toString());
-            // Nếu có savedCardList từ local, hiển thị thẻ từ danh sách này
-            model.fetchUsersByIds(savedCardList, new Card.OnCardFetchListener() {
-                @Override
-                public void onSuccess(List<Card> allUsers, List<String> savedCardList) {
-                    view.displayCards(allUsers);  // Hiển thị danh sách thẻ từ local
-                }
-
-                @Override
-                public void onError(String errorMessage) {
-                    view.showError(errorMessage);
-                }
-            });
-        } else {
-            // Nếu không có savedCardList trong local, kiểm tra cardList trên Firebase
-            DB.getCurrentUserDocument().get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
+                        // Lấy danh sách cardList
                         List<String> firebaseCardList = (List<String>) document.get("cardList");
 
-                        if (firebaseCardList == null || firebaseCardList.isEmpty()) {
-                            model.setAllUserToDB();  // Lấy tất cả userId và cập nhật Firebase
+                        Log.d("DEBUG", firebaseCardList.toString());
+
+                        if (firebaseCardList.isEmpty()) {
+                            // Nếu cardList rỗng, lấy tất cả người dùng
+                            model.fetchAllUsersAndUpdateCardList(new Card.OnCardFetchListener() {
+                                @Override
+                                public void onSuccess(List<Card> allUsers) {
+                                    view.displayCards(allUsers);
+                                    Log.d("DEBUG", "khong");
+                                    Log.d("DEBUG", "khong || " + allUsers.toString());
+
+                                }
+
+                                @Override
+                                public void onError(String errorMessage) {
+                                    view.showError(errorMessage);
+                                }
+                            });
+                        } else {
+                            // Nếu đã có cardList, lấy thông tin chi tiết các user
+                            model.fetchUsersByIds(firebaseCardList, new Card.OnCardFetchListener() {
+                                @Override
+                                public void onSuccess(List<Card> cards) {
+                                    Log.d("DEBUG", "co");
+                                    Log.d("DEBUG", "co || " + cards.toString());
+                                    view.displayCards(cards);
+                                }
+
+                                @Override
+                                public void onError(String errorMessage) {
+                                    view.showError(errorMessage);
+                                }
+                            });
                         }
-
-                        // Sau khi đã lấy cardList từ Firebase hoặc cập nhật, lấy tất cả người dùng từ Firebase
-                        model.fetchAllUsers(new Card.OnCardFetchListener() {
-                            @Override
-                            public void onSuccess(List<Card> allUsers, List<String> savedCardList) {
-                                // Lưu danh sách card vào local (Gson hoặc SharedPreferences)
-                                view.saveCardListToSharedPreferences(DB.getCurrentUser().getUid(),savedCardList);  // Hàm này cần được bạn triển khai để lưu vào local
-
-                                // Hiển thị danh sách thẻ
-                                view.displayCards(allUsers);
-                            }
-
-                            @Override
-                            public void onError(String errorMessage) {
-                                view.showError(errorMessage);
-                            }
-                        });
-
+                    } else {
+                        // Xử lý lỗi nếu không thể lấy tài liệu người dùng hiện tại
+                        view.showError("Error fetching saved cards: " + task.getException().getMessage());
                     }
-                } else {
-                    view.showError("Error fetching saved cards: " + task.getException().getMessage());
-                }
-            });
-        }
+                });
     }
 
 
@@ -101,7 +103,10 @@ public class CardPresenter {
                 Match match = new Match(matchId, currentUserId, favoritedUserId, getCurrentTime());
 
                 model.saveMatchToDB(match, favoritedUserName);
-                view.showMatchPopup(favoritedUserName);
+
+
+
+                Dialog.showMatchPopup(view.getContext(), favoritedUserName, view.getNavController());
 
                 checkAndAddChatList(currentUserId, favoritedUserId, match.getTimestamp());
             } else {

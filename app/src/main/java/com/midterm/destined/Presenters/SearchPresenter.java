@@ -8,7 +8,9 @@ import android.util.Pair;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.UserReal;
 import com.midterm.destined.Utils.CalculateCoordinates;
 import com.midterm.destined.Utils.DB;
@@ -52,42 +54,67 @@ public class SearchPresenter {
     }
 
     private void searchByGender(String gender) {
-        DB.getUsersCollection()
+         DB.getUsersCollection()
                 .whereEqualTo("gender", capitalizeDetail(gender))
                 .get()
-                .addOnCompleteListener(task -> updateResults(task));
+                .addOnCompleteListener(userTask -> {
+                    if (userTask.isSuccessful()) {
+                        List<UserReal> filteredUsers = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : userTask.getResult()) {
+                            UserReal user = document.toObject(UserReal.class);
+                            if (!user.getUid().equals(DB.getCurrentUser().getUid())) {
+                                filteredUsers.add(user);
+                            }
+                        }
+                        searchView.updateSearchResults(filteredUsers);
+                    } else {
+                        searchView.showError("Error fetching users");
+                    }
+                });
     }
 
+
     private void searchByInterest(String interest) {
-        DB.getUsersCollection()
-                .whereArrayContains("interests", capitalizeDetail(interest))
-                .get()
-                .addOnCompleteListener(task -> updateResults(task));
+            DB.getUsersCollection()
+                    .whereArrayContains("interests", capitalizeDetail(interest))
+                    .get()
+                    .addOnCompleteListener(userTask -> {
+                        if (userTask.isSuccessful()) {
+                            List<UserReal> filteredUsers = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : userTask.getResult()) {
+                                UserReal user = document.toObject(UserReal.class);
+                                if (!user.getUid().equals(DB.getCurrentUser().getUid())) {
+                                    filteredUsers.add(user);
+                                }
+                            }
+                            searchView.updateSearchResults(filteredUsers);
+                        } else {
+                            searchView.showError("Error fetching users");
+                        }
+                    });
+
     }
+
 
 
 
     private void searchByLocation(String location) {
         Pair<String, Integer> parsed = DistanceExtension.parseDistance(location);
-        Log.d("DEBUG", location);
-
         String operator = parsed.first;
         int distanceLimit = parsed.second;
         String currentUserId = DB.getCurrentUser().getUid();
 
-        DB.getUsersCollection()
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<UserReal> filteredUsers = new ArrayList<>();
-                        List<UserReal> usersToProcess = task.getResult().toObjects(UserReal.class).stream()
-                                .filter(user -> !user.getUid().equals(currentUserId))
-                                .collect(Collectors.toList());
-                        AtomicInteger pendingCallbacks = new AtomicInteger(usersToProcess.size());
+            DB.getUsersCollection()
+                    .get()
+                    .addOnCompleteListener(userTask -> {
+                        if (userTask.isSuccessful()) {
+                            List<UserReal> filteredUsers = new ArrayList<>();
+                            List<UserReal> usersToProcess = userTask.getResult().toObjects(UserReal.class).stream()
+                                    .filter(user -> !user.getUid().equals(currentUserId))
+                                    .collect(Collectors.toList());
 
-
-                        for (UserReal user : task.getResult().toObjects(UserReal.class)) {
-                            if (!user.getUid().equals(currentUserId)) {
+                            AtomicInteger pendingCallbacks = new AtomicInteger(usersToProcess.size());
+                            for (UserReal user : usersToProcess) {
                                 CalculateCoordinates.calculateDistance(currentUserId, user.getUid(), distance -> {
                                     if ((operator.equals("<") && distance <= distanceLimit) ||
                                             (operator.equals(">") && distance > distanceLimit)) {
@@ -101,14 +128,11 @@ public class SearchPresenter {
                                     }
                                 });
                             }
+                        } else {
+                            searchView.showError("Error fetching users");
                         }
+                    });
 
-
-                        searchView.updateSearchResults(filteredUsers);
-                    } else {
-                        searchView.showError("Error!");
-                    }
-                });
     }
 
 
@@ -117,35 +141,36 @@ public class SearchPresenter {
 
     private void searchByAge(String detail) {
         Pair<Integer, Integer> ageRange = TimeExtensions.parseAgeRange(detail);
-
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         int minAge = ageRange.first;
         int maxAge = ageRange.second;
-
         String currentUserId = DB.getCurrentUser().getUid();
 
-        DB.getUsersCollection()
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<UserReal> filteredUsers = new ArrayList<>();
-                        for (UserReal user : task.getResult().toObjects(UserReal.class)) {
-                            if (!user.getUid().equals(currentUserId)) {
-                                int birthYear = getBirthYear(user.getDateOfBirth());
-                                if (birthYear != -1) {
-                                    int age = currentYear - birthYear;
-                                    if (age >= minAge && (maxAge == -1 || age <= maxAge)) {
-                                        filteredUsers.add(user);
+            DB.getUsersCollection()
+                    .get()
+                    .addOnCompleteListener(userTask -> {
+                        if (userTask.isSuccessful()) {
+                            List<UserReal> filteredUsers = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : userTask.getResult()) {
+                                UserReal user = document.toObject(UserReal.class);
+                                if (!user.getUid().equals(currentUserId)) {
+                                    int birthYear = getBirthYear(user.getDateOfBirth());
+                                    if (birthYear != -1) {
+                                        int age = currentYear - birthYear;
+                                        if (age >= minAge && (maxAge == -1 || age <= maxAge)) {
+                                            filteredUsers.add(user);
+                                        }
                                     }
                                 }
                             }
+                            searchView.updateSearchResults(filteredUsers);
+                        } else {
+                            searchView.showError("Error fetching users");
                         }
-                        searchView.updateSearchResults(filteredUsers);
-                    } else {
-                        searchView.showError("Error");
-                    }
-                });
+                    });
+
     }
+
 
     private void updateResults(Task<QuerySnapshot> task) {
         if (task.isSuccessful()) {

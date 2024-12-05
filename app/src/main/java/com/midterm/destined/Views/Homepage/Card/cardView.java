@@ -4,6 +4,8 @@ package com.midterm.destined.Views.Homepage.Card;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.navigation.NavController;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
@@ -17,12 +19,8 @@ public interface cardView {
     void hideLoading();
     void displayCards(List<Card> cards);
     void showError(String message);
-    void showMatchPopup(String matchedUserName);
-    void saveCardListToSharedPreferences(String userId, List<String> savedCardList);
-
-
-
-    List<String> getSavedCardListFromSharedPreferences(String userId);
+    Context getContext();
+    NavController getNavController();
 
     SwipeFlingAdapterView getFlingContainer();
 }

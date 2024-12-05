@@ -12,21 +12,20 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.UserReal;
-import com.midterm.destined.Presenters.CardPresenter;
 import com.midterm.destined.R;
 import com.midterm.destined.Utils.DB;
+import com.midterm.destined.Utils.Dialog;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -34,15 +33,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
 
     private final Context mContext;
     private final List<UserReal> mUsers;
+    private final NavController mNavController;
+    private final Map<String, Boolean> matchedUsersCache = new HashMap<>();
+    private final Map<String, Boolean> favoritedUsersCache = new HashMap<>();
 
-
-    private final CardPresenter cardPresenter;
-
-
-    public UserAdapter(Context context, List<UserReal> users, CardPresenter presenter) {
+    public UserAdapter(Context context, List<UserReal> users, NavController navController) {
         this.mContext = context;
         this.mUsers = users;
-        this.cardPresenter = presenter;
+        this.mNavController = navController;
+
     }
 
     @NonNull
@@ -63,15 +62,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
                 .error(R.drawable.avatardefault)
                 .into(holder.image_profile);
 
-        if (user.getUid().equals(DB.getCurrentUser().getUid())) {
-            holder.btn_match.setVisibility(View.GONE);
-            holder.btn_unmatch.setVisibility(View.GONE);
-            return;
+        holder.btn_like.setVisibility(View.INVISIBLE);
+        holder.btn_unlike.setVisibility(View.INVISIBLE);
+        holder.btn_unmatch.setVisibility(View.INVISIBLE);
+
+        if (!matchedUsersCache.containsKey(user.getUid())) {
+            checkIfMatched(user, holder);
+        } else {
+            updateButtonState(user, holder);
         }
 
-        updateButtonVisibility(user, holder);
-
-        holder.btn_match.setOnClickListener(v -> handleMatchAction(user, holder));
+        holder.btn_like.setOnClickListener(v -> handleLikeAction(user, holder));
+        holder.btn_unlike.setOnClickListener(v -> handleUnLikeAction(user, holder));
 
         holder.btn_unmatch.setOnClickListener(v -> handleUnMatchAction(user, holder));
     }
@@ -81,31 +83,105 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         return mUsers.size();
     }
 
-    private void updateButtonVisibility(UserReal user, ImageViewHolder holder) {
+
+    private void checkIfMatched(UserReal user, ImageViewHolder holder) {
+        String currentUserId = DB.getCurrentUser().getUid();
+
         DB.getMatchesCollection()
-                .whereEqualTo("userId", user.getUid())
+                .whereEqualTo("userId1", user.getUid())
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     if (!querySnapshot.isEmpty()) {
-                        holder.btn_match.setVisibility(View.GONE);
-                        holder.btn_unmatch.setVisibility(View.VISIBLE);
-                    } else {
-                        holder.btn_match.setVisibility(View.VISIBLE);
-                        holder.btn_unmatch.setVisibility(View.GONE);
+                        for (QueryDocumentSnapshot document : querySnapshot) {
+                            String userId2 = document.getString("userId2");
+                            if (currentUserId.equals(userId2)) { // Kiểm tra người còn lại
+                                user.setMatched(true);
+                                matchedUsersCache.put(user.getUid(), true);
+                                updateButtonState(user, holder);
+                                return; // Dừng kiểm tra nếu đã tìm thấy
+                            }
+                        }
                     }
-                })
-                .addOnFailureListener(e -> Log.e("FirestoreError", "Failed to fetch user data", e));
+
+                    // Tiếp tục kiểm tra với userId2
+                    DB.getMatchesCollection()
+                            .whereEqualTo("userId2", user.getUid())
+                            .get()
+                            .addOnSuccessListener(querySnapshot2 -> {
+                                if (!querySnapshot2.isEmpty()) {
+                                    for (QueryDocumentSnapshot document : querySnapshot2) {
+                                        String userId1 = document.getString("userId1");
+                                        if (currentUserId.equals(userId1)) { // Kiểm tra người còn lại
+                                            user.setMatched(true);
+                                            matchedUsersCache.put(user.getUid(), true);
+                                            updateButtonState(user, holder);
+
+                                            return; // Dừng kiểm tra nếu đã tìm thấy
+                                        }
+                                    }
+                                }
+
+                                // Nếu không tìm thấy kết nối nào
+                                user.setMatched(false);
+                                matchedUsersCache.put(user.getUid(), false);
+                                checkFavoritedList(user, holder);
+                            });
+                });
+    }
+
+    private void checkFavoritedList(UserReal user, ImageViewHolder holder) {
+        DB.getCurrentUserDocument()
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        List<String> favoritedCardList = (List<String>) task.getResult().get("favoritedCardList");
+                        boolean isFavorited = favoritedCardList != null && favoritedCardList.contains(user.getUid());
+                        user.setFavorited(isFavorited);
+                        favoritedUsersCache.put(user.getUid(), isFavorited);
+                        updateButtonState(user, holder);
+                    }
+                });
+    }
+
+    private void updateButtonState(UserReal user, ImageViewHolder holder) {
+        if (user.isMatched()) {
+            holder.btn_like.setVisibility(View.INVISIBLE);
+            holder.btn_unlike.setVisibility(View.INVISIBLE);
+            holder.btn_unmatch.setVisibility(View.VISIBLE);
+        } else if (user.isFavorited()) {
+            holder.btn_like.setVisibility(View.INVISIBLE);
+            holder.btn_unlike.setVisibility(View.VISIBLE);
+            holder.btn_unmatch.setVisibility(View.INVISIBLE);
+        } else {
+            holder.btn_like.setVisibility(View.VISIBLE);
+            holder.btn_unlike.setVisibility(View.INVISIBLE);
+            holder.btn_unmatch.setVisibility(View.INVISIBLE);
+        }
     }
 
 
-    private void handleMatchAction(UserReal user, ImageViewHolder holder) {
+
+    private void handleLikeAction(UserReal user, ImageViewHolder holder) {
         String favoritedUserId = user.getUid();
 
         try {
             Card.addToFavoritedList(favoritedUserId);
-            cardPresenter.checkIfMatched(user.getUid(), user.getFullName());
-            holder.btn_match.setVisibility(View.GONE);
-            holder.btn_unmatch.setVisibility(View.VISIBLE);
+            checkIfMatched(user, holder);
+            holder.btn_like.setVisibility(View.INVISIBLE);
+            holder.btn_unlike.setVisibility(View.VISIBLE);
+            holder.btn_unmatch.setVisibility(View.INVISIBLE);
+        } catch (Exception e) {
+            Log.e("FirestoreError", "Failed to update follow action", e);
+        }
+    }
+    private void handleUnLikeAction(UserReal user, ImageViewHolder holder) {
+        String favoritedUserId = user.getUid();
+
+        try {
+            Card.removeToFavoritedList(favoritedUserId);
+            holder.btn_like.setVisibility(View.VISIBLE);
+            holder.btn_unlike.setVisibility(View.INVISIBLE);
+            holder.btn_unmatch.setVisibility(View.INVISIBLE);
         } catch (Exception e) {
             Log.e("FirestoreError", "Failed to update follow action", e);
         }
@@ -125,8 +201,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
                         deleteMatch(currentUserId, favoritedUserId);
                         deleteChat(currentUserId, favoritedUserId);
 
-                        holder.btn_match.setVisibility(View.VISIBLE);
-                        holder.btn_unmatch.setVisibility(View.GONE);
+                        holder.btn_like.setVisibility(View.VISIBLE);
+                        holder.btn_unmatch.setVisibility(View.INVISIBLE);
+                        holder.btn_unlike.setVisibility(View.INVISIBLE);
 
                     } catch (Exception e) {
                         Log.e("FirestoreError", "Failed to update unfollow action", e);
@@ -157,7 +234,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         public final TextView username;
         public final TextView fullname;
         public final CircleImageView image_profile;
-        public final Button btn_match;
+        public final Button btn_like;
+        public final Button btn_unlike;
         public final Button btn_unmatch;
 
         public ImageViewHolder(View itemView) {
@@ -165,7 +243,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
             username = itemView.findViewById(R.id.username);
             fullname = itemView.findViewById(R.id.fullname);
             image_profile = itemView.findViewById(R.id.image_profile);
-            btn_match = itemView.findViewById(R.id.btn_match);
+            btn_like = itemView.findViewById(R.id.btn_likeSearch);
+            btn_unlike = itemView.findViewById(R.id.btn_unlikeSearch);
             btn_unmatch = itemView.findViewById(R.id.btn_unmatch);
         }
     }

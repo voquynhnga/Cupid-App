@@ -18,6 +18,7 @@ import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.ChatObject;
 import com.midterm.destined.Utils.ChatDiffCallback;
 import com.midterm.destined.Utils.DB;
+import com.midterm.destined.Utils.TimeExtensions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
     private ArrayList<ChatObject> chatObjects;
     private OnMessageClickListener listener;
-    public String senderId;
+
 
 
     public ChatAdapter(ArrayList<ChatObject> chatObjects, OnMessageClickListener listener) {
@@ -60,53 +61,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
                     .load(senderAvatar)
                     .placeholder(R.drawable.avatardefault)
                     .into(holder.avatarChat);
-        } else {
-            holder.avatarChat.setImageResource(R.drawable.avatardefault);
         }
 
         holder.tvContent.setText((chatObject.getLastMessage()).getContent());
 
         holder.itemView.setOnClickListener(v -> listener.onMessageClick(chatObject));
+
+        TimeExtensions.setChatTimestamp(holder.tvTimestamp, chatObject.getLastMessage().getTime());
     }
 
 
-    public void fetchSenderAvatar(String userId, ImageView avatar) {
-        DB.getCurrentUserDocument().get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    String profileImageUrl = document.getString("profilePicture");
-                    if (profileImageUrl != null) {
-                        Glide.with(avatar.getContext())
-                                .load(profileImageUrl)
-                                .placeholder(R.drawable.avatardefault)
-                                .into(avatar);
-                    } else {
-                        avatar.setImageResource(R.drawable.avatardefault);
-                    }
-                }
-            } else {
-                Log.w("DEBUG", "Database Error: ", task.getException());
-            }
-        });
-    }
-
-    public void fetchSenderName(String userId, TextView tvSender) {
-
-        DB.getCurrentUserDocument().get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    String fullName = document.getString("fullName");
-                    if (fullName != null) {
-                        tvSender.setText(fullName);
-                    }
-                }
-            } else {
-                Log.w("DEBUG", "Database Error: ", task.getException());
-            }
-        });
-    }
 
 
     @Override
@@ -124,12 +88,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         TextView tvSender;
         TextView tvContent;
         ImageView avatarChat;
+        TextView tvTimestamp;
 
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
             tvSender = itemView.findViewById(R.id.tv_sender);
             tvContent = itemView.findViewById(R.id.tv_content);
             avatarChat = itemView.findViewById(R.id.avatar_chat);
+            tvTimestamp = itemView.findViewById(R.id.tv_timestamp);
         }
     }
     public void updateMessages(ArrayList<ChatObject> newMessages) {

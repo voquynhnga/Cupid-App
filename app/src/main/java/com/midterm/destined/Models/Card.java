@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Card {
 
@@ -101,107 +102,11 @@ public class Card {
     }
 
     public interface OnCardFetchListener {
-        void onSuccess(List<Card> cards, List<String> savedCardList);
+        void onSuccess(List<Card> cards);
         void onError(String errorMessage);
     }
 
-    public void getCardListFromDB(OnCardFetchListener listener) {
-        DB.getCurrentUserDocument().get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    List<String> savedCardList = (List<String>) document.get("cardList");
-                    if (savedCardList == null || savedCardList.isEmpty()) {
-                        setAllUserToDB();
-                        fetchAllUsers(listener);
-                    } else {
-                        fetchUsersByIds(savedCardList, listener);
-                    }
-                } else {
-                    fetchAllUsers(listener);
-                }
-            } else {
-                listener.onError("Error fetching saved cards: " + task.getException().getMessage());
-            }
-        });
-    }
-
-    public void setAllUserToDB() {
-        // Lấy tài liệu của người dùng hiện tại
-        DB.getCurrentUserDocument()
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        // Lấy danh sách favoritedCardList
-                        List<String> favoritedCardList = (List<String>) task.getResult().get("favoritedCardList");
-                        if (favoritedCardList == null) {
-                            favoritedCardList = new ArrayList<>();
-                        }
-
-                        List<String> finalFavoritedCardList = favoritedCardList;
-
-                        // Lấy danh sách tất cả người dùng
-                        DB.getUsersCollection().get().addOnCompleteListener(userTask -> {
-                            if (userTask.isSuccessful() && userTask.getResult() != null) {
-                                List<String> allUserIds = new ArrayList<>();
-
-                                for (QueryDocumentSnapshot document : userTask.getResult()) {
-                                    String userId = document.getString("uid");
-                                    if (userId != null
-                                            && !userId.equals(DB.getCurrentUser().getUid()) // Loại trừ chính mình
-                                            && !finalFavoritedCardList.contains(userId)) { // Loại trừ user trong favoritedCardList
-                                        allUserIds.add(userId);
-                                    }
-                                }
-
-                                // Cập nhật cardList với danh sách đã lọc
-                                if (!allUserIds.isEmpty()) {
-                                    DB.getCurrentUserDocument()
-                                            .update("cardList", FieldValue.arrayUnion(allUserIds.toArray()))
-                                            .addOnSuccessListener(aVoid -> Log.d("DEBUG", "All user IDs added to card list successfully."))
-                                            .addOnFailureListener(e -> Log.e("DEBUG", "Error adding user IDs to card list", e));
-                                }
-                            } else {
-                                Log.e("DEBUG", "Error fetching all users", userTask.getException());
-                            }
-                        });
-                    } else {
-                        Log.e("DEBUG", "Error fetching favoritedCardList", task.getException());
-                    }
-                });
-    }
-
-
-
-    public void fetchUsersByIds(List<String> userIds, OnCardFetchListener listener) {
-        if (userIds.isEmpty()) {
-            listener.onSuccess(new ArrayList<>(), userIds);
-            return;
-        }
-
-        DB.getUsersCollection()
-                .whereIn("uid", userIds)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<Card> cards = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            UserReal user = document.toObject(UserReal.class);
-                            String firstImageUrl = (user.getImageUrls() != null && !user.getImageUrls().isEmpty()) ? user.getImageUrls().get(0) : null;
-                            cards.add(new Card(user.getFullName(), firstImageUrl,
-                                    user.displayInterest(), document.getString("detailAddress"),
-                                    user.getGender(), user.getBio(),
-                                    String.valueOf(TimeExtensions.calculateAge(user.getDateOfBirth())), user.getUid()));
-                        }
-                        listener.onSuccess(cards, userIds);
-                    } else {
-                        listener.onError("Error fetching users by IDs: " + task.getException().getMessage());
-                    }
-                });
-    }
-
-    public void fetchAllUsers(OnCardFetchListener listener) {
-        // Lấy tài liệu của người dùng hiện tại để lấy danh sách favoritedCardList
+    public void fetchAllUsersAndUpdateCardList(OnCardFetchListener listener) {
         DB.getCurrentUserDocument().get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
                 // Lấy danh sách favoritedCardList
@@ -210,47 +115,101 @@ public class Card {
                     favoritedCardList = new ArrayList<>();
                 }
 
-                // Lấy danh sách tất cả người dùng
                 List<String> finalFavoritedCardList = favoritedCardList;
+
+                // Lấy danh sách tất cả người dùng
                 DB.getUsersCollection().get().addOnCompleteListener(userTask -> {
-                    if (userTask.isSuccessful()) {
-                        List<Card> cards = new ArrayList<>();
+                    if (userTask.isSuccessful() && userTask.getResult() != null) {
+                        List<Card> allUsers = new ArrayList<>();
+                        List<String> newCardList = new ArrayList<>();
 
                         for (QueryDocumentSnapshot document : userTask.getResult()) {
                             UserReal user = document.toObject(UserReal.class);
 
-                            // Lấy URL hình ảnh đầu tiên
-                            String firstImageUrl = (user.getImageUrls() != null && !user.getImageUrls().isEmpty()) ? user.getImageUrls().get(0) : null;
-
-                            // Loại trừ chính mình và những người trong favoritedCardList
+                            // Loại trừ chính mình và các user đã favorited
                             if (!user.getUid().equals(DB.getCurrentUser().getUid())
                                     && !finalFavoritedCardList.contains(user.getUid())) {
-                                cards.add(new Card(
+                                newCardList.add(user.getUid());
+
+                                // Tạo đối tượng Card để hiển thị
+                                String firstImageUrl = (user.getImageUrls() != null && !user.getImageUrls().isEmpty())
+                                        ? user.getImageUrls().get(0)
+                                        : null;
+
+                                allUsers.add(new Card(
                                         user.getFullName(),
                                         firstImageUrl,
                                         user.displayInterest(),
                                         document.getString("detailAddress"),
                                         user.getGender(),
                                         user.getBio(),
-                                        String.valueOf(user.getDateOfBirth()),
+                                        String.valueOf(TimeExtensions.calculateAge(user.getDateOfBirth())),
                                         user.getUid()
                                 ));
                             }
                         }
 
-                        // Gọi callback thành công
-                        listener.onSuccess(cards, new ArrayList<>());
+                        // Cập nhật cardList trong Firestore
+                        if (!newCardList.isEmpty()) {
+                            DB.getCurrentUserDocument()
+                                    .update("cardList", newCardList)
+                                    .addOnSuccessListener(aVoid -> Log.d("DEBUG", "Card list updated successfully."))
+                                    .addOnFailureListener(e -> Log.e("DEBUG", "Error updating card list", e));
+                        }
+
+                        // Trả kết quả qua callback
+                        listener.onSuccess(allUsers);
                     } else {
-                        // Gọi callback lỗi khi không lấy được danh sách tất cả người dùng
                         listener.onError("Error fetching all users: " + userTask.getException().getMessage());
                     }
                 });
             } else {
-                // Gọi callback lỗi khi không lấy được tài liệu người dùng hiện tại
-                listener.onError("Error fetching current user data: " + task.getException().getMessage());
+                listener.onError("Error fetching current user: " + task.getException().getMessage());
             }
         });
     }
+
+    public void fetchUsersByIds(List<String> userIds, OnCardFetchListener listener) {
+        int batchSize = 30;
+        List<List<String>> batches = new ArrayList<>();
+
+        // Chia nhỏ danh sách userIds thành các nhóm
+        for (int i = 0; i < userIds.size(); i += batchSize) {
+            int end = Math.min(i + batchSize, userIds.size());
+            batches.add(userIds.subList(i, end));
+        }
+
+        // Thực hiện các truy vấn cho từng nhóm
+        List<Card> allCards = new ArrayList<>();
+        final int totalBatches = batches.size();
+        AtomicInteger completedBatches = new AtomicInteger(0);  // Đếm số lượng batch đã hoàn thành
+
+        for (List<String> batch : batches) {
+            DB.getUsersCollection()
+                    .whereIn("uid", batch)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                UserReal user = document.toObject(UserReal.class);
+                                String firstImageUrl = (user.getImageUrls() != null && !user.getImageUrls().isEmpty()) ? user.getImageUrls().get(0) : null;
+                                allCards.add(new Card(user.getFullName(), firstImageUrl,
+                                        user.displayInterest(), document.getString("detailAddress"),
+                                        user.getGender(), user.getBio(),
+                                        String.valueOf(TimeExtensions.calculateAge(user.getDateOfBirth())), user.getUid()));
+                            }
+                        } else {
+                            listener.onError("Error fetching users by IDs: " + task.getException().getMessage());
+                        }
+
+                        // Kiểm tra xem tất cả các batch đã hoàn thành chưa
+                        if (completedBatches.incrementAndGet() == totalBatches) {
+                            listener.onSuccess(allCards);  // Gọi listener khi tất cả các batch đã hoàn thành
+                        }
+                    });
+        }
+    }
+
 
     public void saveMatchToDB(Match match, String fullNameUser2) {
         Map<String, Object> matchData = new HashMap<>();
@@ -296,21 +255,24 @@ public class Card {
     }
 
 
-    public void getFavoritedCardList(String userId, final OnFavoritedCardListListener listener) {
+    public static void getFavoritedCardList(String userId, final OnFavoritedCardListListener listener) {
         DB.getUserDocument(userId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult().exists()) {
                 DocumentSnapshot document = task.getResult();
                 List<String> favoritedCardList = (List<String>) document.get("favoritedCardList");
-                if (favoritedCardList != null) {
-                    listener.onCardListFetched(favoritedCardList);
-                } else {
-                    listener.onCardListFetched(new ArrayList<>());
+
+                if (favoritedCardList == null) {
+                    favoritedCardList = new ArrayList<>();
                 }
+
+
+                listener.onCardListFetched(favoritedCardList);
             } else {
                 listener.onCardListFetched(new ArrayList<>());
             }
         });
     }
+
 
     public interface OnFavoritedCardListListener {
         void onCardListFetched(List<String> favoritedCardList);

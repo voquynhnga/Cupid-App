@@ -2,6 +2,7 @@ package com.midterm.destined.Utils;
 
 import android.util.Log;
 import android.util.Pair;
+import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,5 +61,50 @@ public class TimeExtensions {
         }
         return null;
     }
+
+    public static void setChatTimestamp(TextView tvTimestamp, String timestamp) {
+        // Định dạng đầu vào (D/MM/yyyy HH:MM)
+        SimpleDateFormat inputFormat = new SimpleDateFormat("d/MM/yyyy HH:mm");
+        // Các định dạng đầu ra
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat dayMonthFormat = new SimpleDateFormat("d/MM");
+        SimpleDateFormat fullDateFormat = new SimpleDateFormat("d/MM/yyyy");
+
+        try {
+            // Chuyển chuỗi thời gian thành Date
+            Date messageDate = inputFormat.parse(timestamp);
+
+            // Lấy ngày hôm nay và năm hiện tại
+            Calendar now = Calendar.getInstance();
+            Calendar messageCalendar = Calendar.getInstance();
+            messageCalendar.setTime(messageDate);
+
+            if (isSameDay(now, messageCalendar)) {
+                // Nếu là hôm nay, chỉ hiển thị giờ phút
+                tvTimestamp.setText(timeFormat.format(messageDate));
+            } else if (isSameYear(now, messageCalendar)) {
+                // Nếu cùng năm nhưng không cùng ngày, hiển thị ngày tháng
+                tvTimestamp.setText(dayMonthFormat.format(messageDate));
+            } else {
+                // Nếu khác năm, hiển thị đầy đủ ngày tháng năm
+                tvTimestamp.setText(fullDateFormat.format(messageDate));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            tvTimestamp.setText(timestamp); // Hiển thị chuỗi gốc nếu gặp lỗi
+        }
+    }
+
+    // Kiểm tra nếu cùng ngày
+    private static boolean isSameDay(Calendar now, Calendar messageCalendar) {
+        return now.get(Calendar.YEAR) == messageCalendar.get(Calendar.YEAR)
+                && now.get(Calendar.DAY_OF_YEAR) == messageCalendar.get(Calendar.DAY_OF_YEAR);
+    }
+
+    // Kiểm tra nếu cùng năm
+    private static boolean isSameYear(Calendar now, Calendar messageCalendar) {
+        return now.get(Calendar.YEAR) == messageCalendar.get(Calendar.YEAR);
+    }
+
 
 }

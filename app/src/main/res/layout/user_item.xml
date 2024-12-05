@@ -42,19 +42,30 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:visibility="gone"
-        android:id="@+id/btn_match"
+        android:visibility="invisible"
+        android:id="@+id/btn_unmatch"
         android:layout_alignParentEnd="true"
-        android:text="Match"
+        android:text="Unmatch"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:visibility="gone"
-        android:id="@+id/btn_unmatch"
+        android:visibility="invisible"
+        android:id="@+id/btn_likeSearch"
         android:layout_alignParentEnd="true"
-        android:text="Unmatch"
+        android:text="Like"
+        android:textColor="#FFFFFF"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:visibility="invisible"
+        android:id="@+id/btn_unlikeSearch"
+        android:layout_alignParentEnd="true"
+        android:text="Unlike"
+        android:textColor="#898787"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"/>
 <!--        android:background="@drawable/button_background"-->

@@ -19,6 +19,14 @@ public class HomepageFragment extends Fragment implements HomepageContract.View 
 
     private FragmentHomepageBinding binding;
     private HomepagePresenter presenter;
+    private static HomepageFragment homepageFragment;
+
+    public static HomepageFragment getInstance(){
+        if(homepageFragment == null){
+            return new HomepageFragment();
+        }
+        else return homepageFragment;
+    }
 
     @Override
     public View onCreateView(
@@ -28,9 +36,8 @@ public class HomepageFragment extends Fragment implements HomepageContract.View 
         binding = FragmentHomepageBinding.inflate(inflater, container, false);
         presenter = new HomepagePresenter(this);
 
-        if (savedInstanceState == null) {
             showCards();
-        }
+
 
         return binding.getRoot();
     }
@@ -68,7 +75,9 @@ public class HomepageFragment extends Fragment implements HomepageContract.View 
 
     @Override
     public void navigateToSearch() {
-        NavHostFragment.findNavController(this).navigate(R.id.action_global_SearchFragment);
+        NavHostFragment.findNavController(this).navigate(R.id.action_HomepageFragment_to_SearchFragment);
+
+
     }
 
     @Override
