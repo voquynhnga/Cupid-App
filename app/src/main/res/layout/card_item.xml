@@ -4,23 +4,38 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="16dp"
-    android:elevation="4dp"
     android:id="@+id/card_item"
+    android:background="@drawable/rounded_corner_card"
+
     >
 
-    <ImageView
-        android:id="@+id/profileImage"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/profileImagePager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="380dp"
         android:padding="2dp"
-        android:background="@drawable/rounded_corner_card"
         android:scaleType="fitCenter"
-        android:src="@drawable/sample_person"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="h,3:4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    <ImageView
+        android:id="@+id/profileImage1"
+        android:layout_width="match_parent"
+        android:layout_height="380dp"
+        android:padding="2dp"
+        android:scaleType="fitCenter"
+        android:visibility="visible"
+        android:src="@drawable/avatardefault"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <TextView
         android:id="@+id/userName"
@@ -82,6 +97,7 @@
         android:id="@+id/hobby"
         android:layout_width="wrap_content"
         android:layout_height="36dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_corner_button"
         android:padding="4dp"
         android:shadowColor="@color/sign"
@@ -91,24 +107,22 @@
         android:text="Hobby"
         android:textColor="@color/text"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/profileImage"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.069"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/profileImage"
-        app:layout_constraintVertical_bias="0.979" />
+        app:layout_constraintHorizontal_bias="0.068"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/bio"
-        android:layout_width="150dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="60dp"
         android:padding="2dp"
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="1"
-        android:text="Bio to introduce myself"
+        android:text="Bio to introduce yourself"
 
         android:textColor="@color/text"
         android:textSize="18sp"
@@ -128,8 +142,6 @@
         android:textColor="@color/text"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/profileImage"
-        app:layout_constraintEnd_toEndOf="@+id/profileImage"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

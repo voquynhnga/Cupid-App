@@ -4,6 +4,7 @@ import com.google.firebase.firestore.PropertyName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UserReal implements Serializable {
@@ -15,7 +16,6 @@ public class UserReal implements Serializable {
     private String dateOfBirth;
     private String gender;
     private String bio;
-    private String imageURL;
     private List<String> interests; // New field for interests
     private GPSAddress location;
     private String profilePicture;
@@ -32,7 +32,7 @@ public class UserReal implements Serializable {
         this.profilePicture = "";
     }
 
-    public UserReal(String uid, String email, String fullName, String phoneNumber, String dateOfBirth, String gender, List<String> interests, GPSAddress location, String detailAddress, String profilePicture, List<String> imageUrls, String userName) {
+    public UserReal(String uid, String email, String fullName, String phoneNumber, String dateOfBirth, String gender,String bio, List<String> interests, GPSAddress location, String detailAddress, List<String> imageUrls, String userName) {
         this.uid = uid;
         this.email = email;
         this.fullName = fullName;
@@ -40,16 +40,20 @@ public class UserReal implements Serializable {
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.bio = bio;
-        this.imageURL = imageURL;
-        this.detailAddress = detailAddress; // Cập nhật ở đây
+        this.detailAddress = detailAddress;
         this.interests = interests != null ? interests : new ArrayList<>();
         this.location = location != null ? location : new GPSAddress(0.0, 0.0);
-        this.profilePicture = profilePicture != null ? profilePicture : "https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_def.jpg?alt=media&token=a96937d6-84c3-4ef3-b0d2-aba2f7affc26";
-        this.imageUrls = imageUrls != null ? imageUrls : new ArrayList<>();
+        this.profilePicture = imageUrls.get(0);
+        this.imageUrls = imageUrls != null ? new ArrayList<>(imageUrls) :
+                new ArrayList<>(Collections.singletonList("https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_default.jpg?alt=media&token=70caf3c1-ebd8-4151-ad82-bc70365d87cf"));
+
+        if (!this.imageUrls.isEmpty() && this.imageUrls.get(0).equals("gs://cupid-app-ad700.appspot.com/avatar_default.jpg")) {
+            this.imageUrls.set(0, "https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_default.jpg?alt=media&token=70caf3c1-ebd8-4151-ad82-bc70365d87cf");
+        }
+
         this.userName = userName;
     }
 
-    // Getters and Setters
     public String getUid() {
         return uid;
     }
@@ -114,13 +118,6 @@ public class UserReal implements Serializable {
         this.bio = bio;
     }
 
-    public String getImageURL() {
-        return imageURL;
-    }
-
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
 
     @PropertyName("detailAddress")
     public String getDetailAddress() {
@@ -162,10 +159,6 @@ public class UserReal implements Serializable {
 
     public void setImageUrls(List<String> imageUrls) {
         this.imageUrls = imageUrls;
-    }
-
-    public String displayInterest() {
-        return String.join(" - ", interests);
     }
 
     public boolean isMatched() {

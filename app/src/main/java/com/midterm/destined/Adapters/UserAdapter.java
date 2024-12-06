@@ -1,6 +1,7 @@
 package com.midterm.destined.Adapters;
 
 import static com.midterm.destined.Models.ChatObject.deleteChat;
+import static com.midterm.destined.Utils.TimeExtensions.getCurrentTime;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,17 +23,20 @@ import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.ChatObject;
+import com.midterm.destined.Models.Match;
 import com.midterm.destined.Models.OnChatIdCheckListener;
 import com.midterm.destined.Models.UserReal;
 import com.midterm.destined.R;
 import com.midterm.destined.Utils.CalculateCoordinates;
 import com.midterm.destined.Utils.DB;
+import com.midterm.destined.Utils.Dialog;
 import com.midterm.destined.Utils.TimeExtensions;
 
 import java.util.HashMap;
@@ -124,11 +128,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         TextView location = popupView.findViewById(R.id.locationSearch);
         TextView hobby = popupView.findViewById(R.id.hobbySearch);
         TextView bio = popupView.findViewById(R.id.bioSearch);
-        ImageView profileImage = popupView.findViewById(R.id.profileImageSearch);
         TextView tvDistance = popupView.findViewById(R.id.distanceSearch);
         ImageView genderIcon = popupView.findViewById(R.id.genderIconSearch);
         ImageView btnClose = popupView.findViewById(R.id.closeSearch);
         TextView btnChat = popupView.findViewById(R.id.chatSearch);
+        ViewPager2 profileImageSearchPager = popupView.findViewById(R.id.profileImageSearchPager);
+        ImageView profileImageSearch1 = popupView.findViewById(R.id.profileImageSearch1);
 
 
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
@@ -144,7 +149,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
 
-
         String currentUserUID = DB.getCurrentUser().getUid();
 
         CalculateCoordinates.calculateDistance(currentUserUID, card.getUserID(), distance -> {
@@ -158,7 +162,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         });
 
         name.setText(card.getName());
-        location.setText("🏠" +card.getLocation());
+        location.setText("🏠" + card.getLocation());
         age.setText(card.getAge());
         bio.setText("📝️ " + card.getBio());
         hobby.setText(card.getAllInterest());
@@ -169,46 +173,59 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
             genderIcon.setImageResource(R.drawable.female_picture);
         }
 
-        // Gán ảnh profile với Glide
-        if (card.getProfileImageUrl() != null && !card.getProfileImageUrl().isEmpty()) {
-            Glide.with(mContext).load(card.getProfileImageUrl()).into(profileImage);
-        } else {
-            Glide.with(mContext).load(R.drawable.avatardefault).into(profileImage);
-        }
 
-        if(user.isMatched()){
-            btnChat.setVisibility(popupView.VISIBLE);
-        }
-        btnChat.setOnClickListener(v->{
-
-
-            ChatObject.checkChatId(user, new OnChatIdCheckListener() {
-                @Override
-                public void onChatIdFound(String chatId) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("chatId", chatId);
-                    bundle.putString("userId", card.getUserID());
-                    bundle.putString("userName", card.getName());
-
-                    NavController navController = Navigation.findNavController((Activity) v.getContext(), R.id.nav_host_fragment_content_main);
-                    navController.navigate(R.id.action_global_ChatFragment, bundle);
-
-                    popupWindow.dismiss();
+            if (card.getImageUrls() != null && !card.getImageUrls().isEmpty()) {
+                if (card.getImageUrls().size() > 1) {
+                    Log.d("DEBUG", "zo1 "+ card.getImageUrls());
+                    profileImageSearchPager.setAdapter(new ImagePagerAdapter(card.getImageUrls(), view.getContext()));
+                    profileImageSearchPager.setVisibility(View.VISIBLE);
+                    profileImageSearch1.setVisibility(View.GONE); // Ẩn ảnh đơn khi có ViewPager
+                } else {
+                    Log.d("DEBUG", "zo2" + card.getImageUrls());
+                    profileImageSearchPager.setVisibility(View.GONE);
+                    profileImageSearch1.setVisibility(View.VISIBLE); // Hiển thị ảnh đơn
+                    Glide.with(view.getContext()).load(card.getProfileImageUrl()).into(profileImageSearch1);
                 }
+            } else {
+                Log.d("DEBUG", "zo3" + card.getImageUrls());
+                profileImageSearchPager.setVisibility(View.GONE);
+                profileImageSearch1.setVisibility(View.VISIBLE);
+                Glide.with(view.getContext()).load(R.drawable.avatardefault).into(profileImageSearch1);
+            }
 
-                @Override
-                public void onChatIdNotFound() {
-                    Log.e("checkChatId", "Chat ID not found.");
-                }
+            if (user.isMatched()) {
+                btnChat.setVisibility(popupView.VISIBLE);
+            }
+            btnChat.setOnClickListener(v -> {
+
+
+                ChatObject.checkChatId(user, new OnChatIdCheckListener() {
+                    @Override
+                    public void onChatIdFound(String chatId) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("chatId", chatId);
+                        bundle.putString("userId", card.getUserID());
+                        bundle.putString("userName", card.getName());
+
+                        NavController navController = Navigation.findNavController((Activity) v.getContext(), R.id.nav_host_fragment_content_main);
+                        navController.navigate(R.id.action_global_ChatFragment, bundle);
+
+                        popupWindow.dismiss();
+                    }
+
+                    @Override
+                    public void onChatIdNotFound() {
+                        Log.e("checkChatId", "Chat ID not found.");
+                    }
+                });
+
+
             });
 
 
-        });
-
-
-        btnClose.setOnClickListener(v->{
-            popupWindow.dismiss();
-        });
+            btnClose.setOnClickListener(v -> {
+                popupWindow.dismiss();
+            });
 
 
 
@@ -226,20 +243,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
                         UserReal userDB = document.toObject(UserReal.class);
 
                         if (userDB != null) {
-                            String firstImageUrl = (userDB.getImageUrls() != null && !userDB.getImageUrls().isEmpty())
-                                    ? userDB.getImageUrls().get(0)
-                                    : null;
-
-                            Card card = new Card(
-                                    userDB.getFullName(),
-                                    firstImageUrl,
-                                    userDB.displayInterest(),
-                                    document.getString("detailAddress"),
-                                    userDB.getGender(),
-                                    userDB.getBio(),
-                                    String.valueOf(TimeExtensions.calculateAge(userDB.getDateOfBirth())),
-                                    userDB.getUid()
-                            );
+                            Card card = new Card(user);
                             listener.onCardFetched(user,card);
                         } else {
                             listener.onError("User not found");
@@ -252,47 +256,95 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
 
 
 
+//    private void checkIfMatched(UserReal user, ImageViewHolder holder) {
+//        String currentUserId = DB.getCurrentUser().getUid();
+//
+//        DB.getMatchesCollection()
+//                .whereEqualTo("userId1", user.getUid())
+//                .get()
+//                .addOnSuccessListener(querySnapshot -> {
+//                    if (!querySnapshot.isEmpty()) {
+//                        for (QueryDocumentSnapshot document : querySnapshot) {
+//                            String userId2 = document.getString("userId2");
+//                            if (currentUserId.equals(userId2)) { // Kiểm tra người còn lại
+//                                user.setMatched(true);
+//                                matchedUsersCache.put(user.getUid(), true);
+//                                updateButtonState(user, holder);
+//                                return;
+//                            }
+//                        }
+//                    }
+//
+//                    // Tiếp tục kiểm tra với userId2
+//                    DB.getMatchesCollection()
+//                            .whereEqualTo("userId2", user.getUid())
+//                            .get()
+//                            .addOnSuccessListener(querySnapshot2 -> {
+//                                if (!querySnapshot2.isEmpty()) {
+//                                    for (QueryDocumentSnapshot document : querySnapshot2) {
+//                                        String userId1 = document.getString("userId1");
+//                                        if (currentUserId.equals(userId1)) { // Kiểm tra người còn lại
+//                                            user.setMatched(true);
+//                                            matchedUsersCache.put(user.getUid(), true);
+//                                            updateButtonState(user, holder);
+//                                            return; // Dừng kiểm tra nếu đã tìm thấy
+//                                        }
+//                                    }
+//                                }
+//
+//                                // Nếu không tìm thấy kết nối nào
+//                                user.setMatched(false);
+//                                matchedUsersCache.put(user.getUid(), false);
+//                                checkFavoritedList(user, holder);
+//                            });
+//                });
+//    }
+
     private void checkIfMatched(UserReal user, ImageViewHolder holder) {
         String currentUserId = DB.getCurrentUser().getUid();
 
-        DB.getMatchesCollection()
-                .whereEqualTo("userId1", user.getUid())
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    if (!querySnapshot.isEmpty()) {
-                        for (QueryDocumentSnapshot document : querySnapshot) {
-                            String userId2 = document.getString("userId2");
-                            if (currentUserId.equals(userId2)) { // Kiểm tra người còn lại
-                                user.setMatched(true);
-                                matchedUsersCache.put(user.getUid(), true);
-                                updateButtonState(user, holder);
-                                return; // Dừng kiểm tra nếu đã tìm thấy
-                            }
+        // Bước 1: Lấy danh sách favorited của currentUserId
+        DB.getCurrentUserDocument().get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        List<String> currentUserFavorited = (List<String>) documentSnapshot.get("favoritedCardList");
+
+                        // Bước 2: Kiểm tra nếu user.getUid() nằm trong danh sách favorited của currentUserId
+                        if (currentUserFavorited != null && currentUserFavorited.contains(user.getUid())) {
+                            // Bước 3: Lấy danh sách favorited của user.getUid()
+                            DB.getUserDocument(user.getUid()).get()
+                                    .addOnSuccessListener(userSnapshot -> {
+                                        if (userSnapshot.exists()) {
+                                            List<String> userFavorited = (List<String>) userSnapshot.get("favoritedCardList");
+
+                                            // Bước 4: Kiểm tra nếu currentUserId nằm trong danh sách favorited của user.getUid()
+                                            if (userFavorited != null && userFavorited.contains(currentUserId)) {
+                                                // Nếu cả hai favorited lẫn nhau, họ được coi là matched
+                                                user.setMatched(true);
+                                                matchedUsersCache.put(user.getUid(), true);
+
+                                                updateButtonState(user, holder);
+                                            } else {
+                                                // Nếu không match
+                                                user.setMatched(false);
+                                                matchedUsersCache.put(user.getUid(), false);
+                                                checkFavoritedList(user, holder);
+                                            }
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.w("Firestore", "Error getting user data", e);
+                                    });
+                        } else {
+                            // Nếu không match
+                            user.setMatched(false);
+                            matchedUsersCache.put(user.getUid(), false);
+                            checkFavoritedList(user, holder);
                         }
                     }
-
-                    // Tiếp tục kiểm tra với userId2
-                    DB.getMatchesCollection()
-                            .whereEqualTo("userId2", user.getUid())
-                            .get()
-                            .addOnSuccessListener(querySnapshot2 -> {
-                                if (!querySnapshot2.isEmpty()) {
-                                    for (QueryDocumentSnapshot document : querySnapshot2) {
-                                        String userId1 = document.getString("userId1");
-                                        if (currentUserId.equals(userId1)) { // Kiểm tra người còn lại
-                                            user.setMatched(true);
-                                            matchedUsersCache.put(user.getUid(), true);
-                                            updateButtonState(user, holder);
-                                            return; // Dừng kiểm tra nếu đã tìm thấy
-                                        }
-                                    }
-                                }
-
-                                // Nếu không tìm thấy kết nối nào
-                                user.setMatched(false);
-                                matchedUsersCache.put(user.getUid(), false);
-                                checkFavoritedList(user, holder);
-                            });
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error getting current user data", e);
                 });
     }
 
@@ -330,10 +382,20 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
 
     private void handleLikeAction(UserReal user, ImageViewHolder holder) {
         String favoritedUserId = user.getUid();
-
+        String currentUserId = DB.getCurrentUser().getUid();
         try {
             Card.addToFavoritedList(favoritedUserId);
             checkIfMatched(user, holder);
+            if (matchedUsersCache.get(user.getUid()) != null && Boolean.TRUE.equals(matchedUsersCache.get(user.getUid()))) {
+
+            String matchId = currentUserId.compareTo(favoritedUserId) < 0
+                        ? currentUserId + "_" + favoritedUserId
+                        : favoritedUserId + "_" + currentUserId;
+
+                Match match = new Match(matchId, currentUserId, favoritedUserId, getCurrentTime());
+                Card.saveMatchToDB(match, user.getFullName());
+                ChatObject.checkAndAddChatList(currentUserId, favoritedUserId, getCurrentTime());
+            }
             holder.btn_like.setVisibility(View.INVISIBLE);
             holder.btn_unlike.setVisibility(View.VISIBLE);
             holder.btn_unmatch.setVisibility(View.INVISIBLE);

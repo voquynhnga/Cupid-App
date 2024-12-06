@@ -25,7 +25,7 @@ import java.util.List;
 
 public class SignUp extends AppCompatActivity {
 
-    private EditText dateOfBirth, password, confirmPassword, email, fullName, phoneNumber, userName;
+    private EditText dateOfBirth, password, confirmPassword, email, fullName, phoneNumber, userName, bio;
     private ActivitySignUpBinding binding;
     private TextView textViewLogin, tvErr;
     private Button btSignUp;
@@ -126,11 +126,11 @@ public class SignUp extends AppCompatActivity {
                             String uid = firebaseUser.getUid();
                             List<String> interests = new ArrayList<>();
                             GPSAddress location = new GPSAddress(0.0, 0.0);
-                            String pic = "";
                             List<String> url = new ArrayList<>();
+                            String bio = "Bio to introduce yourself";
 
 
-                            UserReal user = new UserReal(uid, email, fullName, phone, dob, gender, interests, location,"No address", pic, url , userName);
+                            UserReal user = new UserReal(uid, email, fullName, phone, dob, gender,bio, interests, location,"No address", url , userName);
 
                             Intent intent = new Intent(SignUp.this, Interests.class);
                             intent.putExtra("user", user);

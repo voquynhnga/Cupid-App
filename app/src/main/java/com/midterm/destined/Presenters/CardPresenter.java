@@ -45,8 +45,6 @@ public class CardPresenter {
                                 @Override
                                 public void onSuccess(List<Card> allUsers) {
                                     view.displayCards(allUsers);
-                                    Log.d("DEBUG", "khong");
-                                    Log.d("DEBUG", "khong || " + allUsers.toString());
 
                                 }
 

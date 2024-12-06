@@ -8,6 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.midterm.destined.R;
@@ -52,9 +54,10 @@ public class CardAdapter extends BaseAdapter {
         TextView location = convertView.findViewById(R.id.location);
         TextView hobby = convertView.findViewById(R.id.hobby);
         TextView bio = convertView.findViewById(R.id.bio);
-        ImageView profileImage = convertView.findViewById(R.id.profileImage);
+        ViewPager2 profileImagePager = convertView.findViewById(R.id.profileImagePager);
         TextView tvDistance = convertView.findViewById(R.id.distance);
         ImageView genderIcon = convertView.findViewById(R.id.genderIcon);
+        ImageView profileImage1 = convertView.findViewById(R.id.profileImage1);
 
 
 
@@ -70,11 +73,27 @@ public class CardAdapter extends BaseAdapter {
             }
         });
 
+        if (card.getImageUrls() != null && !card.getImageUrls().isEmpty()) {
+            if (card.getImageUrls().size() > 1) {
+                profileImagePager.setAdapter(new ImagePagerAdapter(card.getImageUrls(), context));
+                profileImagePager.setVisibility(View.VISIBLE);
+                profileImage1.setVisibility(View.GONE); // Ẩn ảnh đơn khi có ViewPager
+            } else {
+                profileImagePager.setVisibility(View.GONE);
+                profileImage1.setVisibility(View.VISIBLE); // Hiển thị ảnh đơn
+                Glide.with(context).load(card.getImageUrls().get(0)).into(profileImage1);
+            }
+        } else {
+            profileImagePager.setVisibility(View.GONE);
+            profileImage1.setVisibility(View.VISIBLE); // Hiển thị ảnh mặc định khi không có ảnh
+            Glide.with(context).load(R.drawable.avatardefault).into(profileImage1);
+        }
+
         name.setText(card.getName());
         location.setText("🏠" +card.getLocation());
         age.setText(card.getAge());
         bio.setText("📝️ " + card.getBio());
-        hobby.setText(card.getAllInterest());
+        hobby.setText(card.getAllInterest().toString());
 
         if ("Male".equals(card.getGender())) {
             genderIcon.setImageResource(R.drawable.male_picture);
@@ -82,12 +101,7 @@ public class CardAdapter extends BaseAdapter {
             genderIcon.setImageResource(R.drawable.female_picture);
         }
 
-        // Gán ảnh profile với Glide
-        if (card.getProfileImageUrl() != null && !card.getProfileImageUrl().isEmpty()) {
-            Glide.with(context).load(card.getProfileImageUrl()).into(profileImage);
-        } else {
-            Glide.with(context).load(R.drawable.avatardefault).into(profileImage);
-        }
+
 
         return convertView;
     }

@@ -1,5 +1,6 @@
 package com.midterm.destined.Models;
 
+import android.text.TextUtils;
 import android.util.Log;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -20,21 +21,39 @@ public class Card {
     private String bio;
     private String location;
     private String profileImageUrl;
+    private List<String> imageUrls;
     private String userID;
     private String allInterest;
     private String gender;
 
     public Card() {}
 
-    public Card(String name, String profileImageUrl, String allInterest, String location, String gender, String bio, String age, String userID) {
-        this.name = name;
-        this.age = age;
-        this.bio = bio;
-        this.location = location;
-        this.allInterest = allInterest;
-        this.gender = gender;
-        this.profileImageUrl = profileImageUrl;
-        this.userID = userID;
+//    public Card(String name, String profileImageUrl, String allInterest, String location, String gender, String bio, String age, String userID, List<String> imageUrls) {
+//        this.name = name;
+//        this.age = age;
+//        this.bio = bio;
+//        this.location = location;
+//        this.allInterest = allInterest;
+//        this.gender = gender;
+//        this.profileImageUrl = profileImageUrl;
+//        this.userID = userID;
+//        this.imageUrls = imageUrls;
+//    }
+
+    public Card(UserReal user){
+        this.name = user.getFullName();
+        this.age = String.valueOf(TimeExtensions.calculateAge(user.getDateOfBirth()));
+        this.bio = (user.getBio() != null && !user.getBio().isEmpty()) ? user.getBio() : "Bio";
+        this.location = user.getDetailAddress();
+        this.profileImageUrl = (user.getImageUrls() != null && !user.getImageUrls().isEmpty() && user.getImageUrls().get(0) != null)
+                ? user.getImageUrls().get(0)
+                : "https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_default.jpg?alt=media&token=70caf3c1-ebd8-4151-ad82-bc70365d87cf";
+
+        this.imageUrls = user.getImageUrls();
+        this.userID = user.getUid();
+        this.allInterest = user.getInterests() != null && !user.getInterests().isEmpty()? TextUtils.join(" - ", user.getInterests()) : "Hobby";
+        this.gender = user.getGender();
+
     }
 
     public String getName() {
@@ -101,6 +120,14 @@ public class Card {
         this.gender = gender;
     }
 
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
+    }
+
     public interface OnCardFetchListener {
         void onSuccess(List<Card> cards);
         void onError(String errorMessage);
@@ -131,21 +158,8 @@ public class Card {
                                     && !finalFavoritedCardList.contains(user.getUid())) {
                                 newCardList.add(user.getUid());
 
-                                // Tạo đối tượng Card để hiển thị
-                                String firstImageUrl = (user.getImageUrls() != null && !user.getImageUrls().isEmpty())
-                                        ? user.getImageUrls().get(0)
-                                        : null;
+                                allUsers.add(new Card(user));
 
-                                allUsers.add(new Card(
-                                        user.getFullName(),
-                                        firstImageUrl,
-                                        user.displayInterest(),
-                                        document.getString("detailAddress"),
-                                        user.getGender(),
-                                        user.getBio(),
-                                        String.valueOf(TimeExtensions.calculateAge(user.getDateOfBirth())),
-                                        user.getUid()
-                                ));
                             }
                         }
 
@@ -193,11 +207,7 @@ public class Card {
                             if (task.isSuccessful()) {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     UserReal user = document.toObject(UserReal.class);
-                                    String firstImageUrl = (user.getImageUrls() != null && !user.getImageUrls().isEmpty()) ? user.getImageUrls().get(0) : null;
-                                    allCards.add(new Card(user.getFullName(), firstImageUrl,
-                                            user.displayInterest(), document.getString("detailAddress"),
-                                            user.getGender(), user.getBio(),
-                                            String.valueOf(TimeExtensions.calculateAge(user.getDateOfBirth())), user.getUid()));
+                                    allCards.add(new Card(user));
                                 }
                             } else {
                                 listener.onError("Error fetching users by IDs: " + task.getException().getMessage());
@@ -213,7 +223,7 @@ public class Card {
     }
 
 
-    public void saveMatchToDB(Match match, String fullNameUser2) {
+    public static void saveMatchToDB(Match match, String fullNameUser2) {
         Map<String, Object> matchData = new HashMap<>();
         matchData.put("userId1", match.getUserId1());
         matchData.put("userId2", match.getUserId2());
