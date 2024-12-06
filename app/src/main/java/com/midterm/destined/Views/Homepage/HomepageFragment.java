@@ -1,6 +1,7 @@
 package com.midterm.destined.Views.Homepage;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,10 +9,15 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.midterm.destined.R;
 import com.midterm.destined.Views.Homepage.Card.CardFragment;
+import com.midterm.destined.Views.Homepage.Search.SearchFragment;
 import com.midterm.destined.databinding.FragmentHomepageBinding;
 import com.midterm.destined.Presenters.HomepagePresenter;
 
@@ -36,8 +42,14 @@ public class HomepageFragment extends Fragment implements HomepageContract.View 
         binding = FragmentHomepageBinding.inflate(inflater, container, false);
         presenter = new HomepagePresenter(this);
 
+        if (savedInstanceState != null) {
+            String value = getArguments().getString("CHECK");
+            if ("1".equals(value)) {
+                showCards();
+            }
+        } else {
             showCards();
-
+        }
 
         return binding.getRoot();
     }
@@ -54,7 +66,7 @@ public class HomepageFragment extends Fragment implements HomepageContract.View 
     @Override
     public void showCards() {
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.card_container, CardFragment.getInstance(), "CARD_FRAGMENT").commit();
+                .replace(R.id.card_container, new CardFragment(), "CARD_FRAGMENT").commit();
     }
 
     @Override

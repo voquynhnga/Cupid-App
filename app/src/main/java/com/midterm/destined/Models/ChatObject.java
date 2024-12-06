@@ -174,5 +174,39 @@ public class ChatObject {
         });
     }
 
+    public static void checkChatId(UserReal user, OnChatIdCheckListener listener) {
+        String currentUserId = DB.getCurrentUser().getUid();
+        String targetUserId = user.getUid();
+
+        String chatId1 = currentUserId + "_" + targetUserId;
+        String chatId2 = targetUserId + "_" + currentUserId;
+
+        DatabaseReference chatReference = DB.getChatsRef();
+
+        chatReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean chatIdExists = false;
+
+                if (snapshot.hasChild(chatId1)) {
+                    listener.onChatIdFound(chatId1);
+                    chatIdExists = true;
+                } else if (snapshot.hasChild(chatId2)) {
+                    listener.onChatIdFound(chatId2);
+                    chatIdExists = true;
+                }
+                if (!chatIdExists) {
+                    listener.onChatIdNotFound();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("checkChatId", "Database error: " + error.getMessage());
+            }
+        });
+    }
+
+
 
 }

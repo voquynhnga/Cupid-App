@@ -1,7 +1,6 @@
 package com.midterm.destined.Views.Homepage.Search;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +21,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.midterm.destined.Adapters.UserAdapter;
+import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.UserReal;
-import com.midterm.destined.Presenters.CardPresenter;
-import com.midterm.destined.Presenters.HomepagePresenter;
 import com.midterm.destined.Presenters.SearchPresenter;
 import com.midterm.destined.R;
-import com.midterm.destined.Views.Homepage.Card.CardFragment;
 import com.midterm.destined.Views.Homepage.HomepageFragment;
 
 import java.util.List;
@@ -121,15 +118,20 @@ public class SearchFragment extends Fragment implements searchView {
         });
 
         btnBack.setOnClickListener(v -> {
+            // Tạo Bundle để truyền dữ liệu
+            Bundle bundle = new Bundle();
+            bundle.putString("CHECK", "1");
+
+            // Điều hướng với Bundle
             NavController navController = Navigation.findNavController(v);
-            navController.navigate(R.id.action_SearchFragment_to_HomepageFragment);
-
-
+            navController.navigate(R.id.action_SearchFragment_to_HomepageFragment, bundle);
         });
+
 
 
         return view;
     }
+
 
     @Override
     public void updateSearchResults(List<UserReal> users) {
@@ -146,4 +148,6 @@ public class SearchFragment extends Fragment implements searchView {
     public void setLoading(boolean isLoading) {
 
     }
+
+
 }

@@ -2,32 +2,45 @@ package com.midterm.destined.Adapters;
 
 import static com.midterm.destined.Models.ChatObject.deleteChat;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.midterm.destined.Models.Card;
+import com.midterm.destined.Models.ChatObject;
+import com.midterm.destined.Models.OnChatIdCheckListener;
 import com.midterm.destined.Models.UserReal;
 import com.midterm.destined.R;
+import com.midterm.destined.Utils.CalculateCoordinates;
 import com.midterm.destined.Utils.DB;
-import com.midterm.destined.Utils.Dialog;
+import com.midterm.destined.Utils.TimeExtensions;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolder> {
 
@@ -36,6 +49,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
     private final NavController mNavController;
     private final Map<String, Boolean> matchedUsersCache = new HashMap<>();
     private final Map<String, Boolean> favoritedUsersCache = new HashMap<>();
+
+
 
     public UserAdapter(Context context, List<UserReal> users, NavController navController) {
         this.mContext = context;
@@ -66,6 +81,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         holder.btn_unlike.setVisibility(View.INVISIBLE);
         holder.btn_unmatch.setVisibility(View.INVISIBLE);
 
+
         if (!matchedUsersCache.containsKey(user.getUid())) {
             checkIfMatched(user, holder);
         } else {
@@ -76,12 +92,164 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         holder.btn_unlike.setOnClickListener(v -> handleUnLikeAction(user, holder));
 
         holder.btn_unmatch.setOnClickListener(v -> handleUnMatchAction(user, holder));
+
+        holder.itemView.setOnClickListener(v -> {
+            fetchUsersById(user, user.getUid(), new OnUserFetchListener() {
+                @Override
+                public void onCardFetched(UserReal user, Card card) {
+                    showCardPopup(user, card, v);
+
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    Toast.makeText(mContext, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
     }
 
     @Override
     public int getItemCount() {
         return mUsers.size();
     }
+    private void showCardPopup(UserReal user, Card card, View view) {
+        // Tạo view cho PopupWindow
+        View popupView = LayoutInflater.from(mContext).inflate(R.layout.dialog_card, null);
+
+
+        TextView name = popupView.findViewById(R.id.userNameSearch);
+        TextView age = popupView.findViewById(R.id.ageSearch);
+        TextView location = popupView.findViewById(R.id.locationSearch);
+        TextView hobby = popupView.findViewById(R.id.hobbySearch);
+        TextView bio = popupView.findViewById(R.id.bioSearch);
+        ImageView profileImage = popupView.findViewById(R.id.profileImageSearch);
+        TextView tvDistance = popupView.findViewById(R.id.distanceSearch);
+        ImageView genderIcon = popupView.findViewById(R.id.genderIconSearch);
+        ImageView btnClose = popupView.findViewById(R.id.closeSearch);
+        TextView btnChat = popupView.findViewById(R.id.chatSearch);
+
+
+        DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
+        int screenWidth = displayMetrics.widthPixels;
+        int screenHeight = displayMetrics.heightPixels;
+
+        int width = (int) (screenWidth * 0.9);
+        int height = (int) (screenHeight * 0.7);
+
+        PopupWindow popupWindow = new PopupWindow(popupView, width, height);
+
+
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+
+
+        String currentUserUID = DB.getCurrentUser().getUid();
+
+        CalculateCoordinates.calculateDistance(currentUserUID, card.getUserID(), distance -> {
+
+            if (distance < 10) {
+                tvDistance.setText("📍 < 10Km");
+            } else {
+                tvDistance.setText("📍 " + String.format("%d", (int) (distance)) + " Km");
+
+            }
+        });
+
+        name.setText(card.getName());
+        location.setText("🏠" +card.getLocation());
+        age.setText(card.getAge());
+        bio.setText("📝️ " + card.getBio());
+        hobby.setText(card.getAllInterest());
+
+        if ("Male".equals(card.getGender())) {
+            genderIcon.setImageResource(R.drawable.male_picture);
+        } else {
+            genderIcon.setImageResource(R.drawable.female_picture);
+        }
+
+        // Gán ảnh profile với Glide
+        if (card.getProfileImageUrl() != null && !card.getProfileImageUrl().isEmpty()) {
+            Glide.with(mContext).load(card.getProfileImageUrl()).into(profileImage);
+        } else {
+            Glide.with(mContext).load(R.drawable.avatardefault).into(profileImage);
+        }
+
+        if(user.isMatched()){
+            btnChat.setVisibility(popupView.VISIBLE);
+        }
+        btnChat.setOnClickListener(v->{
+
+
+            ChatObject.checkChatId(user, new OnChatIdCheckListener() {
+                @Override
+                public void onChatIdFound(String chatId) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("chatId", chatId);
+                    bundle.putString("userId", card.getUserID());
+                    bundle.putString("userName", card.getName());
+
+                    NavController navController = Navigation.findNavController((Activity) v.getContext(), R.id.nav_host_fragment_content_main);
+                    navController.navigate(R.id.action_global_ChatFragment, bundle);
+
+                    popupWindow.dismiss();
+                }
+
+                @Override
+                public void onChatIdNotFound() {
+                    Log.e("checkChatId", "Chat ID not found.");
+                }
+            });
+
+
+        });
+
+
+        btnClose.setOnClickListener(v->{
+            popupWindow.dismiss();
+        });
+
+
+
+    }
+
+
+
+    private void fetchUsersById(UserReal user, String userId, OnUserFetchListener listener) {
+        DB.getUsersCollection()
+                .document(userId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        DocumentSnapshot document = task.getResult();
+                        UserReal userDB = document.toObject(UserReal.class);
+
+                        if (userDB != null) {
+                            String firstImageUrl = (userDB.getImageUrls() != null && !userDB.getImageUrls().isEmpty())
+                                    ? userDB.getImageUrls().get(0)
+                                    : null;
+
+                            Card card = new Card(
+                                    userDB.getFullName(),
+                                    firstImageUrl,
+                                    userDB.displayInterest(),
+                                    document.getString("detailAddress"),
+                                    userDB.getGender(),
+                                    userDB.getBio(),
+                                    String.valueOf(TimeExtensions.calculateAge(userDB.getDateOfBirth())),
+                                    userDB.getUid()
+                            );
+                            listener.onCardFetched(user,card);
+                        } else {
+                            listener.onError("User not found");
+                        }
+                    } else {
+                        listener.onError("Error fetching user: " + task.getException().getMessage());
+                    }
+                });
+    }
+
 
 
     private void checkIfMatched(UserReal user, ImageViewHolder holder) {
@@ -115,7 +283,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
                                             user.setMatched(true);
                                             matchedUsersCache.put(user.getUid(), true);
                                             updateButtonState(user, holder);
-
                                             return; // Dừng kiểm tra nếu đã tìm thấy
                                         }
                                     }

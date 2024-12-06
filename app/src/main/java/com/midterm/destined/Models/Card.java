@@ -169,45 +169,47 @@ public class Card {
         });
     }
 
-    public void fetchUsersByIds(List<String> userIds, OnCardFetchListener listener) {
-        int batchSize = 30;
-        List<List<String>> batches = new ArrayList<>();
+    public static void fetchUsersByIds(List<String> userIds, OnCardFetchListener listener) {
 
-        // Chia nhỏ danh sách userIds thành các nhóm
-        for (int i = 0; i < userIds.size(); i += batchSize) {
-            int end = Math.min(i + batchSize, userIds.size());
-            batches.add(userIds.subList(i, end));
-        }
+            int batchSize = 30;
+            List<List<String>> batches = new ArrayList<>();
 
-        // Thực hiện các truy vấn cho từng nhóm
-        List<Card> allCards = new ArrayList<>();
-        final int totalBatches = batches.size();
-        AtomicInteger completedBatches = new AtomicInteger(0);  // Đếm số lượng batch đã hoàn thành
+            // Chia nhỏ danh sách userIds thành các nhóm
+            for (int i = 0; i < userIds.size(); i += batchSize) {
+                int end = Math.min(i + batchSize, userIds.size());
+                batches.add(userIds.subList(i, end));
+            }
 
-        for (List<String> batch : batches) {
-            DB.getUsersCollection()
-                    .whereIn("uid", batch)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                UserReal user = document.toObject(UserReal.class);
-                                String firstImageUrl = (user.getImageUrls() != null && !user.getImageUrls().isEmpty()) ? user.getImageUrls().get(0) : null;
-                                allCards.add(new Card(user.getFullName(), firstImageUrl,
-                                        user.displayInterest(), document.getString("detailAddress"),
-                                        user.getGender(), user.getBio(),
-                                        String.valueOf(TimeExtensions.calculateAge(user.getDateOfBirth())), user.getUid()));
+            // Thực hiện các truy vấn cho từng nhóm
+            List<Card> allCards = new ArrayList<>();
+            final int totalBatches = batches.size();
+            AtomicInteger completedBatches = new AtomicInteger(0);  // Đếm số lượng batch đã hoàn thành
+
+            for (List<String> batch : batches) {
+                DB.getUsersCollection()
+                        .whereIn("uid", batch)
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    UserReal user = document.toObject(UserReal.class);
+                                    String firstImageUrl = (user.getImageUrls() != null && !user.getImageUrls().isEmpty()) ? user.getImageUrls().get(0) : null;
+                                    allCards.add(new Card(user.getFullName(), firstImageUrl,
+                                            user.displayInterest(), document.getString("detailAddress"),
+                                            user.getGender(), user.getBio(),
+                                            String.valueOf(TimeExtensions.calculateAge(user.getDateOfBirth())), user.getUid()));
+                                }
+                            } else {
+                                listener.onError("Error fetching users by IDs: " + task.getException().getMessage());
                             }
-                        } else {
-                            listener.onError("Error fetching users by IDs: " + task.getException().getMessage());
-                        }
 
-                        // Kiểm tra xem tất cả các batch đã hoàn thành chưa
-                        if (completedBatches.incrementAndGet() == totalBatches) {
-                            listener.onSuccess(allCards);  // Gọi listener khi tất cả các batch đã hoàn thành
-                        }
-                    });
-        }
+                            // Kiểm tra xem tất cả các batch đã hoàn thành chưa
+                            if (completedBatches.incrementAndGet() == totalBatches) {
+                                listener.onSuccess(allCards);
+                            }
+                        });
+            }
+
     }
 
 

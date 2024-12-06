@@ -79,6 +79,22 @@ public class ChatFragment extends Fragment implements ChatContract.View, ChatAda
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (getArguments() != null) {
+            String chatId = getArguments().getString("chatId");
+            String userId = getArguments().getString("userId");
+            String userName = getArguments().getString("userName");
+
+            Bundle bundle = new Bundle();
+            bundle.putString("chatId", chatId);
+            bundle.putString("userId", userId);
+            bundle.putString("userName", userName);
+            Navigation.findNavController(requireView()).navigate(R.id.action_chatFragment_to_chatDetailFragment, bundle);
+        }
+    }
 
     @Override
     public void showChats(List<ChatObject> chatObjects) {

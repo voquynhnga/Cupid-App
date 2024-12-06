@@ -1,7 +1,7 @@
 <com.lorentzos.flingswipe.SwipeFlingAdapterView android:id="@+id/frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/rounded_conner_layout"
+    android:background="@drawable/rounded_corner_card"
     xmlns:android="http://schemas.android.com/apk/res/android" />
 
 
