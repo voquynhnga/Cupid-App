@@ -221,17 +221,44 @@ public class Card {
 
 
 
+//    public void getFavoritedCardList(String userId, final OnFavoritedCardListListener listener) {
+//        DB.getUserDocument(userId).get().addOnCompleteListener(task -> {
+//            if (task.isSuccessful() && task.getResult().exists()) {
+//                DocumentSnapshot document = task.getResult();
+//                List<String> favoritedCardList = (List<String>) document.get("favoritedCardList");
+//                listener.onFavoritedCardListLoaded(favoritedCardList);
+//            } else {
+//                listener.onFavoritedCardListLoaded(new ArrayList<>());
+//            }
+//        });
+//    }
+
     public void getFavoritedCardList(String userId, final OnFavoritedCardListListener listener) {
         DB.getUserDocument(userId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult().exists()) {
                 DocumentSnapshot document = task.getResult();
                 List<String> favoritedCardList = (List<String>) document.get("favoritedCardList");
-                listener.onFavoritedCardListLoaded(favoritedCardList);
+
+                if (favoritedCardList == null) {
+                    // Tạo trường mới với danh sách rỗng nếu chưa tồn tại
+                    DB.getUserDocument(userId).update("favoritedCardList", new ArrayList<>())
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d("DEBUG", "Created empty favoritedCardList for user: " + userId);
+                                listener.onFavoritedCardListLoaded(new ArrayList<>());
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("DEBUG", "Failed to create favoritedCardList for user: " + userId, e);
+                                listener.onFavoritedCardListLoaded(new ArrayList<>());
+                            });
+                } else {
+                    listener.onFavoritedCardListLoaded(favoritedCardList);
+                }
             } else {
                 listener.onFavoritedCardListLoaded(new ArrayList<>());
             }
         });
     }
+
 
     public interface OnFavoritedCardListListener {
         void onFavoritedCardListLoaded(List<String> favoritedCardList);

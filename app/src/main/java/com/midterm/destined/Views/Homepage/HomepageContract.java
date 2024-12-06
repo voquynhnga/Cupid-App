@@ -8,11 +8,13 @@ public interface HomepageContract {
         void performLikeAction(); // Thực hiện hành động Like
         void performDislikeAction(); // Thực hiện hành động Dislike
         void navigateToSearch(); // Điều hướng tới SearchFragment
+        void navigateToNotifications();
     }
 
     interface Presenter {
         void onLikeButtonClicked(); // Xử lý khi nhấn nút Like
         void onDislikeButtonClicked(); // Xử lý khi nhấn nút Dislike
         void onSearchButtonClicked(); // Xử lý khi nhấn nút tìm kiếm
+        void onNotificationsClicked();
     }
 }

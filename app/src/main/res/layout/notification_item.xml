@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:background="@color/white"
+    android:layout_marginTop="10dp"
+    android:layout_height="wrap_content"
+
+    >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:weightSum="1">
+
+
+        <ImageView
+            android:id="@+id/im_Notification"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/red_heart"
+            android:layout_gravity="center"
+            android:layout_marginEnd="10dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"/>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_centerVertical="true">
+
+            <!-- Timestamp -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Timestamp Notification"
+                android:id="@+id/tv_notiTimestamp"
+                android:maxLines="1"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- Nội dung thông báo -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_notiContent"
+                android:text="Content Notification"
+                android:textColor="#555555"
+                android:textSize="16sp"
+                android:maxLines="2"
+                android:ellipsize="end"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>

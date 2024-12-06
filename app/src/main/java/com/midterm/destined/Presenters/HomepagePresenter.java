@@ -24,4 +24,9 @@ public class HomepagePresenter implements HomepageContract.Presenter {
     public void onSearchButtonClicked() {
         view.navigateToSearch(); // Yêu cầu view điều hướng tới SearchFragment
     }
+
+    @Override
+    public void onNotificationsClicked() {
+        view.navigateToNotifications();
+    }
 }
