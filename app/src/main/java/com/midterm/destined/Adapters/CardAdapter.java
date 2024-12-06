@@ -82,7 +82,6 @@ public class CardAdapter extends BaseAdapter {
             genderIcon.setImageResource(R.drawable.female_picture);
         }
 
-        // Gán ảnh profile với Glide
         if (card.getProfileImageUrl() != null && !card.getProfileImageUrl().isEmpty()) {
             Glide.with(context).load(card.getProfileImageUrl()).into(profileImage);
         } else {

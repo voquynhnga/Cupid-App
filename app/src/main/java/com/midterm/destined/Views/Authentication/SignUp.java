@@ -3,7 +3,9 @@ package com.midterm.destined.Views.Authentication;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -42,7 +44,6 @@ public class SignUp extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // Initialize views
         dateOfBirth = binding.etDob;
         password = binding.etPassword;
         confirmPassword = binding.etConfirmPassword;
@@ -72,7 +73,7 @@ public class SignUp extends AppCompatActivity {
             String genderInput = getSelectedGender();
             String userNameInput = userName.getText().toString().trim();
 
-            if (passwordInput.equals(confirmPasswordInput.trim().toString())) {
+            if (passwordInput.equals(confirmPasswordInput)) {
                 checkUsernameExists(userNameInput, emailInput, passwordInput, fullNameInput, phoneInput, dobInput, genderInput);
             } else {
                 Toast.makeText(SignUp.this, "Passwords do not match", Toast.LENGTH_SHORT).show();
@@ -118,29 +119,67 @@ public class SignUp extends AppCompatActivity {
             tvErr.setText("Please fill in all the information.");
             return;
         }
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
-                            String uid = firebaseUser.getUid();
-                            List<String> interests = new ArrayList<>();
-                            GPSAddress location = new GPSAddress(0.0, 0.0);
-                            String pic = "";
-                            List<String> url = new ArrayList<>();
-
-
-                            UserReal user = new UserReal(uid, email, fullName, phone, dob, gender, interests, location,"No address", pic, url , userName);
-
-                            Intent intent = new Intent(SignUp.this, Interests.class);
-                            intent.putExtra("user", user);
-                            startActivity(intent);
-                            finish();
+                            sendEmailVerification(firebaseUser, email, fullName, phone, dob, gender, userName);
                         }
                     } else {
-                        Toast.makeText(SignUp.this,  task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignUp.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
+    private void sendEmailVerification(FirebaseUser firebaseUser, String email, String fullName, String phone, String dob, String gender, String userName) {
+        firebaseUser.sendEmailVerification()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(SignUp.this, "Verification email sent to " + email, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignUp.this, "Please check your email to verify your account.", Toast.LENGTH_SHORT).show();
+                        checkEmailVerification(firebaseUser, email, fullName, phone, dob, gender, userName);
+
+
+                    } else {
+                        Toast.makeText(SignUp.this, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+    private void checkEmailVerification(FirebaseUser firebaseUser, String email, String fullName, String phone, String dob, String gender, String userName) {
+        new Handler().postDelayed(() -> {
+            firebaseUser.reload()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            if (firebaseUser.isEmailVerified()) {
+                                String uid = firebaseUser.getUid();
+                                UserReal user = new UserReal(uid, email, fullName, phone, dob, gender, new ArrayList<>(), new GPSAddress(0.0, 0.0), "No address", "", new ArrayList<>(), userName);
+                                saveUserToFirestore(user);
+                                Intent intent = new Intent(SignUp.this, Interests.class);
+                                intent.putExtra("user", user);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                tvErr.setText("Please verify your email before proceeding.");
+                                checkEmailVerification(firebaseUser, email, fullName, phone, dob, gender, userName);
+                            }
+                        } else {
+                            tvErr.setText("Error verifying email.");
+                        }
+                    });
+        }, 5000);
+    }
+
+    private void saveUserToFirestore(UserReal user) {
+        db.collection("users").document(user.getUid())
+                .set(user)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(SignUp.this, "User registered successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(SignUp.this, "Error saving user: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 }
