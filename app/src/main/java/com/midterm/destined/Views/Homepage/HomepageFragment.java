@@ -62,6 +62,7 @@ public class HomepageFragment extends Fragment implements HomepageContract.View 
         binding.likeButton.setOnClickListener(v -> presenter.onLikeButtonClicked());
         binding.dislikeButton.setOnClickListener(v -> presenter.onDislikeButtonClicked());
         binding.filterhp.setOnClickListener(v -> presenter.onSearchButtonClicked());
+        binding.notifications.setOnClickListener(v -> presenter.onNotificationsClicked());
     }
 
     @Override
@@ -91,6 +92,11 @@ public class HomepageFragment extends Fragment implements HomepageContract.View 
         NavHostFragment.findNavController(this).navigate(R.id.action_HomepageFragment_to_SearchFragment);
 
 
+    }
+
+    @Override
+    public void navigateToNotifications() {
+        NavHostFragment.findNavController(this).navigate(R.id.action_global_NotificationsFragment);
     }
 
     @Override

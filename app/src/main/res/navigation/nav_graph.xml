@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_HomepageFragment_to_SearchFragment"
             app:destination="@id/SearchFragment" />
+        <action
+            android:id="@+id/action_global_NotificationsFragment"
+            app:destination="@id/NotificationsFragment" />
     </fragment>
 
     <!-- ChatFragment -->
@@ -96,6 +99,11 @@
 
     </fragment>
 
+
+    <fragment
+        android:id="@+id/NotificationsFragment"
+        android:name="com.midterm.destined.Views.Homepage.Notifications.NotificationsFragment"
+        tools:layout="@layout/fragment_notifications" />
 
     <fragment
         android:id="@+id/AddStoryFragment"
