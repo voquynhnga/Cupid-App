@@ -1,6 +1,8 @@
 package com.midterm.destined.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,15 +11,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.midterm.destined.Models.ChatObject;
 import com.midterm.destined.Models.Notification;
+import com.midterm.destined.Models.OnChatIdCheckListener;
+import com.midterm.destined.Models.UserReal;
 import com.midterm.destined.R;
 import com.midterm.destined.Utils.DB;
+import com.midterm.destined.Utils.TimeExtensions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +33,7 @@ import java.util.List;
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder> {
     private final Context context;
     private final List<Notification> notifications;
+    private  UserReal user;
 
     public NotificationAdapter(Context context, List<Notification> notifications) {
         this.context = context;
@@ -44,9 +53,33 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(@NonNull NotificationViewHolder holder, int position) {
         Notification notification = notifications.get(position);
-        holder.timestamp.setText(notification.getTimestamp());
+        TimeExtensions.setChatTimestamp(holder.timestamp,notification.getTimestamp());
         holder.content.setText(notification.getContent());
         holder.imageNotification.setImageResource(notification.getImageResource());
+
+        user = notification.getSender();
+
+        if (notification.getSender() != null) {
+            holder.itemView.setOnClickListener(v -> {
+                ChatObject.checkChatId(user.getUid(), new OnChatIdCheckListener() {
+                    @Override
+                    public void onChatIdFound(String chatId) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("chatId", chatId);
+                        bundle.putString("userId", (notification.getSender()).getUid());
+                        bundle.putString("userName", user.getFullName());
+
+                        NavController navController = Navigation.findNavController((Activity) v.getContext(), R.id.nav_host_fragment_content_main);
+                        navController.navigate(R.id.action_global_ChatFragment, bundle);
+                    }
+
+                    @Override
+                    public void onChatIdNotFound() {
+                        Log.e("checkChatId", "Chat ID not found.");
+                    }
+                });
+            });
+        }
 
     }
 
@@ -69,7 +102,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         public NotificationViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View
 
             timestamp = itemView.findViewById(R.id.tv_notiTimestamp);
             content = itemView.findViewById(R.id.tv_notiContent);

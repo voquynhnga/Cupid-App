@@ -14,6 +14,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.midterm.destined.R;
 import com.midterm.destined.Models.Message;
+import com.midterm.destined.Utils.DB;
+import com.midterm.destined.Utils.TimeExtensions;
 
 import java.util.ArrayList;
 
@@ -75,8 +77,8 @@ public class ChatDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         void bind(Message message) {
             messageText.setText(message.getContent());
-            timeText.setText(message.getTime());
-            FirebaseFirestore.getInstance().collection("users").document(message.getSender())
+            TimeExtensions.setChatTimestamp(timeText, message.getTime());
+            DB.getUserDocument(message.getSender())
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {

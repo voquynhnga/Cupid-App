@@ -83,7 +83,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         void onMessageClick(ChatObject chatObject);
     }
 
-    // ViewHolder class
     public static class ChatViewHolder extends RecyclerView.ViewHolder {
         TextView tvSender;
         TextView tvContent;

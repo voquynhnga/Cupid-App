@@ -21,11 +21,11 @@
 
         <ImageView
             android:id="@+id/im_Notification"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:src="@drawable/red_heart"
             android:layout_gravity="center"
-            android:layout_marginEnd="10dp"
+            android:layout_margin="10dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"/>
 
@@ -37,7 +37,6 @@
             android:orientation="vertical"
             android:layout_centerVertical="true">
 
-            <!-- Timestamp -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -49,7 +48,6 @@
                 android:textSize="14sp"
                 android:layout_marginBottom="4dp"/>
 
-            <!-- Nội dung thông báo -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

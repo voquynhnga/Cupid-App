@@ -30,6 +30,7 @@ public class NotificationsFragment extends Fragment implements NotificationsView
     private NotificationPresenter presenter;
     private List<Notification> notificationList;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,11 +44,13 @@ public class NotificationsFragment extends Fragment implements NotificationsView
 
         presenter = new NotificationPresenter(this);
 
+        presenter.fetchNotifications();
+
         binding.notificationsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new NotificationAdapter(getContext(), notificationList);
         binding.notificationsRecyclerView.setAdapter(adapter);
 
-        presenter.fetchNotifications();
+
 
         return binding.getRoot();
     }

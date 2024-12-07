@@ -119,7 +119,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
         return mUsers.size();
     }
     private void showCardPopup(UserReal user, Card card, View view) {
-        // Tạo view cho PopupWindow
         View popupView = LayoutInflater.from(mContext).inflate(R.layout.dialog_card, null);
 
 
@@ -176,18 +175,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
 
             if (card.getImageUrls() != null && !card.getImageUrls().isEmpty()) {
                 if (card.getImageUrls().size() > 1) {
-                    Log.d("DEBUG", "zo1 "+ card.getImageUrls());
                     profileImageSearchPager.setAdapter(new ImagePagerAdapter(card.getImageUrls(), view.getContext()));
                     profileImageSearchPager.setVisibility(View.VISIBLE);
-                    profileImageSearch1.setVisibility(View.GONE); // Ẩn ảnh đơn khi có ViewPager
+                    profileImageSearch1.setVisibility(View.GONE);
                 } else {
-                    Log.d("DEBUG", "zo2" + card.getImageUrls());
                     profileImageSearchPager.setVisibility(View.GONE);
-                    profileImageSearch1.setVisibility(View.VISIBLE); // Hiển thị ảnh đơn
+                    profileImageSearch1.setVisibility(View.VISIBLE);
                     Glide.with(view.getContext()).load(card.getProfileImageUrl()).into(profileImageSearch1);
                 }
             } else {
-                Log.d("DEBUG", "zo3" + card.getImageUrls());
                 profileImageSearchPager.setVisibility(View.GONE);
                 profileImageSearch1.setVisibility(View.VISIBLE);
                 Glide.with(view.getContext()).load(R.drawable.avatardefault).into(profileImageSearch1);
@@ -197,9 +193,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
                 btnChat.setVisibility(popupView.VISIBLE);
             }
             btnChat.setOnClickListener(v -> {
-
-
-                ChatObject.checkChatId(user, new OnChatIdCheckListener() {
+                ChatObject.checkChatId(user.getUid(), new OnChatIdCheckListener() {
                     @Override
                     public void onChatIdFound(String chatId) {
                         Bundle bundle = new Bundle();

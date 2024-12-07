@@ -174,9 +174,8 @@ public class ChatObject {
         });
     }
 
-    public static void checkChatId(UserReal user, OnChatIdCheckListener listener) {
+    public static void checkChatId(String targetUserId, OnChatIdCheckListener listener) {
         String currentUserId = DB.getCurrentUser().getUid();
-        String targetUserId = user.getUid();
 
         String chatId1 = currentUserId + "_" + targetUserId;
         String chatId2 = targetUserId + "_" + currentUserId;

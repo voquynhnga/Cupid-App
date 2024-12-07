@@ -7,12 +7,13 @@ public class Notification {
     private String content;
     private int mod;
     private int imageResource;
+    private UserReal sender;
+
 
     public Notification() {
-        // Default constructor for Firebase or serialization
     }
 
-    public Notification(String timestamp, String content, int mod) {
+    public Notification(String timestamp, String content, int mod, UserReal sender) {
         this.timestamp = timestamp;
         this.content = content;
         this.mod = mod;
@@ -22,6 +23,7 @@ public class Notification {
         else{
             this.imageResource = R.drawable.message_notification;
         }
+        this.sender = sender;
     }
 
     public String getTimestamp() {
@@ -48,4 +50,20 @@ public class Notification {
         this.imageResource = imageResource;
     }
 
+
+    public int getMod() {
+        return mod;
+    }
+
+    public void setMod(int mod) {
+        this.mod = mod;
+    }
+
+    public UserReal getSender() {
+        return sender;
+    }
+
+    public void setSender(UserReal sender) {
+        this.sender = sender;
+    }
 }
