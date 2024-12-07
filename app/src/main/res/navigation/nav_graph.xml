@@ -81,23 +81,13 @@
         <action
         android:id="@+id/action_SearchFragment_to_HomepageFragment"
         app:destination="@id/HomepageFragment" />
-        <action
-            android:id="@+id/action_SearchFragment_to_CardSearchFragment"
-            app:destination="@id/CardSearchFragment" />
-
-    </fragment>
-
-<!--    CardSearch Fragment-->
-    <fragment
-        android:id="@+id/CardSearchFragment"
-        android:name="com.midterm.destined.Views.Homepage.Card.CardSearchFragment"
-        tools:layout="@layout/dialog_card">
-        <action
-            android:id="@+id/action_CardSearchFragment_to_SearchFragment"
-            app:destination="@id/SearchFragment" />
 
 
     </fragment>
+
+
+
+
 
 
     <fragment
@@ -125,6 +115,9 @@
     <action
         android:id="@+id/action_global_ChatFragment"
         app:destination="@id/ChatFragment" />
+    <action
+        android:id="@+id/action_global_ChatDetailFragment"
+        app:destination="@id/chatDetailFragment" />
     <action
         android:id="@+id/action_global_MySettingFragment"
         app:destination="@id/MySettingFragment" />

@@ -1,6 +1,5 @@
 package com.midterm.destined.Views.Chat;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,24 +15,14 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.midterm.destined.Presenters.ChatPresenter;
 import com.midterm.destined.R;
-import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.ChatObject;
 import com.midterm.destined.Adapters.ChatAdapter;
 import com.midterm.destined.Utils.DB;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ChatFragment extends Fragment implements ChatContract.View, ChatAdapter.OnMessageClickListener {
 
@@ -60,7 +49,7 @@ public class ChatFragment extends Fragment implements ChatContract.View, ChatAda
         listViewConversations.setAdapter(chatAdapter);
 
         presenter = new ChatPresenter(this);
-        presenter.loadChatFromMatches();
+        presenter.loadChat();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

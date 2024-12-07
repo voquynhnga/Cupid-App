@@ -158,7 +158,7 @@ public class NotificationPresenter {
                     }
 
                     getUserRealInfo(sender, userReal -> {
-                        String content = "You have just received a message from " + userReal.getFullName();
+                        String content = "You have not replied to a message from " + userReal.getFullName();
                         Notification chatNotification = new Notification(timestamp, content, 2, userReal);
                         chatNotificationsMap.put(chatId, chatNotification);
 

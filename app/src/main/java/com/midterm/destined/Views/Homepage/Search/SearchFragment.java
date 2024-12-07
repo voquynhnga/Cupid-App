@@ -13,19 +13,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.midterm.destined.Adapters.UserAdapter;
-import com.midterm.destined.Models.Card;
+import com.midterm.destined.Adapters.UserSearchAdapter;
 import com.midterm.destined.Models.UserReal;
 import com.midterm.destined.Presenters.SearchPresenter;
 import com.midterm.destined.R;
-import com.midterm.destined.Views.Homepage.HomepageFragment;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +29,7 @@ import java.util.Objects;
 public class SearchFragment extends Fragment implements searchView {
     private Spinner detailInput;
     private RecyclerView resultsRecyclerView;
-    private UserAdapter userAdapter;
+    private UserSearchAdapter userSearchAdapter;
     private Spinner filterSpinner;
     private SearchPresenter searchPresenter;
     private ImageView btnBack;
@@ -135,8 +131,8 @@ public class SearchFragment extends Fragment implements searchView {
 
     @Override
     public void updateSearchResults(List<UserReal> users) {
-        userAdapter = new UserAdapter(getContext(), users, Navigation.findNavController(requireView()));
-        resultsRecyclerView.setAdapter(userAdapter);
+        userSearchAdapter = new UserSearchAdapter(getContext(), users, Navigation.findNavController(requireView()));
+        resultsRecyclerView.setAdapter(userSearchAdapter);
     }
 
     @Override

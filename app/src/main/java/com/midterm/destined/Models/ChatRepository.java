@@ -7,6 +7,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.midterm.destined.Utils.DB;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,11 +20,11 @@ public class ChatRepository {
     private final DatabaseReference chatRef;
 
     public ChatRepository() {
-        chatRef = FirebaseDatabase.getInstance().getReference("chats");
+        chatRef = DB.getChatsRef();
     }
 
     public interface ChatCallback {
-        void onMessagesLoaded(List<Message> messages);
+        void onMessagesLoaded(List<LastMessage> messages);
         void onError(String error);
     }
 
@@ -36,9 +37,9 @@ public class ChatRepository {
         chatRef.child(chatId).child("messages").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                List<Message> messages = new ArrayList<>();
+                List<LastMessage> messages = new ArrayList<>();
                 for (DataSnapshot messageSnapshot : snapshot.getChildren()) {
-                    Message message = messageSnapshot.getValue(Message.class);
+                    LastMessage message = messageSnapshot.getValue(LastMessage.class);
                     if (message != null) {
                         messages.add(message);
                     }
@@ -54,13 +55,14 @@ public class ChatRepository {
     }
 
 
-    public void sendMessage(String chatId, Message newMessage, SendMessageCallback sendMessageCallback) {
-        DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("chats").child(chatId);
+    public void sendMessage(String chatId, LastMessage newMessage, SendMessageCallback sendMessageCallback) {
+        DatabaseReference chatRef = DB.getChatsRef().child(chatId);
 
         chatRef.child("messages").push().setValue(newMessage)
                 .addOnSuccessListener(aVoid -> {
                     chatRef.child("lastMessage").setValue(newMessage)
                             .addOnSuccessListener(aVoid1 -> {
+
                                 Log.d("RealtimeDB", "Last message updated successfully");
                             })
                             .addOnFailureListener(e -> {
@@ -70,10 +72,11 @@ public class ChatRepository {
                 .addOnFailureListener(e -> {
                     Log.e("RealtimeDB", "Failed to send message", e);
                 });
+        ChatObject.checkChatUserId(chatId);
     }
 
 
-    public static long getTimestampLastmessage(Message lastMessage) {
+    public static long getTimestampLastmessage(LastMessage lastMessage) {
         String timeString = lastMessage.getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("d/M/yyyy HH:mm");
 

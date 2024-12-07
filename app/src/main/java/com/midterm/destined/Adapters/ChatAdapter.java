@@ -1,5 +1,6 @@
 package com.midterm.destined.Adapters;
 
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,9 @@ import com.midterm.destined.Utils.DB;
 import com.midterm.destined.Utils.TimeExtensions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
 
@@ -46,14 +49,33 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
         ChatObject chatObject = chatObjects.get(position);
 
-        String senderName, senderAvatar;
+        String senderName, senderAvatar, senderId;
         if (chatObject.getUser1().equals(DB.getCurrentUser().getUid())) {
             senderName = chatObject.getUserName2();
             senderAvatar = chatObject.getAvatarUser2();
+            senderId = chatObject.getUser2();
         } else {
             senderName = chatObject.getUserName1();
             senderAvatar = chatObject.getAvatarUser1();
+            senderId = chatObject.getUser1();
         }
+
+        if (!senderId.equals(DB.getCurrentUser().getUid())) {
+            if (!chatObject.isRead()) {
+                holder.tvContent.setTypeface(null, Typeface.BOLD);
+                holder.tvSender.setTypeface(null, Typeface.BOLD);
+            } else {
+                holder.tvContent.setTypeface(null, Typeface.NORMAL);
+                holder.tvSender.setTypeface(null, Typeface.NORMAL);
+            }
+        } else {
+            holder.tvContent.setTypeface(null, Typeface.NORMAL);
+            holder.tvSender.setTypeface(null, Typeface.NORMAL);
+        }
+
+
+
+
 
         holder.tvSender.setText(senderName);
         if (senderAvatar != null) {
@@ -63,9 +85,35 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
                     .into(holder.avatarChat);
         }
 
+
         holder.tvContent.setText((chatObject.getLastMessage()).getContent());
 
-        holder.itemView.setOnClickListener(v -> listener.onMessageClick(chatObject));
+
+
+        holder.itemView.setOnClickListener(v -> {
+            listener.onMessageClick(chatObject);
+
+            chatObject.setRead(true);
+            notifyItemChanged(position);
+
+
+
+            String isReadField = DB.getCurrentUser().getUid().equals(chatObject.getUser1())
+                    ? "lastMessage/isRead1"
+                    : "lastMessage/isRead2";
+
+            Map<String, Object> updates = new HashMap<>();
+            updates.put(isReadField, true);
+
+            DB.getChatsRef().child(chatObject.getChatId()).updateChildren(updates)
+                    .addOnSuccessListener(aVoid -> Log.d("ChatAdapter", "Marked as read"))
+                    .addOnFailureListener(e -> Log.e("ChatAdapter", "Error updating database", e));
+
+        });
+
+
+
+
 
         TimeExtensions.setChatTimestamp(holder.tvTimestamp, chatObject.getLastMessage().getTime());
     }

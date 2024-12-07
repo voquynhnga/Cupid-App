@@ -5,6 +5,7 @@ package com.midterm.destined.Views.Chat;
 import static com.midterm.destined.Utils.TimeExtensions.getCurrentTime;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,22 +25,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.midterm.destined.Adapters.ChatDetailAdapter;
-import com.midterm.destined.Models.Message;
+import com.midterm.destined.Models.ChatObject;
+import com.midterm.destined.Models.LastMessage;
 import com.midterm.destined.Presenters.ChatDetailPresenter;
 import com.midterm.destined.R;
+import com.midterm.destined.Utils.DB;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 
 public class ChatDetailFragment extends Fragment implements chatDetailView {
     private TextView senderTextView;
     private ImageView btnBack;
     private RecyclerView recyclerView;
-    private ArrayList<Message> messageList;
+    private ArrayList<LastMessage> messageList;
     private ImageView btnSend;
     private EditText editText;
     private DatabaseReference chatRef;
@@ -73,7 +80,7 @@ public class ChatDetailFragment extends Fragment implements chatDetailView {
         recyclerView.setAdapter(adapter);
 
 
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        currentUser = DB.getCurrentUser();
         presenter = new ChatDetailPresenter(this);
 
 
@@ -102,7 +109,13 @@ public class ChatDetailFragment extends Fragment implements chatDetailView {
         btnSend.setOnClickListener(v -> {
             String messageContent = editText.getText().toString().trim();
             if (!messageContent.isEmpty()) {
-                Message message = new Message(currentUser.getUid(), messageContent, getCurrentTime());
+                LastMessage message = new LastMessage(
+                        currentUser.getUid(),
+                        messageContent,
+                        getCurrentTime(),
+                        false,
+                        false
+                );
                 presenter.sendMessage(chatId, message);
                 clearInputField();
             }
@@ -118,7 +131,7 @@ public class ChatDetailFragment extends Fragment implements chatDetailView {
     }
 
     @Override
-    public void displayMessages(List<Message> messages) {
+    public void displayMessages(List<LastMessage> messages) {
         messageList.clear();
         messageList.addAll(messages);
         adapter.notifyDataSetChanged();

@@ -68,9 +68,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                         bundle.putString("chatId", chatId);
                         bundle.putString("userId", (notification.getSender()).getUid());
                         bundle.putString("userName", user.getFullName());
+                        ChatObject.checkChatUserId(chatId);
 
                         NavController navController = Navigation.findNavController((Activity) v.getContext(), R.id.nav_host_fragment_content_main);
-                        navController.navigate(R.id.action_global_ChatFragment, bundle);
+                        navController.navigate(R.id.action_global_ChatDetailFragment, bundle);
                     }
 
                     @Override

@@ -1,6 +1,7 @@
 package com.midterm.destined.Presenters;
 
-import com.midterm.destined.Models.Message;
+import com.midterm.destined.Models.ChatObject;
+import com.midterm.destined.Models.LastMessage;
 import com.midterm.destined.Models.ChatRepository;
 import com.midterm.destined.Views.Chat.chatDetailView;
 
@@ -19,28 +20,27 @@ public class ChatDetailPresenter {
     public void loadMessages(String chatId) {
         repository.loadMessages(chatId, new ChatRepository.ChatCallback() {
             @Override
-            public void onMessagesLoaded(List<Message> messages) {
+            public void onMessagesLoaded(List<LastMessage> messages) {
                 view.displayMessages(messages);
             }
 
             @Override
             public void onError(String error) {
-                view.showError(error);  // Hiển thị lỗi nếu có
+                view.showError(error);
             }
         });
     }
 
-    // Gửi tin nhắn lên repository và thông báo kết quả về view
-    public void sendMessage(String chatId, Message message) {
+    public void sendMessage(String chatId, LastMessage message) {
         repository.sendMessage(chatId, message, new ChatRepository.SendMessageCallback() {
             @Override
             public void onSuccess() {
-                view.clearInputField();  // Làm sạch trường nhập liệu sau khi gửi
+
             }
 
             @Override
             public void onFailure(String error) {
-                view.showError(error);  // Hiển thị lỗi nếu có
+                view.showError(error);
             }
         });
     }

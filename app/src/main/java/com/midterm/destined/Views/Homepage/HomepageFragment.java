@@ -15,12 +15,19 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.midterm.destined.Models.UserReal;
 import com.midterm.destined.R;
+import com.midterm.destined.Utils.DB;
 import com.midterm.destined.Views.Homepage.Card.CardFragment;
 import com.midterm.destined.Views.Homepage.Search.SearchFragment;
 import com.midterm.destined.databinding.FragmentHomepageBinding;
 import com.midterm.destined.Presenters.HomepagePresenter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class HomepageFragment extends Fragment implements HomepageContract.View {
 

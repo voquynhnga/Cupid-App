@@ -36,8 +36,6 @@ import com.midterm.destined.Models.UserReal;
 import com.midterm.destined.R;
 import com.midterm.destined.Utils.CalculateCoordinates;
 import com.midterm.destined.Utils.DB;
-import com.midterm.destined.Utils.Dialog;
-import com.midterm.destined.Utils.TimeExtensions;
 
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +44,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolder> {
+public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.ImageViewHolder> {
 
     private final Context mContext;
     private final List<UserReal> mUsers;
@@ -56,7 +54,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
 
 
 
-    public UserAdapter(Context context, List<UserReal> users, NavController navController) {
+    public UserSearchAdapter(Context context, List<UserReal> users, NavController navController) {
         this.mContext = context;
         this.mUsers = users;
         this.mNavController = navController;
@@ -201,6 +199,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
                         bundle.putString("userId", card.getUserID());
                         bundle.putString("userName", card.getName());
 
+                        ChatObject.checkChatUserId(chatId);
+
                         NavController navController = Navigation.findNavController((Activity) v.getContext(), R.id.nav_host_fragment_content_main);
                         navController.navigate(R.id.action_global_ChatFragment, bundle);
 
@@ -255,29 +255,23 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
     private void checkIfMatched(UserReal user, ImageViewHolder holder) {
         String currentUserId = DB.getCurrentUser().getUid();
 
-        // Bước 1: Lấy danh sách favorited của currentUserId
         DB.getCurrentUserDocument().get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         List<String> currentUserFavorited = (List<String>) documentSnapshot.get("favoritedCardList");
 
-                        // Bước 2: Kiểm tra nếu user.getUid() nằm trong danh sách favorited của currentUserId
                         if (currentUserFavorited != null && currentUserFavorited.contains(user.getUid())) {
-                            // Bước 3: Lấy danh sách favorited của user.getUid()
                             DB.getUserDocument(user.getUid()).get()
                                     .addOnSuccessListener(userSnapshot -> {
                                         if (userSnapshot.exists()) {
                                             List<String> userFavorited = (List<String>) userSnapshot.get("favoritedCardList");
 
-                                            // Bước 4: Kiểm tra nếu currentUserId nằm trong danh sách favorited của user.getUid()
                                             if (userFavorited != null && userFavorited.contains(currentUserId)) {
-                                                // Nếu cả hai favorited lẫn nhau, họ được coi là matched
                                                 user.setMatched(true);
                                                 matchedUsersCache.put(user.getUid(), true);
 
                                                 updateButtonState(user, holder);
                                             } else {
-                                                // Nếu không match
                                                 user.setMatched(false);
                                                 matchedUsersCache.put(user.getUid(), false);
                                                 checkFavoritedList(user, holder);
@@ -288,7 +282,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
                                         Log.w("Firestore", "Error getting user data", e);
                                     });
                         } else {
-                            // Nếu không match
                             user.setMatched(false);
                             matchedUsersCache.put(user.getUid(), false);
                             checkFavoritedList(user, holder);

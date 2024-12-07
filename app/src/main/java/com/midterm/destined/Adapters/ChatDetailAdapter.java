@@ -11,9 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.midterm.destined.Models.LastMessage;
 import com.midterm.destined.R;
-import com.midterm.destined.Models.Message;
 import com.midterm.destined.Utils.DB;
 import com.midterm.destined.Utils.TimeExtensions;
 
@@ -23,17 +22,17 @@ public class ChatDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private static final int VIEW_TYPE_LEFT = 1;
     private static final int VIEW_TYPE_RIGHT = 2;
-    private ArrayList<Message> messageList;
+    private ArrayList<LastMessage> messageList;
     private FirebaseUser currentUser;
 
-    public ChatDetailAdapter(ArrayList<Message> messageList, FirebaseUser currentUser) {
+    public ChatDetailAdapter(ArrayList<LastMessage> messageList, FirebaseUser currentUser) {
         this.messageList = messageList;
         this.currentUser = currentUser;
     }
 
     @Override
     public int getItemViewType(int position) {
-        Message message = messageList.get(position);
+        LastMessage message = messageList.get(position);
         return message.getSender().equals(currentUser.getUid()) ? VIEW_TYPE_RIGHT : VIEW_TYPE_LEFT;
     }
 
@@ -51,7 +50,7 @@ public class ChatDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Message message = messageList.get(position);
+        LastMessage message = messageList.get(position);
         if (holder instanceof LeftMessageViewHolder) {
             ((LeftMessageViewHolder) holder).bind(message);
         } else {
@@ -75,9 +74,9 @@ public class ChatDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             avatar = itemView.findViewById(R.id.avatar_chat_left);
         }
 
-        void bind(Message message) {
+        void bind(LastMessage message) {
             messageText.setText(message.getContent());
-            TimeExtensions.setChatTimestamp(timeText, message.getTime());
+            timeText.setText(message.getTime());
             DB.getUserDocument(message.getSender())
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
@@ -103,7 +102,7 @@ public class ChatDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             timeText = itemView.findViewById(R.id.tv_time_right);
         }
 
-        void bind(Message message) {
+        void bind(LastMessage message) {
             messageText.setText(message.getContent());
             timeText.setText(message.getTime());
         }

@@ -13,7 +13,7 @@ public interface ChatContract {
     }
 
     interface Presenter {
-        void loadChatFromMatches();
+        void loadChat();
         void searchMessages(String query);
     }
 }

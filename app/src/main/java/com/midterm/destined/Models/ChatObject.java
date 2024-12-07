@@ -18,19 +18,20 @@ public class ChatObject {
     private String user1;
     private String user2;
 
-    private Message lastMessage;
+    private LastMessage lastMessage;
     private String chatId;
     private String userName1;
     private String userName2;
     private String avatarUser1;
     private String avatarUser2;
+    private boolean isRead;
 
 
 
 
     public ChatObject(){}
 
-    public ChatObject(String user1, String user2, Message lastMessage, String chatId, String userName1, String userName2, String avatarUser1, String avatarUser2) {
+    public ChatObject(String user1, String user2, LastMessage lastMessage, String chatId, String userName1, String userName2, String avatarUser1, String avatarUser2, Boolean isRead) {
         this.user1 = user1;
         this.user2 = user2;
         this.lastMessage = lastMessage;
@@ -39,6 +40,7 @@ public class ChatObject {
         this.userName2 = userName2;
         this.avatarUser1 = avatarUser1;
         this.avatarUser2 = avatarUser2;
+        this.isRead = isRead;
     }
 
     public String getUser1() {
@@ -58,11 +60,11 @@ public class ChatObject {
     }
 
 
-    public Message getLastMessage() {
+    public LastMessage getLastMessage() {
         return lastMessage;
     }
 
-    public void setLastMessage(Message lastMessage) {
+    public void setLastMessage(LastMessage lastMessage) {
         this.lastMessage = lastMessage;
     }
 
@@ -106,7 +108,13 @@ public class ChatObject {
         this.avatarUser2 = avatarUser2;
     }
 
+    public boolean isRead() {
+        return isRead;
+    }
 
+    public void setRead(boolean read) {
+        isRead = read;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -129,7 +137,7 @@ public class ChatObject {
                     Map<String, Object> chatData = new HashMap<>();
                     chatData.put("userId1", userID1);
                     chatData.put("userId2", userID2);
-                    Message lastMessage = new Message(userID1, "Let's start chat!", timestamp);
+                    LastMessage lastMessage = new LastMessage(userID1, "Let's start chat!", timestamp, false, false);
                     chatData.put("lastMessage", lastMessage);
 
 
@@ -202,6 +210,37 @@ public class ChatObject {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("checkChatId", "Database error: " + error.getMessage());
+            }
+        });
+    }
+
+    public static void checkChatUserId(String chatId){
+        DatabaseReference chatRef = DB.getChatsRef().child(chatId);
+        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String user1 = snapshot.child("userId1").getValue(String.class);
+                String user2 = snapshot.child("userId2").getValue(String.class);
+
+                if (user1 != null && user1.equals(DB.getCurrentUser().getUid())) {
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("lastMessage/isRead1", true);
+                    chatRef.updateChildren(updates)
+                            .addOnSuccessListener(aVoid -> Log.d("ChatDetail", "Marked as read for user1"))
+                            .addOnFailureListener(e -> Log.e("ChatDetail", "Error marking as read", e));
+                }
+                if (user2 != null && user2.equals(DB.getCurrentUser().getUid())) {
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("lastMessage/isRead2", true);
+                    chatRef.updateChildren(updates)
+                            .addOnSuccessListener(aVoid -> Log.d("ChatDetail", "Marked as read for user1"))
+                            .addOnFailureListener(e -> Log.e("ChatDetail", "Error marking as read", e));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("ChatDetail", "Error fetching chat data: " + error.getMessage());
             }
         });
     }

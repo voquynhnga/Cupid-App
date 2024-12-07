@@ -12,17 +12,17 @@ public class HomepagePresenter implements HomepageContract.Presenter {
 
     @Override
     public void onLikeButtonClicked() {
-        view.performLikeAction(); // Yêu cầu view thực hiện hành động Like
+        view.performLikeAction();
     }
 
     @Override
     public void onDislikeButtonClicked() {
-        view.performDislikeAction(); // Yêu cầu view thực hiện hành động Dislike
+        view.performDislikeAction();
     }
 
     @Override
     public void onSearchButtonClicked() {
-        view.navigateToSearch(); // Yêu cầu view điều hướng tới SearchFragment
+        view.navigateToSearch();
     }
 
     @Override

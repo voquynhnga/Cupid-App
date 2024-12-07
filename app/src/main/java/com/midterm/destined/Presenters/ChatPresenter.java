@@ -3,28 +3,22 @@ package com.midterm.destined.Presenters;
 import static com.midterm.destined.Models.ChatRepository.getTimestampLastmessage;
 import static com.midterm.destined.Utils.TextExtensions.removeVietnameseDiacritics;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.midterm.destined.Models.Card;
 import com.midterm.destined.Models.ChatObject;
-import com.midterm.destined.Models.Message;
+import com.midterm.destined.Models.LastMessage;
 import com.midterm.destined.Utils.DB;
 import com.midterm.destined.Views.Chat.ChatContract;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ChatPresenter implements ChatContract.Presenter {
     private final ChatContract.View view;
@@ -32,7 +26,6 @@ public class ChatPresenter implements ChatContract.Presenter {
     private final DatabaseReference chatsRef;
     private final String currentUserId;
     private final List<ChatObject> chatObjects = new ArrayList<>();
-    private final List<String> matchedUserIds = new ArrayList<>();
 
     public ChatPresenter(ChatContract.View view) {
         this.view = view;
@@ -45,7 +38,8 @@ public class ChatPresenter implements ChatContract.Presenter {
 
 
     @Override
-    public void loadChatFromMatches() {
+    public void loadChat() {
+        List<String> matchedUserIds = new ArrayList<>();
         db.collection("matches")
                 .get()
                 .addOnCompleteListener(task -> {
@@ -66,6 +60,9 @@ public class ChatPresenter implements ChatContract.Presenter {
                         view.showError("Failed to load matches: " + task.getException().getMessage());
                     }
                 });
+
+
+
     }
 
     private void loadChatsToApp() {
@@ -75,16 +72,20 @@ public class ChatPresenter implements ChatContract.Presenter {
                 chatObjects.clear();
                 for (DataSnapshot chatSnapshot : snapshot.getChildren()) {
                     String chatId = chatSnapshot.getKey();
-                    Message lastMessage = chatSnapshot.child("lastMessage").getValue(Message.class);
+                    LastMessage lastMessage = chatSnapshot.child("lastMessage").getValue(LastMessage.class);
                     String userId1 = chatSnapshot.child("userId1").getValue(String.class);
                     String userId2 = chatSnapshot.child("userId2").getValue(String.class);
 
                     if ((userId1 != null && userId1.equals(currentUserId)) || (userId2 != null && userId2.equals(currentUserId))) {
                         loadUserInfo(userId1, (userName1, avatarUser1) -> {
                             loadUserInfo(userId2, (userName2, avatarUser2) -> {
+                                boolean isReadByCurrentUser = Boolean.TRUE.equals(currentUserId.equals(userId1)
+                                        ? chatSnapshot.child("lastMessage").child("isRead1").getValue(Boolean.class)
+                                        : chatSnapshot.child("lastMessage").child("isRead2").getValue(Boolean.class));
+
                                 chatObjects.add(new ChatObject(
-                                        userId1, userId2, lastMessage, chatId, userName1, userName2, avatarUser1, avatarUser2
-                                ));
+                                        userId1, userId2, lastMessage, chatId, userName1, userName2, avatarUser1, avatarUser2, isReadByCurrentUser));
+
                                 chatObjects.sort(Comparator.comparing(chatObject -> getTimestampLastmessage(((ChatObject) chatObject).getLastMessage())).reversed());
                                 view.showChats(chatObjects);
                             });
