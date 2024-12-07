@@ -15,6 +15,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.midterm.destined.Models.UserReal;
 import com.midterm.destined.R;
 import com.midterm.destined.Views.Homepage.Card.CardFragment;
 import com.midterm.destined.Views.Homepage.Search.SearchFragment;

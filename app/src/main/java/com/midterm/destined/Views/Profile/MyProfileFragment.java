@@ -44,25 +44,22 @@ public class MyProfileFragment extends Fragment implements MyProfileContract.vie
 
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<androidx.activity.result.ActivityResult>() {
-                    @Override
-                    public void onActivityResult(androidx.activity.result.ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            Intent data = result.getData();
-                            if (data != null) {
-                                Uri selectedImageUri = data.getData();
-                                try {
-                                    // Lấy bitmap từ URI ảnh
-                                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), selectedImageUri);
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            Uri selectedImageUri = data.getData();
+                            try {
+                                // Lấy bitmap từ URI ảnh
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), selectedImageUri);
 
-                                    presenter.uploadImageToFirebaseStorage(bitmap);
+                                presenter.uploadImageToFirebaseStorage(bitmap);
 
-                                    // Hiển thị ảnh đại diện sau khi tải lên
-                                    showProfileImage(bitmap);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    showMessage("Failed to load image");
-                                }
+                                // Hiển thị ảnh đại diện sau khi tải lên
+                                showProfileImage(bitmap);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                showMessage("Failed to load image");
                             }
                         }
                     }

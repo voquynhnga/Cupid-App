@@ -25,6 +25,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class MyProfilePresenter implements MyProfileContract.presenter {
@@ -88,36 +90,50 @@ public class MyProfilePresenter implements MyProfileContract.presenter {
         });
     }
     public void uploadImageToFirebaseStorage(Bitmap bitmap) {
-        // Chuyển bitmap thành byte array
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imageData = baos.toByteArray();
 
-        // Tạo một đường dẫn ngẫu nhiên cho ảnh trong Firebase Storage
         String fileName = "images/" + DB.getCurrentUser().getUid() + "/" + UUID.randomUUID() + ".jpg";
         StorageReference storageRef = DB.getStorageInstance().getReference().child(fileName);
 
-        // Upload ảnh lên Firebase Storage
         UploadTask uploadTask = storageRef.putBytes(imageData);
         uploadTask.addOnSuccessListener(taskSnapshot -> {
-            // Lấy URL của ảnh vừa tải lên
             storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                 String profileUrl = uri.toString();
 
-                // Lưu URL vào Firestore
                 DB.getCurrentUserDocument()
-                        .update("profilePicture", profileUrl)
-                        .addOnSuccessListener(aVoid -> {
-                            // Hiển thị thông báo thành công
-                            Toast.makeText(view.getActivityContext(), "Profile picture updated successfully", Toast.LENGTH_SHORT).show();
+                        .get()
+                        .addOnSuccessListener(documentSnapshot -> {
+                            if (documentSnapshot.exists()) {
+                                List<String> imageUrls = (List<String>) documentSnapshot.get("imageUrls");
+
+                                if (imageUrls == null) {
+                                    imageUrls = new ArrayList<>();
+                                }
+
+                                if (imageUrls.isEmpty()) {
+                                    imageUrls.add(profileUrl);
+                                } else {
+                                    imageUrls.set(0, profileUrl);
+                                }
+
+                                DB.getCurrentUserDocument()
+                                        .update("imageUrls", imageUrls)
+                                        .addOnSuccessListener(aVoid -> {
+                                            Toast.makeText(view.getActivityContext(), "Profile picture updated successfully", Toast.LENGTH_SHORT).show();
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Toast.makeText(view.getActivityContext(), "Failed to update profile picture: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        });
+                            }
                         })
                         .addOnFailureListener(e -> {
-                            // Hiển thị thông báo lỗi khi cập nhật URL
-                            Toast.makeText(view.getActivityContext(), "Failed to update profile picture: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(view.getActivityContext(), "Failed to fetch user document: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         });
+
             });
         }).addOnFailureListener(e -> {
-            // Hiển thị thông báo lỗi khi upload ảnh thất bại
             Toast.makeText(view.getActivityContext(), "Failed to upload image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
     }

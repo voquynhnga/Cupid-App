@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.midterm.destined.Utils.DB;
 import com.midterm.destined.databinding.ActivityUploadPhotoBinding;
 import com.midterm.destined.Models.UserReal;
 
@@ -83,9 +85,10 @@ public class UploadPhoto extends AppCompatActivity {
             });
         }
 
+
         btn.setOnClickListener(v -> {
             if(noImageSelected()) {
-                user.setProfilePicture("https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_def.jpg?alt=media&token=a96937d6-84c3-4ef3-b0d2-aba2f7affc26");
+                user.setProfilePicture("https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_default.jpg?alt=media&token=70caf3c1-ebd8-4151-ad82-bc70365d87cf");
                 saveUserDataAndProceed();
             }
             else {
@@ -127,7 +130,7 @@ public class UploadPhoto extends AppCompatActivity {
 
     private void uploadImagesAndProceed() {
         List<String> imageUrls = new ArrayList<>();
-        int totalSelectedImages = countSelectedImages();  // Tổng số ảnh đã chọn
+        int totalSelectedImages = countSelectedImages();
 
         for (int i = 0; i < imageUris.length; ++i) {
             Uri imageUri = imageUris[i];
@@ -135,24 +138,31 @@ public class UploadPhoto extends AppCompatActivity {
                 StorageReference imageRef = ref.child("images/" + user.getUid() + "/image_" + i);
 
                 int finalI = i;
-                imageRef.putFile(imageUri).addOnSuccessListener(taskSnapshot ->
-                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            imageUrls.add(uri.toString());
+                imageRef.putFile(imageUri)
+                        .addOnSuccessListener(taskSnapshot ->
+                                imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                    imageUrls.add(uri.toString());
 
+                                    if (finalI == 0) {
+                                        DB.getCurrentUserDocument()
+                                                .update("profilePicture", uri.toString())
+                                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Updated profile picture"));
+                                    }
 
-                            if (finalI == 0) {
-                                user.setProfilePicture(uri.toString());
-                            }
-
-
-                            if (imageUrls.size() == totalSelectedImages) {
-                                user.setImageUrls(imageUrls);
-                                saveUserDataAndProceed();
-                            }
-                        })
-                ).addOnFailureListener(e -> {
-                    Toast.makeText(UploadPhoto.this, "Lỗi upload ảnh: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                                    if (imageUrls.size() == totalSelectedImages) {
+                                        DB.getCurrentUserDocument()
+                                                .update("imageUrls", imageUrls)
+                                                .addOnSuccessListener(aVoid -> {
+                                                    Toast.makeText(UploadPhoto.this, "Upload successful!", Toast.LENGTH_SHORT).show();
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Toast.makeText(UploadPhoto.this, "Failed to save imageUrls: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                });
+                                    }
+                                })
+                        ).addOnFailureListener(e -> {
+                            Toast.makeText(UploadPhoto.this, "Failed to upload image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
             }
         }
     }

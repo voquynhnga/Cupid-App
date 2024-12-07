@@ -256,49 +256,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ImageViewHolde
 
 
 
-//    private void checkIfMatched(UserReal user, ImageViewHolder holder) {
-//        String currentUserId = DB.getCurrentUser().getUid();
-//
-//        DB.getMatchesCollection()
-//                .whereEqualTo("userId1", user.getUid())
-//                .get()
-//                .addOnSuccessListener(querySnapshot -> {
-//                    if (!querySnapshot.isEmpty()) {
-//                        for (QueryDocumentSnapshot document : querySnapshot) {
-//                            String userId2 = document.getString("userId2");
-//                            if (currentUserId.equals(userId2)) { // Kiểm tra người còn lại
-//                                user.setMatched(true);
-//                                matchedUsersCache.put(user.getUid(), true);
-//                                updateButtonState(user, holder);
-//                                return;
-//                            }
-//                        }
-//                    }
-//
-//                    // Tiếp tục kiểm tra với userId2
-//                    DB.getMatchesCollection()
-//                            .whereEqualTo("userId2", user.getUid())
-//                            .get()
-//                            .addOnSuccessListener(querySnapshot2 -> {
-//                                if (!querySnapshot2.isEmpty()) {
-//                                    for (QueryDocumentSnapshot document : querySnapshot2) {
-//                                        String userId1 = document.getString("userId1");
-//                                        if (currentUserId.equals(userId1)) { // Kiểm tra người còn lại
-//                                            user.setMatched(true);
-//                                            matchedUsersCache.put(user.getUid(), true);
-//                                            updateButtonState(user, holder);
-//                                            return; // Dừng kiểm tra nếu đã tìm thấy
-//                                        }
-//                                    }
-//                                }
-//
-//                                // Nếu không tìm thấy kết nối nào
-//                                user.setMatched(false);
-//                                matchedUsersCache.put(user.getUid(), false);
-//                                checkFavoritedList(user, holder);
-//                            });
-//                });
-//    }
+
 
     private void checkIfMatched(UserReal user, ImageViewHolder holder) {
         String currentUserId = DB.getCurrentUser().getUid();

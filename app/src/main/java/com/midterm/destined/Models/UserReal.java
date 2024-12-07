@@ -1,11 +1,18 @@
 package com.midterm.destined.Models;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.PropertyName;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.StorageReference;
+import com.midterm.destined.Utils.DB;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserReal implements Serializable {
 
@@ -29,7 +36,7 @@ public class UserReal implements Serializable {
         this.interests = new ArrayList<>();
         this.location = new GPSAddress(0.0, 0.0);
         this.imageUrls = new ArrayList<>();
-        this.profilePicture = "";
+        this.profilePicture = "https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_default.jpg?alt=media&token=70caf3c1-ebd8-4151-ad82-bc70365d87cf";
     }
 
     public UserReal(String uid, String email, String fullName, String phoneNumber, String dateOfBirth, String gender,String bio, List<String> interests, GPSAddress location, String detailAddress, List<String> imageUrls, String userName) {
@@ -44,13 +51,7 @@ public class UserReal implements Serializable {
         this.interests = interests != null ? interests : new ArrayList<>();
         this.location = location != null ? location : new GPSAddress(0.0, 0.0);
         this.profilePicture = imageUrls.get(0);
-        this.imageUrls = imageUrls != null ? new ArrayList<>(imageUrls) :
-                new ArrayList<>(Collections.singletonList("https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_default.jpg?alt=media&token=70caf3c1-ebd8-4151-ad82-bc70365d87cf"));
-
-        if (!this.imageUrls.isEmpty() && this.imageUrls.get(0).equals("gs://cupid-app-ad700.appspot.com/avatar_default.jpg")) {
-            this.imageUrls.set(0, "https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_default.jpg?alt=media&token=70caf3c1-ebd8-4151-ad82-bc70365d87cf");
-        }
-
+        this.imageUrls = imageUrls;
         this.userName = userName;
     }
 
@@ -176,4 +177,5 @@ public class UserReal implements Serializable {
     public void setFavorited(boolean favorited) {
         isFavorited = favorited;
     }
+
 }
