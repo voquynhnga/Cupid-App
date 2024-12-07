@@ -16,6 +16,7 @@ import com.midterm.destined.Utils.DB;
 import com.midterm.destined.Utils.Dialog;
 import com.midterm.destined.Views.Homepage.Card.cardView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CardPresenter {
@@ -27,7 +28,7 @@ public class CardPresenter {
         this.model = new Card();
     }
 
-    public void loadCards() {
+    public void loadCards(ArrayList<String> interests) {
         DB.getCurrentUserDocument()
                 .get()
                 .addOnCompleteListener(task -> {
@@ -38,18 +39,35 @@ public class CardPresenter {
 
                         //FIX-2
                         if (firebaseCardList == null || firebaseCardList.isEmpty()) {
-                            model.fetchAllUsersAndUpdateCardList(new Card.OnCardFetchListener() {
-                                @Override
-                                public void onSuccess(List<Card> allUsers) {
-                                    view.displayCards(allUsers);
+                            if(interests == null) {
+                                model.fetchAllUsersAndUpdateCardList(new Card.OnCardFetchListener() {
+                                    @Override
+                                    public void onSuccess(List<Card> allUsers) {
+                                        view.displayCards(allUsers);
 
-                                }
+                                    }
 
-                                @Override
-                                public void onError(String errorMessage) {
-                                    view.showError(errorMessage);
-                                }
-                            });
+                                    @Override
+                                    public void onError(String errorMessage) {
+                                        view.showError(errorMessage);
+                                    }
+                                });
+                            }
+                            else{
+                                model.fetchUsersByInterest(interests, new Card.OnCardFetchListener() {
+                                    @Override
+                                    public void onSuccess(List<Card> allUsers) {
+                                        view.displayCards(allUsers);
+
+                                    }
+
+                                    @Override
+                                    public void onError(String errorMessage) {
+                                        view.showError(errorMessage);
+                                    }
+                                });
+                            }
+
                         } else {
                             model.fetchUsersByIds(firebaseCardList, new Card.OnCardFetchListener() {
                                 @Override

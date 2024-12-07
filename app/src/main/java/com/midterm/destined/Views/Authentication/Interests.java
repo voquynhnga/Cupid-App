@@ -8,6 +8,8 @@ import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.midterm.destined.R;
+import com.midterm.destined.Views.Homepage.Card.CardFragment;
 import com.midterm.destined.databinding.ActivityInterestsBinding;
 import com.midterm.destined.Models.UserReal;
 
@@ -71,6 +73,18 @@ public class Interests extends AppCompatActivity {
             Intent intent = new Intent(Interests.this, UploadPhoto.class);
             intent.putExtra("user", user);
             startActivity(intent);
+
+            Bundle bundle = new Bundle();
+            bundle.putStringArrayList("selectedInterests", new ArrayList<>(selectedInterests));
+
+            CardFragment fragment = new CardFragment();
+            fragment.setArguments(bundle);
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.card_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
 

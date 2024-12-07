@@ -28,18 +28,6 @@ public class Card {
 
     public Card() {}
 
-//    public Card(String name, String profileImageUrl, String allInterest, String location, String gender, String bio, String age, String userID, List<String> imageUrls) {
-//        this.name = name;
-//        this.age = age;
-//        this.bio = bio;
-//        this.location = location;
-//        this.allInterest = allInterest;
-//        this.gender = gender;
-//        this.profileImageUrl = profileImageUrl;
-//        this.userID = userID;
-//        this.imageUrls = imageUrls;
-//    }
-
     public Card(UserReal user){
         this.name = user.getFullName();
         this.age = String.valueOf(TimeExtensions.calculateAge(user.getDateOfBirth()));
@@ -136,7 +124,6 @@ public class Card {
     public void fetchAllUsersAndUpdateCardList(OnCardFetchListener listener) {
         DB.getCurrentUserDocument().get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
-                // Lấy danh sách favoritedCardList
                 List<String> favoritedCardList = (List<String>) task.getResult().get("favoritedCardList");
                 if (favoritedCardList == null) {
                     favoritedCardList = new ArrayList<>();
@@ -144,7 +131,6 @@ public class Card {
 
                 List<String> finalFavoritedCardList = favoritedCardList;
 
-                // Lấy danh sách tất cả người dùng
                 DB.getUsersCollection().get().addOnCompleteListener(userTask -> {
                     if (userTask.isSuccessful() && userTask.getResult() != null) {
                         List<Card> allUsers = new ArrayList<>();
@@ -153,7 +139,6 @@ public class Card {
                         for (QueryDocumentSnapshot document : userTask.getResult()) {
                             UserReal user = document.toObject(UserReal.class);
 
-                            // Loại trừ chính mình và các user đã favorited
                             if (!user.getUid().equals(DB.getCurrentUser().getUid())
                                     && !finalFavoritedCardList.contains(user.getUid())) {
                                 newCardList.add(user.getUid());
@@ -163,7 +148,6 @@ public class Card {
                             }
                         }
 
-                        // Cập nhật cardList trong Firestore
                         if (!newCardList.isEmpty()) {
                             DB.getCurrentUserDocument()
                                     .update("cardList", newCardList)
@@ -171,7 +155,6 @@ public class Card {
                                     .addOnFailureListener(e -> Log.e("DEBUG", "Error updating card list", e));
                         }
 
-                        // Trả kết quả qua callback
                         listener.onSuccess(allUsers);
                     } else {
                         listener.onError("Error fetching all users: " + userTask.getException().getMessage());
@@ -218,6 +201,35 @@ public class Card {
             }
 
     }
+
+    public void fetchUsersByInterest(List<String> interests, OnCardFetchListener listener) {
+        if (interests == null || interests.isEmpty()) {
+            listener.onError("Interest list is empty or null.");
+            return;
+        }
+
+        DB.getUsersCollection()
+                .whereArrayContainsAny("interests", interests)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Card> cards = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            UserReal user = document.toObject(UserReal.class);
+                            cards.add(new Card(user));
+                        }
+
+                        if (!cards.isEmpty()) {
+                            listener.onSuccess(cards);
+                        } else {
+                            listener.onError("No users found matching the given interests.");
+                        }
+                    } else {
+                        listener.onError("Error fetching users by interests: " + task.getException().getMessage());
+                    }
+                });
+    }
+
 
 
     public static void saveMatchToDB(Match match, String fullNameUser2) {

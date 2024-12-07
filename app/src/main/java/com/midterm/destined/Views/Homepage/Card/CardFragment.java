@@ -4,8 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.*;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,9 +49,19 @@ public class CardFragment extends Fragment implements cardView {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_card, container, false);
 
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            ArrayList<String> selectedInterests = bundle.getStringArrayList("selectedInterests");
+            if (selectedInterests != null) {
+                presenter.loadCards(selectedInterests);
+            }
+        }
+
         presenter = new CardPresenter(this);
         adapter = new CardAdapter(getContext(), cardList);
         flingContainer = view.findViewById(R.id.frame);
+
+
 
 
 
@@ -66,7 +78,6 @@ public class CardFragment extends Fragment implements cardView {
 
                 @Override
                 public void onLeftCardExit(Object dataObject) {
-                    // Xử lý khi quẹt trái
                     Card card = (Card) dataObject;
                     presenter.handleLeftSwipe(card.getUserID());
 
@@ -77,7 +88,6 @@ public class CardFragment extends Fragment implements cardView {
 
                 @Override
                 public void onRightCardExit(Object dataObject) {
-                    // Xử lý khi quẹt phải
                     Card card = (Card) dataObject;
                     presenter.handleRightSwipe(card);
 
@@ -88,19 +98,17 @@ public class CardFragment extends Fragment implements cardView {
 
                 @Override
                 public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                    // Thêm logic nếu cần khi adapter gần hết dữ liệu
-                    Log.d("Swipe", "Adapter is about to empty");
+                    Log.d("DEBUG", "Adapter is about to empty");
                 }
 
                 @Override
                 public void onScroll(float scrollProgressPercent) {
-                    // Xử lý khi thẻ đang được kéo
                 }
             });
 
             flingContainer.setAdapter(adapter);
         }
-        presenter.loadCards();
+        presenter.loadCards(null);
 
 
         return view;
@@ -108,12 +116,10 @@ public class CardFragment extends Fragment implements cardView {
 
     @Override
     public void showLoading() {
-        // Hiển thị loading
     }
 
     @Override
     public void hideLoading() {
-        // Ẩn loading
     }
 
 
