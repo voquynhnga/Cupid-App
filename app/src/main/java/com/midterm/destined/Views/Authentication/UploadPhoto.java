@@ -23,6 +23,7 @@ import com.midterm.destined.Models.UserReal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class UploadPhoto extends AppCompatActivity {
     private ImageView[] images = new ImageView[6];
@@ -128,9 +129,11 @@ public class UploadPhoto extends AppCompatActivity {
         return count;
     }
 
+    //FIX-4
     private void uploadImagesAndProceed() {
         List<String> imageUrls = new ArrayList<>();
         int totalSelectedImages = countSelectedImages();
+        AtomicInteger uploadCount = new AtomicInteger(0);
 
         for (int i = 0; i < imageUris.length; ++i) {
             Uri imageUri = imageUris[i];
@@ -146,10 +149,11 @@ public class UploadPhoto extends AppCompatActivity {
                                     if (finalI == 0) {
                                         DB.getCurrentUserDocument()
                                                 .update("profilePicture", uri.toString())
-                                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Updated profile picture"));
+                                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Updated profile picture"))
+                                                .addOnFailureListener(e -> Log.e("Firestore", "Failed to update profile picture: " + e.getMessage()));
                                     }
 
-                                    if (imageUrls.size() == totalSelectedImages) {
+                                    if (uploadCount.incrementAndGet() == totalSelectedImages) {
                                         DB.getCurrentUserDocument()
                                                 .update("imageUrls", imageUrls)
                                                 .addOnSuccessListener(aVoid -> {
@@ -166,7 +170,6 @@ public class UploadPhoto extends AppCompatActivity {
             }
         }
     }
-
 
     private void saveUserDataAndProceed() {
         firestore.collection("users")

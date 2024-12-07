@@ -183,21 +183,19 @@ public class Card {
         });
     }
 
-    public static void fetchUsersByIds(List<String> userIds, OnCardFetchListener listener) {
+    public void fetchUsersByIds(List<String> userIds, OnCardFetchListener listener) {
 
             int batchSize = 30;
             List<List<String>> batches = new ArrayList<>();
 
-            // Chia nhỏ danh sách userIds thành các nhóm
             for (int i = 0; i < userIds.size(); i += batchSize) {
                 int end = Math.min(i + batchSize, userIds.size());
                 batches.add(userIds.subList(i, end));
             }
 
-            // Thực hiện các truy vấn cho từng nhóm
             List<Card> allCards = new ArrayList<>();
             final int totalBatches = batches.size();
-            AtomicInteger completedBatches = new AtomicInteger(0);  // Đếm số lượng batch đã hoàn thành
+            AtomicInteger completedBatches = new AtomicInteger(0);
 
             for (List<String> batch : batches) {
                 DB.getUsersCollection()
@@ -213,7 +211,6 @@ public class Card {
                                 listener.onError("Error fetching users by IDs: " + task.getException().getMessage());
                             }
 
-                            // Kiểm tra xem tất cả các batch đã hoàn thành chưa
                             if (completedBatches.incrementAndGet() == totalBatches) {
                                 listener.onSuccess(allCards);
                             }

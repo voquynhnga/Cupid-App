@@ -26,7 +26,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class MyProfilePresenter implements MyProfileContract.presenter {
@@ -89,6 +91,7 @@ public class MyProfilePresenter implements MyProfileContract.presenter {
             }
         });
     }
+    //FIX-3
     public void uploadImageToFirebaseStorage(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -98,44 +101,46 @@ public class MyProfilePresenter implements MyProfileContract.presenter {
         StorageReference storageRef = DB.getStorageInstance().getReference().child(fileName);
 
         UploadTask uploadTask = storageRef.putBytes(imageData);
-        uploadTask.addOnSuccessListener(taskSnapshot -> {
-            storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                String profileUrl = uri.toString();
+        uploadTask.addOnSuccessListener(taskSnapshot ->
+                storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    String profileUrl = uri.toString();
 
-                DB.getCurrentUserDocument()
-                        .get()
-                        .addOnSuccessListener(documentSnapshot -> {
-                            if (documentSnapshot.exists()) {
-                                List<String> imageUrls = (List<String>) documentSnapshot.get("imageUrls");
+                    DB.getCurrentUserDocument()
+                            .get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                if (documentSnapshot.exists()) {
+                                    List<String> imageUrls = (List<String>) documentSnapshot.get("imageUrls");
+                                    if (imageUrls == null) {
+                                        imageUrls = new ArrayList<>();
+                                    }
 
-                                if (imageUrls == null) {
-                                    imageUrls = new ArrayList<>();
+                                    if (imageUrls.isEmpty()) {
+                                        imageUrls.add(profileUrl);
+                                    } else {
+                                        imageUrls.set(0, profileUrl);
+                                    }
+
+                                    Map<String, Object> updates = new HashMap<>();
+                                    updates.put("imageUrls", imageUrls);
+                                    updates.put("profilePicture", profileUrl);
+
+                                    DB.getCurrentUserDocument()
+                                            .update(updates)
+                                            .addOnSuccessListener(aVoid ->
+                                                    Toast.makeText(view.getActivityContext(), "Profile picture updated successfully", Toast.LENGTH_SHORT).show()
+                                            )
+                                            .addOnFailureListener(e ->
+                                                    Toast.makeText(view.getActivityContext(), "Failed to update profile picture: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                                            );
                                 }
-
-                                if (imageUrls.isEmpty()) {
-                                    imageUrls.add(profileUrl);
-                                } else {
-                                    imageUrls.set(0, profileUrl);
-                                }
-
-                                DB.getCurrentUserDocument()
-                                        .update("imageUrls", imageUrls)
-                                        .addOnSuccessListener(aVoid -> {
-                                            Toast.makeText(view.getActivityContext(), "Profile picture updated successfully", Toast.LENGTH_SHORT).show();
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            Toast.makeText(view.getActivityContext(), "Failed to update profile picture: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        });
-                            }
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(view.getActivityContext(), "Failed to fetch user document: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        });
-
-            });
-        }).addOnFailureListener(e -> {
-            Toast.makeText(view.getActivityContext(), "Failed to upload image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
+                            })
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(view.getActivityContext(), "Failed to fetch user document: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                            );
+                })
+        ).addOnFailureListener(e ->
+                Toast.makeText(view.getActivityContext(), "Failed to upload image: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+        );
     }
     private Bitmap cropCenterSquare(Bitmap bitmap) {
         int width = bitmap.getWidth();

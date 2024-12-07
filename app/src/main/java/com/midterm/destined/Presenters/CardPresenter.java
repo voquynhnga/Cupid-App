@@ -34,13 +34,10 @@ public class CardPresenter {
                     if (task.isSuccessful() && task.getResult() != null) {
                         DocumentSnapshot document = task.getResult();
 
-                        // Lấy danh sách cardList
                         List<String> firebaseCardList = (List<String>) document.get("cardList");
 
-                        Log.d("DEBUG", firebaseCardList.toString());
-
-                        if (firebaseCardList.isEmpty()) {
-                            // Nếu cardList rỗng, lấy tất cả người dùng
+                        //FIX-2
+                        if (firebaseCardList == null || firebaseCardList.isEmpty()) {
                             model.fetchAllUsersAndUpdateCardList(new Card.OnCardFetchListener() {
                                 @Override
                                 public void onSuccess(List<Card> allUsers) {
@@ -54,7 +51,6 @@ public class CardPresenter {
                                 }
                             });
                         } else {
-                            // Nếu đã có cardList, lấy thông tin chi tiết các user
                             model.fetchUsersByIds(firebaseCardList, new Card.OnCardFetchListener() {
                                 @Override
                                 public void onSuccess(List<Card> cards) {
@@ -70,7 +66,6 @@ public class CardPresenter {
                             });
                         }
                     } else {
-                        // Xử lý lỗi nếu không thể lấy tài liệu người dùng hiện tại
                         view.showError("Error fetching saved cards: " + task.getException().getMessage());
                     }
                 });

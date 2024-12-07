@@ -36,7 +36,6 @@ public class UserReal implements Serializable {
         this.interests = new ArrayList<>();
         this.location = new GPSAddress(0.0, 0.0);
         this.imageUrls = new ArrayList<>();
-        this.profilePicture = "https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_default.jpg?alt=media&token=70caf3c1-ebd8-4151-ad82-bc70365d87cf";
     }
 
     public UserReal(String uid, String email, String fullName, String phoneNumber, String dateOfBirth, String gender,String bio, List<String> interests, GPSAddress location, String detailAddress, List<String> imageUrls, String userName) {
@@ -50,7 +49,9 @@ public class UserReal implements Serializable {
         this.detailAddress = detailAddress;
         this.interests = interests != null ? interests : new ArrayList<>();
         this.location = location != null ? location : new GPSAddress(0.0, 0.0);
-        this.profilePicture = imageUrls.get(0);
+
+        //FIX-1
+        this.profilePicture = (imageUrls != null && !imageUrls.isEmpty()) ? imageUrls.get(0): "https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_default.jpg?alt=media&token=70caf3c1-ebd8-4151-ad82-bc70365d87cf";
         this.imageUrls = imageUrls;
         this.userName = userName;
     }

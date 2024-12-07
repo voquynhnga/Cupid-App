@@ -33,7 +33,6 @@ public class MyProfileFragment extends Fragment implements MyProfileContract.vie
     private FragmentMyProfileBinding binding;
     private MyProfilePresenter presenter;
 
-    // Khai báo ActivityResultLauncher
     private ActivityResultLauncher<Intent> imagePickerLauncher;
 
     @Override
@@ -50,12 +49,10 @@ public class MyProfileFragment extends Fragment implements MyProfileContract.vie
                         if (data != null) {
                             Uri selectedImageUri = data.getData();
                             try {
-                                // Lấy bitmap từ URI ảnh
                                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), selectedImageUri);
 
                                 presenter.uploadImageToFirebaseStorage(bitmap);
 
-                                // Hiển thị ảnh đại diện sau khi tải lên
                                 showProfileImage(bitmap);
                             } catch (IOException e) {
                                 e.printStackTrace();
