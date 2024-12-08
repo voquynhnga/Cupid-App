@@ -18,21 +18,37 @@
         android:orientation="vertical"
         android:layout_gravity="center_vertical">
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical">
+
         <TextView
             android:id="@+id/tv_message_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:text="tin nhan"
             android:padding="8dp"
             android:background="@drawable/bubble_left"
-        android:textColor="@android:color/black" />
+            android:textColor="@android:color/black" />
+
+            <ImageView
+                android:id="@+id/isSeenLeft"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_margin="5dp"
+                android:padding="8dp"
+                android:src="@drawable/seen" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_time_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="09:25 AM"
+            android:text=""
             android:textColor="@android:color/darker_gray"
             android:textSize="12sp" />
     </LinearLayout>
