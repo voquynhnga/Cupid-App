@@ -9,5 +9,7 @@ public class MyProfile implements MyProfileModel {
         FirebaseAuth.getInstance().signOut();
         callback.onComplete(true);
     }
+
+
 }
 

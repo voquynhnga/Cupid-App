@@ -6,4 +6,6 @@ public interface MyProfileModel {
     interface LogoutCallback {
         void onComplete(boolean success);
     }
+
+
 }
