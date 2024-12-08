@@ -114,11 +114,9 @@ public class SearchFragment extends Fragment implements searchView {
         });
 
         btnBack.setOnClickListener(v -> {
-            // Tạo Bundle để truyền dữ liệu
             Bundle bundle = new Bundle();
             bundle.putString("CHECK", "1");
 
-            // Điều hướng với Bundle
             NavController navController = Navigation.findNavController(v);
             navController.navigate(R.id.action_SearchFragment_to_HomepageFragment, bundle);
         });

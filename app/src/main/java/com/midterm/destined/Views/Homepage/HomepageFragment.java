@@ -18,7 +18,9 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.midterm.destined.Models.Notification;
 import com.midterm.destined.Models.UserReal;
+import com.midterm.destined.Presenters.NotificationPresenter;
 import com.midterm.destined.R;
 import com.midterm.destined.Utils.DB;
 import com.midterm.destined.Views.Homepage.Card.CardFragment;
@@ -58,6 +60,12 @@ public class HomepageFragment extends Fragment implements HomepageContract.View 
         } else {
             showCards();
         }
+        if (getArguments() != null) {
+            Boolean value2 = getArguments().getBoolean("New notification", false);
+            if (value2) {
+                binding.notifications.setImageResource(R.drawable.notification_new);
+            }
+        }
 
         return binding.getRoot();
     }
@@ -70,6 +78,7 @@ public class HomepageFragment extends Fragment implements HomepageContract.View 
         binding.dislikeButton.setOnClickListener(v -> presenter.onDislikeButtonClicked());
         binding.filterhp.setOnClickListener(v -> presenter.onSearchButtonClicked());
         binding.notifications.setOnClickListener(v -> presenter.onNotificationsClicked());
+
     }
 
     @Override

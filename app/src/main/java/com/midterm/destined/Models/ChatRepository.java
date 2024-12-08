@@ -62,17 +62,16 @@ public class ChatRepository {
                 .addOnSuccessListener(aVoid -> {
                     chatRef.child("lastMessage").setValue(newMessage)
                             .addOnSuccessListener(aVoid1 -> {
-
-                                Log.d("RealtimeDB", "Last message updated successfully");
+                                sendMessageCallback.onSuccess();
                             })
                             .addOnFailureListener(e -> {
-                                Log.e("RealtimeDB", "Failed to update last message", e);
+                                sendMessageCallback.onFailure("Failed to update last message");
                             });
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("RealtimeDB", "Failed to send message", e);
+                    sendMessageCallback.onFailure("Failed to send message");
                 });
-        ChatObject.checkChatUserId(chatId);
+
     }
 
 

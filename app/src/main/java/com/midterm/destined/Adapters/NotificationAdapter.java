@@ -28,6 +28,7 @@ import com.midterm.destined.Utils.DB;
 import com.midterm.destined.Utils.TimeExtensions;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder> {
@@ -56,6 +57,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         TimeExtensions.setChatTimestamp(holder.timestamp,notification.getTimestamp());
         holder.content.setText(notification.getContent());
         holder.imageNotification.setImageResource(notification.getImageResource());
+
 
         user = notification.getSender();
 
@@ -91,6 +93,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     public void updateData(List<Notification> newNotifications) {
         this.notifications.clear();
+        TimeExtensions.sortNotificationsByTimestampDescending(newNotifications);
         this.notifications.addAll(newNotifications);
         notifyDataSetChanged();
     }
@@ -100,6 +103,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         public final TextView timestamp;
         public final TextView content;
         public final ImageView imageNotification;
+
 
         public NotificationViewHolder(View view) {
             super(view);

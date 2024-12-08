@@ -64,13 +64,18 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             if (!chatObject.isRead()) {
                 holder.tvContent.setTypeface(null, Typeface.BOLD);
                 holder.tvSender.setTypeface(null, Typeface.BOLD);
+                holder.itemView.setBackgroundResource(R.drawable.rounded_unread_chat);
             } else {
                 holder.tvContent.setTypeface(null, Typeface.NORMAL);
                 holder.tvSender.setTypeface(null, Typeface.NORMAL);
+                holder.itemView.setBackgroundResource(R.drawable.input_background);
+
             }
         } else {
             holder.tvContent.setTypeface(null, Typeface.NORMAL);
             holder.tvSender.setTypeface(null, Typeface.NORMAL);
+            holder.itemView.setBackgroundResource(R.drawable.input_background);
+
         }
 
 

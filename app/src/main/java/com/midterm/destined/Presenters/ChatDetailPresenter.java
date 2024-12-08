@@ -35,7 +35,7 @@ public class ChatDetailPresenter {
         repository.sendMessage(chatId, message, new ChatRepository.SendMessageCallback() {
             @Override
             public void onSuccess() {
-
+                ChatObject.checkChatUserId(chatId);
             }
 
             @Override

@@ -86,52 +86,6 @@ public class NotificationPresenter {
     }
 
 
-//    private void fetchChatNotifications(String currentUserId, Runnable onComplete) {
-//        DB.getChatsRef().addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                final int totalNotifications = (int) dataSnapshot.getChildrenCount();
-//                int[] remainingNotifications = {totalNotifications};
-//
-//                for (DataSnapshot chatNode : dataSnapshot.getChildren()) {
-//                    String chatId = chatNode.getKey();
-//                    if (chatId == null || (!chatId.contains(currentUserId))) continue;
-//
-//                    if (chatNotificationsMap.containsKey(chatId)) continue;
-//
-//                    DataSnapshot lastMessageSnapshot = chatNode.child("lastMessage");
-//                    if (!lastMessageSnapshot.exists()) continue;
-//
-//                    String sender = lastMessageSnapshot.child("sender").getValue(String.class);
-//                    String timestamp = lastMessageSnapshot.child("time").getValue(String.class);
-//
-//                    if (sender == null || timestamp == null || sender.equals(currentUserId)) {
-//                        continue;
-//                    }
-//
-//                    getFullName(sender, fullName -> {
-//                        String content = "You have just received a message from " + fullName;
-//                        Notification chatNotification = new Notification(timestamp, content, 2, sender);
-//                        chatNotificationsMap.put(chatId, chatNotification);
-//
-//                        updateView();
-//
-//                        remainingNotifications[0]--;
-//
-//                        if (remainingNotifications[0] == 0) {
-//                            onComplete.run();
-//                        }
-//                    });
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.e("fetchChatNotifications", "Error: " + databaseError.getMessage());
-//            }
-//        });
-//    }
 
     private void fetchChatNotifications(String currentUserId, Runnable onComplete) {
         DB.getChatsRef().addValueEventListener(new ValueEventListener() {
@@ -238,6 +192,7 @@ public class NotificationPresenter {
                     callback.onFullNameRetrieved("Unknown");
                 });
     }
+
 
 
 
