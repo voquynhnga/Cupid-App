@@ -72,7 +72,6 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="25dp"
                 android:background="@null"
-                android:inputType="textPassword"
                 android:hint="Enter your password"
                 android:inputType="textPassword"
                 android:textAlignment="center"

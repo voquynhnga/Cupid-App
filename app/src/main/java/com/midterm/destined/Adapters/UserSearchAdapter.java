@@ -171,21 +171,21 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Im
         }
 
 
-            if (card.getImageUrls() != null && !card.getImageUrls().isEmpty()) {
-                if (card.getImageUrls().size() > 1) {
-                    profileImageSearchPager.setAdapter(new ImagePagerAdapter(card.getImageUrls(), view.getContext()));
-                    profileImageSearchPager.setVisibility(View.VISIBLE);
-                    profileImageSearch1.setVisibility(View.GONE);
-                } else {
-                    profileImageSearchPager.setVisibility(View.GONE);
-                    profileImageSearch1.setVisibility(View.VISIBLE);
-                    Glide.with(view.getContext()).load(card.getProfileImageUrl()).into(profileImageSearch1);
-                }
+        if (card.getImageUrls() != null && !card.getImageUrls().isEmpty()) {
+            if (card.getImageUrls().size() > 1) {
+                profileImageSearchPager.setAdapter(new ImagePagerAdapter(card.getImageUrls(), view.getContext()));
+                profileImageSearchPager.setVisibility(View.VISIBLE);
+                profileImageSearch1.setVisibility(View.GONE);
             } else {
                 profileImageSearchPager.setVisibility(View.GONE);
                 profileImageSearch1.setVisibility(View.VISIBLE);
-                Glide.with(view.getContext()).load(R.drawable.avatardefault).into(profileImageSearch1);
+                Glide.with(view.getContext()).load(card.getProfileImageUrl()).into(profileImageSearch1);
             }
+        } else {
+            profileImageSearchPager.setVisibility(View.GONE);
+            profileImageSearch1.setVisibility(View.VISIBLE);
+            Glide.with(view.getContext()).load(R.drawable.avatardefault).into(profileImageSearch1);
+        }
 
             if (user.isMatched()) {
                 btnChat.setVisibility(popupView.VISIBLE);
@@ -202,7 +202,7 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Im
                         ChatObject.checkChatUserId(chatId);
 
                         NavController navController = Navigation.findNavController((Activity) v.getContext(), R.id.nav_host_fragment_content_main);
-                        navController.navigate(R.id.action_global_ChatFragment, bundle);
+                        navController.navigate(R.id.action_global_ChatDetailFragment, bundle);
 
                         popupWindow.dismiss();
                     }
@@ -268,8 +268,15 @@ public class UserSearchAdapter extends RecyclerView.Adapter<UserSearchAdapter.Im
 
                                             if (userFavorited != null && userFavorited.contains(currentUserId)) {
                                                 user.setMatched(true);
-                                                matchedUsersCache.put(user.getUid(), true);
+                                                String favoritedUserId = user.getUid();
+                                                String matchId = currentUserId.compareTo(favoritedUserId) < 0
+                                                        ? currentUserId + "_" + favoritedUserId
+                                                        : favoritedUserId + "_" + currentUserId;
 
+                                                Match match = new Match(matchId, currentUserId, favoritedUserId, getCurrentTime());
+                                                Card.saveMatchToDB(match, user.getFullName());
+                                                ChatObject.checkAndAddChatList(currentUserId, favoritedUserId, getCurrentTime());
+                                                matchedUsersCache.put(user.getUid(), true);
                                                 updateButtonState(user, holder);
                                             } else {
                                                 user.setMatched(false);

@@ -154,7 +154,12 @@ public class SignUp extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             if (firebaseUser.isEmailVerified()) {
                                 String uid = firebaseUser.getUid();
-                                UserReal user = new UserReal(uid, email, fullName, phone, dob, gender, new ArrayList<>(), new GPSAddress(0.0, 0.0), "No address", "", new ArrayList<>(), userName);
+                                List<String> interests = new ArrayList<>();
+                                GPSAddress location = new GPSAddress(0.0, 0.0);
+                                List<String> url = new ArrayList<>();
+                                String bio = "Bio to introduce";
+
+                                UserReal user = new UserReal(uid, email, fullName, phone, dob, gender,bio, interests, location,"No address", url , userName);
                                 saveUserToFirestore(user);
                                 Intent intent = new Intent(SignUp.this, Interests.class);
                                 intent.putExtra("user", user);

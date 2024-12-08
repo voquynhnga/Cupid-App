@@ -29,8 +29,8 @@ public class UserReal implements Serializable {
     private List<String> imageUrls;
     private String userName;
     private String detailAddress;
-    private boolean isMatched = false; // Trạng thái đã match
-    private boolean isFavorited = false; // Sửa tên biến ở đây
+    private boolean isMatched = false;
+    private boolean isFavorited = false;
 
     public UserReal() {
         this.interests = new ArrayList<>();
