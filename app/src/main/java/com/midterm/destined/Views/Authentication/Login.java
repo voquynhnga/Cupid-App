@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -24,7 +25,7 @@ import com.midterm.destined.databinding.ActivityLoginBinding;
 public class Login extends AppCompatActivity {
     private EditText userEmail, password;
     private Button btLogin;
-    private TextView tvSignUp;
+    private TextView tvSignUp, tvfp;
     private ActivityLoginBinding binding;
 
 
@@ -38,6 +39,7 @@ public class Login extends AppCompatActivity {
         password = binding.pass;
         btLogin = binding.continueButton;
         tvSignUp = binding.signupText;
+        tvfp = binding.fogotPass;
 
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +81,34 @@ public class Login extends AppCompatActivity {
                 startActivity(intent);
 
             }
+        });
+
+        tvfp.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+            builder.setTitle("Quên mật khẩu");
+
+            final EditText emailInput = new EditText(Login.this);
+            emailInput.setHint("Nhập email của bạn");
+            builder.setView(emailInput);
+
+            builder.setPositiveButton("Gửi", (dialog, which) -> {
+                String email = emailInput.getText().toString().trim();
+                if (email.isEmpty()) {
+                    Toast.makeText(Login.this, "Email không được để trống!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(Login.this, "Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(Login.this, "Không thể gửi email. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            });
+
+            builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
+            builder.show();
         });
     }
 

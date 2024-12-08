@@ -50,7 +50,8 @@
             android:layout_width="wrap_content"
             android:layout_height="150dp"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:id="@+id/text">
 
             <EditText
                 android:id="@+id/mail"
@@ -81,6 +82,19 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/fogot_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fogot your password ?"
+        android:textColor="#FF4D5A"
+
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.765"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phone_number_container"/>
 
     <Button
         android:id="@+id/continue_button"
