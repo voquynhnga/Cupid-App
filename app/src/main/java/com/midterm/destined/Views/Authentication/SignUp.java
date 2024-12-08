@@ -140,8 +140,6 @@ public class SignUp extends AppCompatActivity {
                         Toast.makeText(SignUp.this, "Verification email sent to " + email, Toast.LENGTH_SHORT).show();
                         Toast.makeText(SignUp.this, "Please check your email to verify your account.", Toast.LENGTH_SHORT).show();
                         checkEmailVerification(firebaseUser, email, fullName, phone, dob, gender, userName);
-
-
                     } else {
                         Toast.makeText(SignUp.this, "Failed to send verification email.", Toast.LENGTH_SHORT).show();
                     }
