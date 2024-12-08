@@ -74,6 +74,7 @@
                 android:background="@null"
                 android:inputType="textPassword"
                 android:hint="Enter your password"
+                android:inputType="textPassword"
                 android:textAlignment="center"
                 android:padding="5dp"
                 android:textColor="@color/black"

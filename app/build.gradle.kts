@@ -93,5 +93,5 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation ("com.squareup.picasso:picasso:2.8")
     implementation ("com.google.firebase:firebase-auth:21.0.1")
-
+    implementation ("com.sun.mail:javax.mail:1.6.2")
 }
