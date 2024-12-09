@@ -58,6 +58,8 @@ public class MyProfilePresenter implements MyProfileContract.presenter {
             }
         });
     }
+    @Override
+    public void changePassword() {view.navigateToChangePassword();}
 
     @Override
     public void navigateToSettings(View view) {

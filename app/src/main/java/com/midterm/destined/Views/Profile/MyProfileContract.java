@@ -13,6 +13,7 @@ public interface MyProfileContract {
         void navigateToLogin ();
         void launchImagePicker (Intent intent);
         Activity getActivityContext();
+        void navigateToChangePassword();
     }
     interface presenter {
         void chooseImage();
@@ -20,6 +21,7 @@ public interface MyProfileContract {
         void navigateToSettings(View view);
         void loadAvatarFromDB();
         void uploadImageToFirebaseStorage(Bitmap bitmap);
+        void changePassword();
     }
 }
 

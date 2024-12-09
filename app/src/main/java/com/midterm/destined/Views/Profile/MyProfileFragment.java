@@ -20,6 +20,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.midterm.destined.Presenters.MyProfilePresenter;
+import com.midterm.destined.Views.Authentication.ChangePassword;
 import com.midterm.destined.Views.Authentication.GetStarted;
 import com.midterm.destined.R;
 import com.midterm.destined.Views.Profile.MyProfileContract;
@@ -32,8 +33,8 @@ public class MyProfileFragment extends Fragment implements MyProfileContract.vie
 
     private FragmentMyProfileBinding binding;
     private MyProfilePresenter presenter;
-
     private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private ActivityResultLauncher<Intent> changePasswordActivityResultLauncher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,24 +44,37 @@ public class MyProfileFragment extends Fragment implements MyProfileContract.vie
 
         imagePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            Uri selectedImageUri = data.getData();
-                            try {
-                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), selectedImageUri);
+                new ActivityResultCallback<androidx.activity.result.ActivityResult>() {
+                    @Override
+                    public void onActivityResult(androidx.activity.result.ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent data = result.getData();
+                            if (data != null) {
+                                Uri selectedImageUri = data.getData();
+                                try {
+                                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), selectedImageUri);
 
-                                presenter.uploadImageToFirebaseStorage(bitmap);
-
-                                showProfileImage(bitmap);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                showMessage("Failed to load image");
+                                    presenter.uploadImageToFirebaseStorage(bitmap);
+                                    showProfileImage(bitmap);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    showMessage("Failed to load image");
+                                }
                             }
                         }
                     }
                 });
+        changePasswordActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Toast.makeText(getContext(), "Password updated successfully", Toast.LENGTH_SHORT).show();
+                    }
+                    if (result.getResultCode() == Activity.RESULT_CANCELED) {
+                        Toast.makeText(getContext(), "Password was not updated", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
     }
 
     @Override
@@ -71,6 +85,7 @@ public class MyProfileFragment extends Fragment implements MyProfileContract.vie
         binding.imSetting.setOnClickListener(v -> presenter.navigateToSettings(v));
         binding.btnAvatar.setOnClickListener(v -> presenter.chooseImage());
         binding.imLogout.setOnClickListener(v -> presenter.logout());
+        binding.changePass.setOnClickListener(v -> presenter.changePassword());
 
         presenter.loadAvatarFromDB();
         return view;
@@ -97,6 +112,12 @@ public class MyProfileFragment extends Fragment implements MyProfileContract.vie
         Intent intent = new Intent(getActivity(), GetStarted.class);
         startActivity(intent);
         Objects.requireNonNull(getActivity()).finish();
+    }
+
+    @Override
+    public void navigateToChangePassword() {
+        Intent intent = new Intent(getActivity(), ChangePassword.class);
+        changePasswordActivityResultLauncher.launch(intent);
     }
 
     @Override

@@ -112,6 +112,38 @@
         app:layout_constraintTop_toBottomOf="@+id/im_Logout"
         app:layout_constraintVertical_bias="0.0"></TextView>
 
+    <ImageView
+        android:id="@+id/change_pass"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:contentDescription="changepass here"
+        android:src="@drawable/baseline_password_24"
+        android:backgroundTint="#EF4885"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.578"
+        app:shapeAppearanceOverlay="@style/RoundImageShape">
+
+    </ImageView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Password"
+        android:textColor="#F22F76"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/change_pass"
+        app:layout_constraintVertical_bias="0.0"></TextView>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
