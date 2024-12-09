@@ -15,27 +15,14 @@
         android:id="@+id/im_Avatar"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginEnd="128dp"
         android:src="@drawable/avatardefault"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.027"
         app:shapeAppearanceOverlay="@style/RoundImageShape" />
 
-    <Button
-        android:layout_width="120dp"
-        android:layout_height="40dp"
-        android:backgroundTint="#1269C0"
-        android:clickable="false"
-        android:gravity="center_horizontal"
-        android:text="Complete"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.204"></Button>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_Avatar"
@@ -47,12 +34,11 @@
         app:backgroundTint="#EF4885"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.625"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.391"
+        app:layout_constraintVertical_bias="0.162"
         app:tint="#ffffff" />
-
 
     <ImageView
         android:id="@+id/im_Setting"
@@ -116,16 +102,16 @@
         android:id="@+id/change_pass"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:backgroundTint="#EF4885"
         android:clickable="true"
         android:contentDescription="changepass here"
         android:src="@drawable/baseline_password_24"
-        android:backgroundTint="#EF4885"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.523"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.578"
+        app:layout_constraintVertical_bias="0.385"
         app:shapeAppearanceOverlay="@style/RoundImageShape">
 
     </ImageView>
@@ -139,24 +125,25 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.532"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/change_pass"
-        app:layout_constraintVertical_bias="0.0"></TextView>
+        app:layout_constraintVertical_bias="0.002"></TextView>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="656dp"
         android:text="Add media"
         android:textColor="#F22F76"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.48"
+        app:layout_constraintHorizontal_bias="0.648"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/im_Setting"
-        app:layout_constraintVertical_bias="0.18"></TextView>
+        app:layout_constraintTop_toBottomOf="@+id/btn_Avatar"
+        app:layout_constraintVertical_bias="0.6"></TextView>
 
     <TextView
         android:layout_width="wrap_content"

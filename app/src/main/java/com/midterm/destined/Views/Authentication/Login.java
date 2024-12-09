@@ -85,31 +85,33 @@ public class Login extends AppCompatActivity {
 
         tvfp.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
-            builder.setTitle("Quên mật khẩu");
+            builder.setTitle("Forgot Password");
 
             final EditText emailInput = new EditText(Login.this);
-            emailInput.setHint("Nhập email của bạn");
+            emailInput.setHint("Enter your email");
             builder.setView(emailInput);
 
-            builder.setPositiveButton("Gửi", (dialog, which) -> {
+            builder.setPositiveButton("Send", (dialog, which) -> {
                 String email = emailInput.getText().toString().trim();
                 if (email.isEmpty()) {
-                    Toast.makeText(Login.this, "Email không được để trống!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Login.this, "Email cannot be empty!", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 FirebaseAuth.getInstance().sendPasswordResetEmail(email)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(Login.this, "Đã gửi email đặt lại mật khẩu. Vui lòng kiểm tra!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Login.this, "Password reset email sent. Please check your email!", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(Login.this, "Không thể gửi email. Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Login.this, "Failed to send email. Please try again!", Toast.LENGTH_SHORT).show();
                             }
                         });
             });
 
-            builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
             builder.show();
         });
+
+
     }
 
     @Override
