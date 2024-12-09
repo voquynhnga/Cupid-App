@@ -31,8 +31,8 @@ import java.util.Locale;
 public class MyLocation extends AppCompatActivity {
     private Button btnAllow;
     private ActivityMyLocationBinding binding;
-    private FusedLocationProviderClient fusedLocationClient; // Khai báo FusedLocationProviderClient
-    private UserReal user; // Thêm biến UserReal để lưu thông tin người dùng
+    private FusedLocationProviderClient fusedLocationClient;
+    private UserReal user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,6 @@ public class MyLocation extends AppCompatActivity {
         setContentView(binding.getRoot());
         btnAllow = binding.btnAllowLocation;
 
-        // Nhận thông tin UserReal từ Intent
         user = (UserReal) getIntent().getSerializableExtra("user");
 
 
@@ -70,25 +69,6 @@ public class MyLocation extends AppCompatActivity {
             }
     );
 
-//    private void getCurrentLocation() {
-//        // Kiểm tra xem permission đã được cấp chưa
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//            fusedLocationClient.getLastLocation()
-//                    .addOnSuccessListener(this, location -> {
-//                        if (location != null) {
-//                            // Lấy vị trí hiện tại và cập nhật vào GPSAddress
-//                            GPSAddress gpsAddress = new GPSAddress(location.getLatitude(), location.getLongitude());
-//                            user.setLocation(gpsAddress); // Cập nhật địa chỉ GPS vào đối tượng UserReal
-//                           user.setDetailAdrress("Đà Nẵng"); // cập nhật lại
-//                            Log.d("Location", "Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude());
-//                            // Lưu UserReal vào Firestore
-//                            saveUserToFirestore(user);
-//                        } else {
-//                            Toast.makeText(this, "Unable to get location.", Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//        }
-//    }
 
     private void getCurrentLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -104,12 +84,8 @@ public class MyLocation extends AppCompatActivity {
                                 List<Address> addresses = geocoder.getFromLocation(user.getLocation().getLatitude(), user.getLocation().getLongitude(), 1);
                                 if (addresses != null && !addresses.isEmpty()) {
                                     Address address = addresses.get(0);
-//                                    String district = address.getSubAdminArea(); // Quận/Huyện
                                     String city = address.getAdminArea(); // Thành phố/Tỉnh
 
-                                    // Gán địa chỉ vào UserReal
-//                                    String detailAddress = (district != null ? district : "") + ", " +
-//                                            (city != null ? city : "");
                                     String detailAddress = (city != null ? city : "Unknow");
 
                                     user.setDetailAddress(detailAddress);
@@ -117,7 +93,6 @@ public class MyLocation extends AppCompatActivity {
                                     Log.d("Location", "Latitude: " + user.getLocation().getLatitude() + ", Longitude: " + user.getLocation().getLongitude());
                                     Log.d("Address", "Detail Address: " + detailAddress);
 
-                                    // Lưu UserReal vào Firestore
                                     saveUserToFirestore(user);
                                 } else {
                                     Toast.makeText(this, "Unable to get address.", Toast.LENGTH_SHORT).show();

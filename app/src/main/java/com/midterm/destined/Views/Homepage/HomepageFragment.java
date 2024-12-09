@@ -61,9 +61,12 @@ public class HomepageFragment extends Fragment implements HomepageContract.View 
             showCards();
         }
         if (getArguments() != null) {
-            Boolean value2 = getArguments().getBoolean("New notification", false);
+            boolean value2 = getArguments().getBoolean("New notification", false);
             if (value2) {
                 binding.notifications.setImageResource(R.drawable.notification_new);
+            }
+            else{
+                binding.notifications.setImageResource(R.drawable.notification);
             }
         }
 

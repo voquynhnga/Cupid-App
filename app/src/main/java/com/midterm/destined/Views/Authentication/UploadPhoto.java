@@ -88,11 +88,10 @@ public class UploadPhoto extends AppCompatActivity {
 
 
         btn.setOnClickListener(v -> {
-            if(noImageSelected()) {
+            if (noImageSelected()) {
                 user.setProfilePicture("https://firebasestorage.googleapis.com/v0/b/cupid-app-ad700.appspot.com/o/avatar_default.jpg?alt=media&token=70caf3c1-ebd8-4151-ad82-bc70365d87cf");
                 saveUserDataAndProceed();
-            }
-            else {
+            } else {
                 uploadImagesAndProceed();
             }
         });
@@ -147,21 +146,12 @@ public class UploadPhoto extends AppCompatActivity {
                                     imageUrls.add(uri.toString());
 
                                     if (finalI == 0) {
-                                        DB.getCurrentUserDocument()
-                                                .update("profilePicture", uri.toString())
-                                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Updated profile picture"))
-                                                .addOnFailureListener(e -> Log.e("Firestore", "Failed to update profile picture: " + e.getMessage()));
+                                        user.setProfilePicture(uri.toString());
                                     }
 
                                     if (uploadCount.incrementAndGet() == totalSelectedImages) {
-                                        DB.getCurrentUserDocument()
-                                                .update("imageUrls", imageUrls)
-                                                .addOnSuccessListener(aVoid -> {
-                                                    Toast.makeText(UploadPhoto.this, "Upload successful!", Toast.LENGTH_SHORT).show();
-                                                })
-                                                .addOnFailureListener(e -> {
-                                                    Toast.makeText(UploadPhoto.this, "Failed to save imageUrls: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                });
+                                        user.setImageUrls(imageUrls);
+                                        saveUserDataAndProceed();
                                     }
                                 })
                         ).addOnFailureListener(e -> {
@@ -179,7 +169,7 @@ public class UploadPhoto extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         proceedToNextActivity();
                     } else {
-                        Toast.makeText(UploadPhoto.this, "Lỗi khi lưu thông tin người dùng", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UploadPhoto.this, "The error when saving user information.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

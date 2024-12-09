@@ -34,7 +34,7 @@ import java.util.List;
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder> {
     private final Context context;
     private final List<Notification> notifications;
-    private  UserReal user;
+
 
     public NotificationAdapter(Context context, List<Notification> notifications) {
         this.context = context;
@@ -59,16 +59,16 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.imageNotification.setImageResource(notification.getImageResource());
 
 
-        user = notification.getSender();
+        UserReal user = notification.getSender();
 
-        if (notification.getSender() != null) {
+        if (user != null) {
             holder.itemView.setOnClickListener(v -> {
                 ChatObject.checkChatId(user.getUid(), new OnChatIdCheckListener() {
                     @Override
                     public void onChatIdFound(String chatId) {
                         Bundle bundle = new Bundle();
                         bundle.putString("chatId", chatId);
-                        bundle.putString("userId", (notification.getSender()).getUid());
+                        bundle.putString("userId", user.getUid());
                         bundle.putString("userName", user.getFullName());
                         ChatObject.checkChatUserId(chatId);
 
